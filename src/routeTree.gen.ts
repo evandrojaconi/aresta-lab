@@ -10,11 +10,40 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as PicosRouteImport } from './routes/picos'
+import { Route as GuiasRouteImport } from './routes/guias'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as ComunidadeRouteImport } from './routes/comunidade'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PicosIndexRouteImport } from './routes/picos.index'
+import { Route as PicosPedraGrandeIgarapeRouteImport } from './routes/picos.pedra-grande-igarape'
+import { Route as GuiasOndeEscalarEmBeloHorizonteRouteImport } from './routes/guias.onde-escalar-em-belo-horizonte'
+import { Route as GuiasCroquiOfflineRouteImport } from './routes/guias.croqui-offline'
+import { Route as GuiasCroquiDeEscaladaRouteImport } from './routes/guias.croqui-de-escalada'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PicosRoute = PicosRouteImport.update({
+  id: '/picos',
+  path: '/picos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuiasRoute = GuiasRouteImport.update({
+  id: '/guias',
+  path: '/guias',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComunidadeRoute = ComunidadeRouteImport.update({
+  id: '/comunidade',
+  path: '/comunidade',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -22,30 +51,119 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PicosIndexRoute = PicosIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PicosRoute,
+} as any)
+const PicosPedraGrandeIgarapeRoute = PicosPedraGrandeIgarapeRouteImport.update({
+  id: '/pedra-grande-igarape',
+  path: '/pedra-grande-igarape',
+  getParentRoute: () => PicosRoute,
+} as any)
+const GuiasOndeEscalarEmBeloHorizonteRoute =
+  GuiasOndeEscalarEmBeloHorizonteRouteImport.update({
+    id: '/onde-escalar-em-belo-horizonte',
+    path: '/onde-escalar-em-belo-horizonte',
+    getParentRoute: () => GuiasRoute,
+  } as any)
+const GuiasCroquiOfflineRoute = GuiasCroquiOfflineRouteImport.update({
+  id: '/croqui-offline',
+  path: '/croqui-offline',
+  getParentRoute: () => GuiasRoute,
+} as any)
+const GuiasCroquiDeEscaladaRoute = GuiasCroquiDeEscaladaRouteImport.update({
+  id: '/croqui-de-escalada',
+  path: '/croqui-de-escalada',
+  getParentRoute: () => GuiasRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/comunidade': typeof ComunidadeRoute
+  '/faq': typeof FaqRoute
+  '/guias': typeof GuiasRouteWithChildren
+  '/picos': typeof PicosRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/guias/croqui-de-escalada': typeof GuiasCroquiDeEscaladaRoute
+  '/guias/croqui-offline': typeof GuiasCroquiOfflineRoute
+  '/guias/onde-escalar-em-belo-horizonte': typeof GuiasOndeEscalarEmBeloHorizonteRoute
+  '/picos/pedra-grande-igarape': typeof PicosPedraGrandeIgarapeRoute
+  '/picos/': typeof PicosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/comunidade': typeof ComunidadeRoute
+  '/faq': typeof FaqRoute
+  '/guias': typeof GuiasRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/guias/croqui-de-escalada': typeof GuiasCroquiDeEscaladaRoute
+  '/guias/croqui-offline': typeof GuiasCroquiOfflineRoute
+  '/guias/onde-escalar-em-belo-horizonte': typeof GuiasOndeEscalarEmBeloHorizonteRoute
+  '/picos/pedra-grande-igarape': typeof PicosPedraGrandeIgarapeRoute
+  '/picos': typeof PicosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/comunidade': typeof ComunidadeRoute
+  '/faq': typeof FaqRoute
+  '/guias': typeof GuiasRouteWithChildren
+  '/picos': typeof PicosRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/guias/croqui-de-escalada': typeof GuiasCroquiDeEscaladaRoute
+  '/guias/croqui-offline': typeof GuiasCroquiOfflineRoute
+  '/guias/onde-escalar-em-belo-horizonte': typeof GuiasOndeEscalarEmBeloHorizonteRoute
+  '/picos/pedra-grande-igarape': typeof PicosPedraGrandeIgarapeRoute
+  '/picos/': typeof PicosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sitemap.xml'
+  fullPaths:
+    | '/'
+    | '/comunidade'
+    | '/faq'
+    | '/guias'
+    | '/picos'
+    | '/sitemap.xml'
+    | '/guias/croqui-de-escalada'
+    | '/guias/croqui-offline'
+    | '/guias/onde-escalar-em-belo-horizonte'
+    | '/picos/pedra-grande-igarape'
+    | '/picos/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sitemap.xml'
-  id: '__root__' | '/' | '/sitemap.xml'
+  to:
+    | '/'
+    | '/comunidade'
+    | '/faq'
+    | '/guias'
+    | '/sitemap.xml'
+    | '/guias/croqui-de-escalada'
+    | '/guias/croqui-offline'
+    | '/guias/onde-escalar-em-belo-horizonte'
+    | '/picos/pedra-grande-igarape'
+    | '/picos'
+  id:
+    | '__root__'
+    | '/'
+    | '/comunidade'
+    | '/faq'
+    | '/guias'
+    | '/picos'
+    | '/sitemap.xml'
+    | '/guias/croqui-de-escalada'
+    | '/guias/croqui-offline'
+    | '/guias/onde-escalar-em-belo-horizonte'
+    | '/picos/pedra-grande-igarape'
+    | '/picos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ComunidadeRoute: typeof ComunidadeRoute
+  FaqRoute: typeof FaqRoute
+  GuiasRoute: typeof GuiasRouteWithChildren
+  PicosRoute: typeof PicosRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
@@ -58,6 +176,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/picos': {
+      id: '/picos'
+      path: '/picos'
+      fullPath: '/picos'
+      preLoaderRoute: typeof PicosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guias': {
+      id: '/guias'
+      path: '/guias'
+      fullPath: '/guias'
+      preLoaderRoute: typeof GuiasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/comunidade': {
+      id: '/comunidade'
+      path: '/comunidade'
+      fullPath: '/comunidade'
+      preLoaderRoute: typeof ComunidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -65,11 +211,76 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/picos/': {
+      id: '/picos/'
+      path: '/'
+      fullPath: '/picos/'
+      preLoaderRoute: typeof PicosIndexRouteImport
+      parentRoute: typeof PicosRoute
+    }
+    '/picos/pedra-grande-igarape': {
+      id: '/picos/pedra-grande-igarape'
+      path: '/pedra-grande-igarape'
+      fullPath: '/picos/pedra-grande-igarape'
+      preLoaderRoute: typeof PicosPedraGrandeIgarapeRouteImport
+      parentRoute: typeof PicosRoute
+    }
+    '/guias/onde-escalar-em-belo-horizonte': {
+      id: '/guias/onde-escalar-em-belo-horizonte'
+      path: '/onde-escalar-em-belo-horizonte'
+      fullPath: '/guias/onde-escalar-em-belo-horizonte'
+      preLoaderRoute: typeof GuiasOndeEscalarEmBeloHorizonteRouteImport
+      parentRoute: typeof GuiasRoute
+    }
+    '/guias/croqui-offline': {
+      id: '/guias/croqui-offline'
+      path: '/croqui-offline'
+      fullPath: '/guias/croqui-offline'
+      preLoaderRoute: typeof GuiasCroquiOfflineRouteImport
+      parentRoute: typeof GuiasRoute
+    }
+    '/guias/croqui-de-escalada': {
+      id: '/guias/croqui-de-escalada'
+      path: '/croqui-de-escalada'
+      fullPath: '/guias/croqui-de-escalada'
+      preLoaderRoute: typeof GuiasCroquiDeEscaladaRouteImport
+      parentRoute: typeof GuiasRoute
+    }
   }
 }
 
+interface GuiasRouteChildren {
+  GuiasCroquiDeEscaladaRoute: typeof GuiasCroquiDeEscaladaRoute
+  GuiasCroquiOfflineRoute: typeof GuiasCroquiOfflineRoute
+  GuiasOndeEscalarEmBeloHorizonteRoute: typeof GuiasOndeEscalarEmBeloHorizonteRoute
+}
+
+const GuiasRouteChildren: GuiasRouteChildren = {
+  GuiasCroquiDeEscaladaRoute: GuiasCroquiDeEscaladaRoute,
+  GuiasCroquiOfflineRoute: GuiasCroquiOfflineRoute,
+  GuiasOndeEscalarEmBeloHorizonteRoute: GuiasOndeEscalarEmBeloHorizonteRoute,
+}
+
+const GuiasRouteWithChildren = GuiasRoute._addFileChildren(GuiasRouteChildren)
+
+interface PicosRouteChildren {
+  PicosPedraGrandeIgarapeRoute: typeof PicosPedraGrandeIgarapeRoute
+  PicosIndexRoute: typeof PicosIndexRoute
+}
+
+const PicosRouteChildren: PicosRouteChildren = {
+  PicosPedraGrandeIgarapeRoute: PicosPedraGrandeIgarapeRoute,
+  PicosIndexRoute: PicosIndexRoute,
+}
+
+const PicosRouteWithChildren = PicosRoute._addFileChildren(PicosRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ComunidadeRoute: ComunidadeRoute,
+  FaqRoute: FaqRoute,
+  GuiasRoute: GuiasRouteWithChildren,
+  PicosRoute: PicosRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
