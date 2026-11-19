@@ -2,7 +2,7 @@ name: Landing build check
 
 on:
   push:
-    branches: ["main", "feat/landing-navegavel-croquis-2026-11"]
+    branches: ["main"]
   pull_request:
     branches: ["main"]
 

@@ -1,4 +1,4 @@
-name: Preview GitHub Pages
+name: Aresta Lab - Publicar previa
 
 on:
   push:
@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: github-pages
+  group: aresta-lab-pages
   cancel-in-progress: true
 
 jobs:
@@ -21,24 +21,24 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-      - name: Install
+      - name: Baixar codigo
+        uses: actions/checkout@v4
+      - name: Preparar Bun
+        uses: oven-sh/setup-bun@v2
+      - name: Instalar dependencias
         run: bun install --frozen-lockfile
-      - name: Static build
+      - name: Construir paginas estaticas
         run: bun run build
         env:
           GITHUB_PAGES: "true"
-      - name: Inspect
-        run: |
-          find .output/public -maxdepth 3 -type f | head -n 50
-          test -f .output/public/index.html
-          touch .output/public/.nojekyll
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
-      - uses: actions/upload-pages-artifact@v3
+      - name: Verificar rotas, links e preparar preview
+        run: node scripts/verify-static.mjs
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+      - name: Enviar arquivos do site
+        uses: actions/upload-pages-artifact@v3
         with:
           path: .output/public
-      - id: deployment
+      - name: Publicar site
+        id: deployment
         uses: actions/deploy-pages@v4

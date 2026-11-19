@@ -1,4 +1,4 @@
-name: Static GitHub Pages build check
+name: Aresta Lab - QA da previa estatica
 
 on:
   push:
@@ -6,29 +6,28 @@ on:
   pull_request:
     branches: ["main"]
 
+permissions:
+  contents: read
+
 jobs:
   static-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-      - run: bun install --frozen-lockfile
-      - name: Build static site
+      - name: Baixar codigo
+        uses: actions/checkout@v4
+      - name: Preparar Bun
+        uses: oven-sh/setup-bun@v2
+      - name: Instalar dependencias
+        run: bun install --frozen-lockfile
+      - name: Compilar site para GitHub Pages
         run: bun run build
         env:
           GITHUB_PAGES: "true"
-      - name: Validate generated pages
-        run: |
-          echo "Generated files:"
-          find .output/public -maxdepth 4 -type f | head -n 60
-          test -f .output/public/index.html
-          test -f .output/public/picos/index.html
-          test -f .output/public/picos/pedra-grande-igarape/index.html
-          test -f .output/public/comunidade/index.html
-          test -f .output/public/faq/index.html
-          test -f .output/public/guias/croqui-de-escalada/index.html
-      - uses: actions/upload-artifact@v4
+      - name: Conferir rotas e preparar preview
+        run: node scripts/verify-static.mjs
+      - name: Arquivar previa testada
+        uses: actions/upload-artifact@v4
         with:
-          name: aresta-static-preview
+          name: aresta-lab-preview
           path: .output/public
-          retention-days: 7
+          retention-days: 14
