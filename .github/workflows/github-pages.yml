@@ -1,0 +1,44 @@
+name: Preview GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Install
+        run: bun install --frozen-lockfile
+      - name: Static build
+        run: bun run build
+        env:
+          GITHUB_PAGES: "true"
+      - name: Inspect
+        run: |
+          find .output/public -maxdepth 3 -type f | head -n 50
+          test -f .output/public/index.html
+          touch .output/public/.nojekyll
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .output/public
+      - id: deployment
+        uses: actions/deploy-pages@v4

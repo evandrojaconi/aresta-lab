@@ -1,0 +1,34 @@
+name: Static GitHub Pages build check
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  static-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - name: Build static site
+        run: bun run build
+        env:
+          GITHUB_PAGES: "true"
+      - name: Validate generated pages
+        run: |
+          echo "Generated files:"
+          find .output/public -maxdepth 4 -type f | head -n 60
+          test -f .output/public/index.html
+          test -f .output/public/picos/index.html
+          test -f .output/public/picos/pedra-grande-igarape/index.html
+          test -f .output/public/comunidade/index.html
+          test -f .output/public/faq/index.html
+          test -f .output/public/guias/croqui-de-escalada/index.html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aresta-static-preview
+          path: .output/public
+          retention-days: 7

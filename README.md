@@ -1,46 +1,34 @@
-# Aresta Climb — Landing navegável + SEO
+# Aresta Climb — Landing + SEO (GitHub)
 
-Landing institucional em React 19 / TanStack Start / TypeScript / Tailwind CSS, com páginas de picos, guias, comunidade e FAQ.
+Projeto React/TanStack Start, Vite, TypeScript e Tailwind CSS, hospedado e versionado no GitHub.
 
-## Executar
+## Desenvolvimento
 
-Requisitos: Node.js compatível com Vite 8 ou Bun.
+Instale Bun e execute:
 
-~~~bash
-bun install
+```bash
+bun install --frozen-lockfile
 bun run dev
-~~~
+```
 
-Para verificar a compilação:
+Acesse http://localhost:3000.
 
-~~~bash
-bun run build
-~~~
+## Teste e publicação
 
-## Navegação
+- GitHub Actions executa build em pushes e PRs.
+- O workflow `.github/workflows/github-pages.yml` compila as rotas estaticamente.
+- URL de prévia **após deploy bem-sucedido**: https://evandrojaconi.github.io/aresta-climb-navegue-e-escalar/
+- GitHub Pages em repositório **privado** exige plano do GitHub elegível. Não mude a visibilidade sem avaliar o conteúdo.
 
-- \`/\` — Landing, proposta de valor, jornada, perguntas frequentes e links de download.
-- \`/picos\` — Índice de picos.
-- \`/picos/pedra-grande-igarape\` — Página contextual da Pedra Grande.
-- \`/guias/croqui-de-escalada\`, \`/guias/croqui-offline\`, \`/guias/onde-escalar-em-belo-horizonte\` — Guias SEO.
-- \`/comunidade\`, \`/faq\` — Participação e perguntas.
-- \`/sitemap.xml\` — Sitemap dinâmico.
+## Rotas
 
-O catálogo de croquis (\`https://arestaclimb.com/croquis\`) e o Editor (\`https://arestaclimb.com/editor\`) são **links externos para o domínio oficial**. Não duplicar essas rotas neste repositório nem implantar o projeto sobre elas sem planejar a coexistência com a aplicação atual.
+- `/` landing; `/picos`, `/picos/pedra-grande-igarape`, `/guias/*`, `/comunidade`, `/faq`.
+- O catálogo https://arestaclimb.com/croquis e o Editor https://arestaclimb.com/editor continuam no domínio oficial, por links externos.
 
-## Fluxos
+## Produção
 
-- Download Android: \`https://play.google.com/store/apps/details?id=app.escalada.croquis\`
-- Download iOS: \`https://apps.apple.com/br/app/aresta-climb-guia-de-escalada/id6776467893\`
-- A área antiga de formulário de espera foi removida: o formulário não tinha backend e exibia um sucesso fictício.
-- Os atributos \`data-event\` nos links são pontos de instrumentação previstos; **não** enviam eventos automaticamente.
+Não implantar este projeto na raiz de arestaclimb.com sem que Renato valide as rotas já existentes e o contrato de integração. A landing não tem backend de captação. Atributos data-event são marcadores, não analytics funcionando.
 
-## Deploy e integração oficial
+## Encerrar o Lovable
 
-O projeto é TanStack Start com renderização no servidor (Nitro). Não presumir que pode ser enviado como HTML estático puro. Para integrar à produção, validar com Renato hospedagem, rewrites, rotas já existentes e URLs canônicas. A integração com \`/croquis\` deve preservar o catálogo atual, incluindo deep links que já existam no aplicativo.
-
-## Nota editorial e técnica
-
-Não usar métricas fixas de cobertura sem validar a base do produto; não anunciar recursos em planejamento como implementados. A página da Pedra Grande é contexto editorial, não substituto do croqui validado no app. Conferir comportamento no mobile, cabeçalhos HTTP, SEO SSR e navegação real antes da publicação no domínio.
-
-Este repositório está vinculado ao Lovable; não reescrever o histórico já publicado. 
+O código passa a usar apenas plugins oficiais. Para interromper a sincronização: Lovable → Project settings → Git → GitHub → Disconnect. A remoção do projeto do Lovable é separada e deve ser feita na conta; **nunca exclua o repositório GitHub**.
