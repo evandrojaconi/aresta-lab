@@ -14,6 +14,19 @@ O caminho é calculado pelo nome do repositório. Antes de renomear, a URL usa o
 
 > A publicação do GitHub Pages precisa ser habilitada em **Settings → Pages → Source: GitHub Actions**. A implantação não altera o domínio oficial.
 
+## Prévia do site oficial: espelho automático
+
+Aresta Lab contém duas experiências separadas:
+
+- **Laboratório (protótipo React):** https://evandrojaconi.github.io/aresta-lab/
+- **Espelho da landing oficial (Vite original):** https://evandrojaconi.github.io/aresta-lab/oficial/
+
+O workflow de publicação baixa uma cópia **somente leitura** de [aresta-climb/arestaclimb.com](https://github.com/aresta-climb/arestaclimb.com) na branch main, compila e publica seu HTML/CSS/JS em /oficial/. Não precisamos reconstruir a landing original em React nem duplicar seu repositório. Para atualizar o espelho, use Actions > Aresta Lab - Publicar previa > Run workflow.
+
+A fonte oficial de croquis é um Worker separado e continua sendo [arestaclimb.com/croquis](https://arestaclimb.com/croquis). A cópia do Lab não altera o site de produção, não ativa telemetria real e traz a revisão exata do código usado em /oficial/source.json.
+
+Veja [a documentação de homologação](docs/ESPELHO-SITE-OFICIAL.md).
+
 ## O que é navegável
 
 | Área | Rota |
