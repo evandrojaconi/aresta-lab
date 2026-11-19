@@ -55,3 +55,48 @@
  .lab-blog-nav .lab-brand-name{font-size:14px}
  .lab-blog-nav .links{gap:10px}
 }
+
+/* Edição inaugural: Gruta da Lapinha — narrativa e leitura de reportagem. */
+.lab-article-card--featured{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);min-height:370px;background:#fffaf0;border-color:rgba(181,62,41,.35)}
+.lab-article-card--featured .lab-article-photo{height:100%;min-height:350px;background:#dfd7c7;display:grid;place-items:center;padding:28px}
+.lab-article-card--featured .lab-article-photo img{object-fit:contain;mix-blend-mode:multiply;border:1px solid rgba(21,21,21,.16);background:#fff;width:100%;height:100%;max-height:360px}
+.lab-article-card--featured .lab-article-no{background:#b53e29;color:white}
+.lab-article-card--featured .lab-article-copy{padding:clamp(26px,4vw,58px);justify-content:center}
+.lab-article-card--featured .lab-article-copy h3{font-size:clamp(29px,3.7vw,52px);line-height:1.08;margin:23px 0}
+.lab-article-card--featured .lab-article-copy p{font-size:16px;line-height:1.7}
+.lab-article-card--featured .lab-readmore{margin-top:18px}
+.lab-story-byline{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font:700 11px/1.5 Inter,sans-serif;color:#695f55;letter-spacing:.035em;margin:25px 0 24px}
+.lab-story-byline span:first-child{color:#b53e29;background:#f2ded4;border-radius:30px;padding:7px 12px}
+.lab-story-byline span:not(:first-child)::before,.lab-story-byline time::before{content:"·";display:inline-block;margin-right:12px}
+.lab-article-layout .lab-article-cover-figure{margin:50px 0 70px;max-width:100%}
+.lab-article-layout .lab-article-cover-figure .lab-article-cover{width:100%;height:auto;max-height:550px;object-fit:contain;display:block;background:#fff;padding:clamp(8px,2vw,28px);margin:0;border:1px solid rgba(21,21,21,.14);border-radius:20px}
+.lab-article-layout .lab-article-cover-figure figcaption{font:400 12px/1.65 Inter,sans-serif;color:#72685f;margin:14px 4px 0}
+.lab-article-body{max-width:800px}
+.lab-article-body>p:first-child::first-letter{font:800 72px/.82 Epilogue,sans-serif;color:#b53e29;float:left;margin:9px 9px 0 0}
+.lab-history-timeline{margin:50px 0 65px;padding:30px 34px;background:#171b18;color:#f6eee3;border-radius:25px}
+.lab-history-timeline .lab-kicker{color:#edab93}
+.lab-history-timeline ol{list-style:none;margin:24px 0 0;padding:0;border-left:1px solid rgba(255,255,255,.2)}
+.lab-history-timeline li{position:relative;display:grid;grid-template-columns:110px 1fr;gap:25px;padding:12px 0 16px 25px}
+.lab-history-timeline li::before{content:"";position:absolute;top:19px;left:-5px;border-radius:50%;width:9px;height:9px;background:#e56c50}
+.lab-history-timeline li strong{font:800 12px/1.55 Epilogue,sans-serif;color:#f59b79}
+.lab-history-timeline li span{font:400 14px/1.65 Inter,sans-serif;color:#ebe0d6}
+.lab-history-callout{border-left:4px solid #df553f;background:#ece5db;padding:26px 32px;margin:40px 0;border-radius:0 18px 18px 0}
+.lab-history-callout h3{font:800 19px/1.3 Epilogue,sans-serif;margin:0 0 10px;color:#3c332d}
+.lab-history-callout p{font:400 15px/1.8 Inter,sans-serif;color:#4e453f;margin:0}
+.lab-history-figure{margin:45px 0 58px;border:1px solid rgba(21,21,21,.13);border-radius:22px;background:white;padding:20px}
+.lab-history-figure img{display:block;width:100%;height:auto;max-height:490px;object-fit:contain}
+.lab-history-figure figcaption{font:400 12px/1.7 Inter,sans-serif;color:#6b635a;margin:14px 0 0}
+.lab-partner-story{margin:65px 0;padding:clamp(27px,4vw,45px);background:linear-gradient(130deg,#f3e6d8,#e6d9c7);border:1px solid rgba(181,62,41,.3);border-radius:27px}
+.lab-partner-story .lab-kicker{color:#b53e29}
+.lab-article-body .lab-partner-story h2{font:800 clamp(27px,3.7vw,41px)/1.13 Epilogue,sans-serif;margin:20px 0;letter-spacing:-.05em;color:#32261f}
+.lab-article-body .lab-partner-story p{color:#53483d;font:400 16px/1.8 Inter,sans-serif;margin:0}
+.lab-partner-story>a{display:inline-flex;align-items:center;gap:23px;margin-top:24px;color:#a02f1f;font:800 13px Inter,sans-serif;border-bottom:1px solid currentColor;padding:9px 0}
+.lab-partner-story>a:hover{color:#df553f}
+.lab-story-sources{margin:60px 0 35px;padding:35px;border-top:1px solid rgba(21,21,21,.18);border-bottom:1px solid rgba(21,21,21,.18)}
+.lab-article-body .lab-story-sources h2{font:800 25px Epilogue,sans-serif;margin:0 0 17px;letter-spacing:-.035em}
+.lab-story-sources ol{padding-left:21px;margin:0}
+.lab-story-sources li{font:400 12px/1.8 Inter,sans-serif;color:#625a52;margin:10px 0}
+.lab-story-sources a{color:#99402d;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+.lab-story-sources a:hover{color:#df553f}
+@media(max-width:900px){.lab-article-card--featured{grid-template-columns:1fr;min-height:0}.lab-article-card--featured .lab-article-photo{height:270px;min-height:0}.lab-article-card--featured .lab-article-copy{padding:30px}.lab-history-timeline li{grid-template-columns:90px 1fr;gap:15px}}
+@media(max-width:540px){.lab-history-timeline{padding:24px 20px}.lab-history-timeline li{display:block;padding:12px 0 18px 20px}.lab-history-timeline li strong{display:block;margin-bottom:7px}.lab-history-callout,.lab-story-sources{padding:22px}.lab-article-card--featured .lab-article-photo{height:230px;padding:15px}.lab-story-byline{gap:7px}.lab-story-byline time::before,.lab-story-byline span:not(:first-child)::before{margin-right:7px}}
