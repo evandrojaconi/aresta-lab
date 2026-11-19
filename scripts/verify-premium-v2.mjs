@@ -4,7 +4,7 @@ const slug=process.env.GITHUB_REPOSITORY?.split("/").at(-1)||"aresta-lab";
 const base="/"+slug+"/v2/";
 const folder=".output/public/v2";
 const expected=["index.html","app/index.html","editor/index.html","premium-enhancements.css","premium-enhancements.js",
-  "blog.css","blog.js","design-source.json","source.json","blog/index.html",
+  "blog.css","blog.js","assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg","design-source.json","source.json","blog/index.html",
   "blog/croqui-nao-comeca-na-parede/index.html","blog/offline-e-preparacao/index.html","blog/territorio-e-comunidade/index.html"];
 const errors=[];
 for(const p of expected)if(!existsSync(join(folder,p)))errors.push("Arquivo ausente: "+p);
@@ -30,6 +30,13 @@ const checks=[
 ];
 for(const [name,needle] of checks)if(!home.includes(needle))errors.push("Home premium: "+name);
 for(const [name,needle] of [["busca",'id="lab-blog-search"'],["filtros","data-blog-filter"],["posts","data-blog-card"],["caminho","noindex,nofollow"]])if(!blog.includes(needle))errors.push("Blog: "+name);
+const officialIcon=file("assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg");
+const officialLogoSrc=base+"assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg";
+if(!home.includes('src="'+officialLogoSrc+'"'))errors.push("Logo oficial: URL do arquivo não usada na navegação");
+if(!home.includes('alt="Símbolo oficial do Aresta Climb, aplicativo e guia de croquis de escalada em Belo Horizonte (BH), Minas Gerais"'))errors.push("Logo oficial: texto alternativo SEO incompleto");
+if(!home.includes('title="Aresta Climb — croquis e guia de escalada em BH e Minas Gerais"'))errors.push("Logo oficial: título ausente");
+if(!officialIcon.includes('viewBox="0 0 343 194"')||!officialIcon.includes('Símbolo oficial Aresta Climb'))errors.push("Logo oficial: arquivo SVG inválido ou sem identificação");
+if(home.includes('src="data:image/webp;base64,UklGRj4AAABXRUJQ'))errors.push("Logo placeholder antiga ainda presente");
 if(!css.includes("premiumMobileMenu"))errors.push("CSS mobile ausente");
 if(!body.includes("HTML premium integral"))errors.push("Metadados sem origem exata");
 if(source.length<750000||home.length<750000)errors.push("Imagens premium ausentes ou arquivo truncado");
