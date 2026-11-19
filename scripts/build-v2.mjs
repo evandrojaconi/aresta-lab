@@ -29,15 +29,16 @@ for (const path of walk(to)) {
 // A marca oficial vem da imagem enviada pelo usuário; mantém a fonte premium imutável.
 mkdirSync(join(to, "assets"), {recursive:true});
 cpSync("lab-v2/premium/assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg",join(to, "assets", "aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg"));
+cpSync("lab-v2/premium/assets/gruta-da-lapinha-mapa-historico-2002.webp",join(to,"assets","gruta-da-lapinha-mapa-historico-2002.webp"));
 write("premium-enhancements.css", readFileSync("lab-v2/premium/enhancements.css", "utf8"));
 write("premium-enhancements.js", readFileSync("lab-v2/premium/enhancements.js", "utf8"));
 write("blog.css", readFileSync("lab-v2/premium/blog.css", "utf8"));
 write("blog.js", readFileSync("lab-v2/premium/blog.js", "utf8"));
-const category = post => post.slug === "offline-e-preparacao" ? "produto" : post.slug === "territorio-e-comunidade" ? "territorio" : "cultura";
+const category = post => post.category || (post.slug === "offline-e-preparacao" ? "produto" : post.slug === "territorio-e-comunidade" ? "territorio" : "cultura");
 const card = (post, i) =>
-  '<a class="lab-article-card" data-blog-card data-category="' + category(post) + '" href="' + link("blog/" + post.slug + "/") + '">' +
-  '<div class="lab-article-photo"><img src="' + link(post.image) + '" alt="" loading="lazy"><span class="lab-article-no">0' + (i+1) + '</span></div>' +
-  '<div class="lab-article-copy"><span class="lab-article-tag">' + esc(post.tag) + ' · ' + esc(post.reading) + '</span>' +
+  '<a class="lab-article-card' + (post.featured ? ' lab-article-card--featured' : '') + '" data-blog-card data-category="' + category(post) + '" href="' + link("blog/" + post.slug + "/") + '">' +
+  '<div class="lab-article-photo"><img src="' + link(post.image) + '" alt="' + esc(post.imageAlt || "") + '" loading="lazy"><span class="lab-article-no">0' + (i+1) + '</span></div>' +
+  '<div class="lab-article-copy"><span class="lab-article-tag">' + (post.featured ? 'ESTREIA · ' : '') + esc(post.tag) + ' · ' + esc(post.reading) + '</span>' +
   '<h3>' + esc(post.title) + '</h3><p>' + esc(post.summary) + '</p><span class="lab-readmore">Ler história <span aria-hidden="true">↗</span></span></div></a>';
 
 // A referência visual é o index.html original de 31/08/2026,
@@ -80,12 +81,12 @@ const blogSection =
   '<section class="premiumBlog section" id="blog" aria-labelledby="premium-blog-title"><div class="wrap">' +
   '<div class="blogHeader"><div><div class="caps" style="color:var(--accent2)">Diário de rocha · cultura & território</div>' +
   '<h2 class="display" id="premium-blog-title">O croqui conta a via.<br><span class="accent">A comunidade conta a história.</span></h2></div>' +
-  '<div><p>Histórias e conhecimento para quem escala, cuida e mantém viva a relação com a rocha. Textos de demonstração editorial.</p>' +
+  '<div><p>Na estreia, a história da Lapinha e o trabalho de quem cuida da rocha. Memória, informação e comunidade no mesmo lugar.</p>' +
   '<a href="' + link("blog/") + '">Conhecer o Diário de Rocha →</a></div></div>' +
   '<div class="blogCards">' + posts.map(post =>
     '<a class="blogCard" href="' + link("blog/" + post.slug + "/") + '"><span class="blogTag">' + esc(post.tag) + ' · ' + esc(post.reading) + '</span>' +
     '<h3>' + esc(post.title) + '</h3><p>' + esc(post.summary) + '</p><span class="blogRead">Ler história →</span></a>'
-  ).join("") + '</div><small>Conteúdos piloto para avaliação, não informações atualizadas de campo.</small></div></section>\n';
+  ).join("") + '</div><small>Estreia baseada em pesquisa acadêmica e fontes do território; outros artigos seguem como conteúdos piloto.</small></div></section>\n';
 replaceOnce('<section class="faq section" id="faq">',blogSection+'<section class="faq section" id="faq">',"blog section");
 write("index.html",html);
 write("design-source.json", JSON.stringify({
@@ -98,11 +99,32 @@ write("design-source.json", JSON.stringify({
 },null,2)+"\n");
 // A mesma marca vetorial da home premium deve aparecer no cabeçalho e rodapé
 // de todas as páginas do blog. Não reconstruir símbolos com texto ou emoji.
-function shell(title, body) {
+// Metadados de compartilhamento específicos para publicações editoriais com fontes.
+function articleMeta(post) {
+  if(!post || !post.date) return "";
+  const url="https://evandrojaconi.github.io"+link("blog/"+post.slug+"/");
+  const imageUrl="https://evandrojaconi.github.io"+link(post.image);
+  const structured={
+    "@context":"https://schema.org","@type":"BlogPosting",headline:post.title,
+    description:post.summary,inLanguage:"pt-BR",datePublished:post.date,
+    dateModified:post.date,mainEntityOfPage:url,image:imageUrl,
+    author:{"@type":"Organization",name:post.author||"Aresta Climb"},
+    publisher:{"@type":"Organization",name:"Aresta Climb",url:"https://arestaclimb.com/"},
+    isBasedOn:"https://www.biblioteca.pucminas.br/teses/TratInfEspacial_LaraDC_1.pdf"
+  };
+  return '<meta property="og:type" content="article">'+
+    '<meta property="og:title" content="'+esc(post.title)+'">'+
+    '<meta property="og:description" content="'+esc(post.summary)+'">'+
+    '<meta property="og:image" content="'+imageUrl+'">'+
+    '<meta property="og:url" content="'+url+'">'+
+    '<meta name="article:published_time" content="'+esc(post.date)+'">'+
+    '<script type="application/ld+json">'+JSON.stringify(structured).replace(/</g,"\\u003c")+'</script>';
+}
+function shell(title, body, post=null) {
   return '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">' +
   '<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">' +
   '<title>' + esc(title) + ' · Aresta Climb — Diário de Rocha</title>' +
-  '<meta name="description" content="Histórias de croquis, escalada em rocha, preparação e território.">' +
+  '<meta name="description" content="' + esc(post?.summary || "Histórias de croquis, escalada em rocha, preparação e território.") + '">' + articleMeta(post) +
   '<link rel="icon" href="' + link("assets/logo_app.png") + '"><link rel="stylesheet" href="' + link("blog.css") + '"><script defer src="' + link("blog.js") + '"></script></head>' +
   '<body class="lab-site"><nav class="lab-blog-nav" aria-label="Navegação do Diário">' +
   '<a href="' + link("") + '" class="brandlink lab-brand-lockup" aria-label="Aresta Climb — página inicial">' +
@@ -119,11 +141,11 @@ function shell(title, body) {
 mkdirSync(join(to, "blog"), { recursive: true });
 const index =
   '<main class="lab-blog-layout"><header class="lab-blog-hero"><div>' +
-  '<span class="lab-kicker">EDIÇÃO PILOTO · TERRITÓRIO · INFORMAÇÃO</span>' +
+  '<span class="lab-kicker">EDIÇÃO 01 · GRUTA DA LAPINHA · TERRITÓRIO</span>' +
   '<h1>Diário<br><em>de rocha.</em></h1></div>' +
-  '<p>Histórias, aprendizados e informação para quem entende que um pico não é só um ponto no mapa. Conteúdo editorial em avaliação no Aresta Lab.</p>' +
+  '<p>Estreamos com a história da Gruta da Lapinha: da descoberta das vias à luta pelo acesso e ao cuidado coletivo que continua hoje. Outros textos estão em desenvolvimento.</p>' +
   '</header><div class="lab-article-grid">' + posts.map(card).join("") + '</div>' +
-  '<p class="lab-blog-note">Textos editoriais piloto, baseados na proposta pública do Aresta. Não representam dados de campo atualizados ou regras oficiais de acesso.</p></main>';
+  '<p class="lab-blog-note">Artigo inaugural fundamentado em pesquisa acadêmica e registros do ArestaDB. Os demais textos são pilotos editoriais. Consulte sempre as normas atuais do Parque antes de escalar.</p></main>';
 write("blog/index.html", shell("Diário de rocha", index));
 const filters = '<div class="lab-blog-tools"><label for="lab-blog-search" style="font-size:0">Buscar histórias</label>' +
   '<input id="lab-blog-search" type="search" placeholder="Busque por croquis, offline ou território..." aria-label="Buscar histórias">' +
@@ -139,17 +161,45 @@ blogIndex = blogIndex.replace('<div class="lab-article-grid">', filters + '<div 
 blogIndex = blogIndex.replace('</div><p class="lab-blog-note">', '</div><p id="lab-no-results" class="lab-no-results" hidden>Nenhuma história encontrada. Tente outro termo ou selecione todas.</p><p class="lab-blog-note">');
 write("blog/index.html", blogIndex);
 
+function renderBlock(block) {
+  if (block.type === "heading") return '<h2>'+esc(block.text)+'</h2>';
+  if (block.type === "paragraph") return '<p>'+esc(block.text)+'</p>';
+  if (block.type === "timeline") return '<div class="lab-history-timeline" aria-label="Linha do tempo da Lapinha"><span class="lab-kicker">PONTOS DA HISTÓRIA</span><ol>'+
+    block.events.map(evt=>'<li><strong>'+esc(evt.year)+'</strong><span>'+esc(evt.text)+'</span></li>').join("")+'</ol></div>';
+  if (block.type === "callout") return '<aside class="lab-history-callout"><h3>'+esc(block.title)+'</h3><p>'+esc(block.text)+'</p></aside>';
+  if (block.type === "figure") return '<figure class="lab-history-figure"><img src="'+link(block.src)+'" alt="'+esc(block.alt)+'" loading="lazy"><figcaption>'+esc(block.caption)+'</figcaption></figure>';
+  if (block.type === "partner") {
+    const url=new URL(block.href);
+    if(url.protocol!=="https:")throw Error("Link do parceiro inseguro");
+    return '<aside class="lab-partner-story"><span class="lab-kicker">'+esc(block.eyebrow)+'</span><h2>'+esc(block.title)+'</h2><p>'+esc(block.text)+'</p>'+
+      '<a href="'+esc(url.toString())+'" target="_blank" rel="noopener noreferrer">'+esc(block.linkText)+' <span aria-hidden="true">↗</span></a></aside>';
+  }
+  if (block.type === "sources") return '<section class="lab-story-sources" aria-labelledby="lapinha-sources"><h2 id="lapinha-sources">'+esc(block.title)+'</h2><ol>'+
+    block.items.map(src=>{const url=new URL(src.href);if(url.protocol!=="https:")throw Error("Fonte insegura");return '<li><a href="'+esc(url.toString())+'" target="_blank" rel="noopener noreferrer">'+esc(src.label)+'</a></li>'}).join("")+'</ol></section>';
+  throw Error("Tipo de bloco editorial desconhecido: "+block.type);
+}
+function storyBody(post){
+  if(Array.isArray(post.blocks))return post.blocks.map(renderBlock).join("");
+  return post.sections.map(part=>'<section><h2>'+esc(part[0])+'</h2><p>'+esc(part[1])+'</p></section>').join("");
+}
+
 for (const post of posts) {
-  mkdirSync(join(to, "blog", post.slug), { recursive: true });
-  const article =
-    '<main class="lab-article-layout"><a class="back" href="' + link("blog/") + '">← VOLTAR AO DIÁRIO</a>' +
-    '<span class="lab-kicker" style="margin-top:35px">' + esc(post.tag.toUpperCase()) + ' · ' + esc(post.reading) + '</span>' +
-    '<h1>' + esc(post.title) + '</h1><p class="lead">' + esc(post.lead) + '</p>' +
-    '<img class="lab-article-cover" src="' + link(post.image) + '" alt="Imagem do acervo visual Aresta Climb">' +
-    '<article class="lab-article-body">' + post.sections.map(part => '<section><h2>' + esc(part[0]) + '</h2><p>' + esc(part[1]) + '</p></section>').join("") + '</article>' +
-    '<div class="lab-article-footer">Texto piloto de UX e linguagem. Consulte sempre as informações atuais no ' +
-    '<a href="https://arestaclimb.com/croquis">catálogo oficial de croquis</a>.</div></main>';
-  write("blog/" + post.slug + "/index.html", shell(post.title, article.replace('<div class="lab-article-footer">', '<button type="button" data-share-article class="lab-readmore">Compartilhar esta história ↗</button><div class="lab-article-footer">')));
+  mkdirSync(join(to,"blog",post.slug),{recursive:true});
+  const context=post.date?
+    '<div class="lab-story-byline"><span>EDIÇÃO DE ESTREIA</span><time datetime="'+esc(post.date)+'">'+new Date(post.date+"T12:00:00Z").toLocaleDateString("pt-BR",{day:"2-digit",month:"long",year:"numeric",timeZone:"UTC"})+'</time><span>'+esc(post.author||"Aresta Climb")+'</span></div>':"";
+  const cover='<figure class="lab-article-cover-figure"><img class="lab-article-cover" src="'+link(post.image)+'" alt="'+esc(post.imageAlt||"Imagem ilustrativa do Aresta Climb")+'">' +
+    (post.imageCredit?'<figcaption>'+esc(post.imageCredit)+'</figcaption>':"")+'</figure>';
+  const article=
+    '<main class="lab-article-layout"><a class="back" href="'+link("blog/")+'">← VOLTAR AO DIÁRIO</a>'+
+    '<span class="lab-kicker" style="margin-top:35px">'+esc(post.tag.toUpperCase())+' · '+esc(post.reading)+'</span>'+
+    '<h1>'+esc(post.title)+'</h1>'+context+'<p class="lead">'+esc(post.lead)+'</p>'+cover+
+    '<article class="lab-article-body">'+storyBody(post)+'</article>'+
+    '<button type="button" data-share-article class="lab-readmore">Compartilhar esta história ↗</button>'+
+    '<div class="lab-article-footer">'+(post.featured?
+      'Reportagem produzida pelo Aresta Climb a partir da pesquisa de Diego Contaldo de Lara (PUC Minas, 2018) e de registros documentais mais recentes. A publicação não constitui orientação técnica de escalada nem declaração de parceria comercial.':
+      'Texto piloto de UX e linguagem. Consulte sempre as informações atuais no catálogo oficial de croquis.')+
+    ' <a href="https://arestaclimb.com/croquis">Explorar croquis publicados ↗</a></div></main>';
+  write("blog/"+post.slug+"/index.html",shell(post.title,article,post));
 }
 const meta = JSON.parse(read("source.json"));
 meta.variant = "Aresta Lab V2 — landing premium original e Diário de Rocha";
