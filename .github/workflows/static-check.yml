@@ -2,7 +2,7 @@ name: Static GitHub Pages build check
 
 on:
   push:
-    branches: ["chore/github-only-pages-2026-11"]
+    branches: ["main"]
   pull_request:
     branches: ["main"]
 
@@ -23,6 +23,10 @@ jobs:
           find .output/public -maxdepth 4 -type f | head -n 60
           test -f .output/public/index.html
           test -f .output/public/picos/index.html
+          test -f .output/public/picos/pedra-grande-igarape/index.html
+          test -f .output/public/comunidade/index.html
+          test -f .output/public/faq/index.html
+          test -f .output/public/guias/croqui-de-escalada/index.html
       - uses: actions/upload-artifact@v4
         with:
           name: aresta-static-preview
