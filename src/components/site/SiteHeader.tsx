@@ -21,8 +21,18 @@ interface SiteHeaderProps {
 
 export function SiteHeader({ homeMode: _homeMode = false }: SiteHeaderProps) {
   const [open, setOpen] = useState(false);
+  const isLabPreview = import.meta.env.BASE_URL !== "/";
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-lg">
+    <>
+      {isLabPreview && (
+        <div className="border-b border-primary/35 bg-primary/10 px-4 py-2 text-center text-[11px] font-semibold tracking-wide text-foreground">
+          <strong className="text-primary">ARESTA LAB</strong> · Prévia de desenvolvimento ·{" "}
+          <a className="underline underline-offset-2 hover:text-primary" href="https://arestaclimb.com/">
+            Acessar site oficial
+          </a>
+        </div>
+      )}
+      <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-lg">
       <div className="mx-auto flex min-h-[72px] w-[min(1120px,92%)] items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-3" aria-label="Aresta Climb — página inicial">
           <span aria-hidden="true" className="grid h-10 w-10 place-items-center rounded-xl bg-primary shadow-glow">
@@ -60,6 +70,7 @@ export function SiteHeader({ homeMode: _homeMode = false }: SiteHeaderProps) {
           </div>
         </nav>
       )}
-    </header>
+      </header>
+    </>
   );
 }
