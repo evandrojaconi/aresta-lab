@@ -168,7 +168,7 @@ function shell(title, body, post=null) {
   '<span class="lab-brand-mark"><img src="' + link("assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg") + '" width="343" height="194" alt="Símbolo oficial Aresta Climb" decoding="async"></span>' +
   '<span class="lab-brand-name">ARESTA CLIMB</span></a><div class="links">' +
   '<a href="' + link("") + '">Aresta Climb</a><a href="https://arestaclimb.com/croquis">Croquis</a>' +
-  '<a href="' + link("blog/") + '">Diário de rocha</a><a href="' + link("app/") + '">Baixar app</a></div></nav>' +
+  '<a href="' + link("blog/") + '">Diário de Rocha</a><a href="' + link("app/") + '">Baixar app</a></div></nav>' +
   body + '<footer class="lab-blog-footer"><a href="' + link("") + '" class="lab-footer-brand" aria-label="Voltar para Aresta Climb">' +
   '<span class="lab-brand-mark"><img src="' + link("assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg") + '" width="343" height="194" alt="" decoding="async" loading="lazy"></span>' +
   '<strong>ARESTA CLIMB</strong></a>' +
