@@ -27,6 +27,16 @@ A fonte oficial de croquis é um Worker separado e continua sendo [arestaclimb.c
 
 Veja [a documentação de homologação](docs/ESPELHO-SITE-OFICIAL.md).
 
+## Proposta V2: mesma base oficial, visual territorial e blog
+
+- **Versão oficial (espelho fiel):** https://evandrojaconi.github.io/aresta-lab/oficial/
+- **Proposta V2 (reestilizada):** https://evandrojaconi.github.io/aresta-lab/v2/
+- **Diário de Rocha (blog piloto):** https://evandrojaconi.github.io/aresta-lab/v2/blog/
+
+A proposta V2 é **gerada a partir do build real** do site oficial: copia HTML, imagens, CSS, JavaScript e rotas do espelho, aplica somente alterações editoriais e visuais e adiciona um blog estático. Consulte `lab-v2/design.css`, `lab-v2/posts.json` e `scripts/build-v2.mjs`.
+
+Não substitui /croquis (Cloudflare Worker), não altera a produção, não envia telemetria e usa `noindex` por ser ambiente de avaliação. Dados exibidos na landing de produção continuam sujeitos a validação de data e qualidade antes da futura publicação. Os três textos do blog são **rascunhos editoriais para discussão**, não notícias validadas.
+
 ## O que é navegável
 
 | Área | Rota |

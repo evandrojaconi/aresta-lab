@@ -31,6 +31,10 @@ export function SiteHeader({ homeMode: _homeMode = false }: SiteHeaderProps) {
             Ver espelho oficial
           </a>
           {" · "}
+          <a className="underline underline-offset-2 hover:text-primary" href="https://evandrojaconi.github.io/aresta-lab/v2/">
+            Ver proposta V2
+          </a>
+          {" · "}
           <a className="underline underline-offset-2 hover:text-primary" href="https://arestaclimb.com/">
             Site em produção
           </a>

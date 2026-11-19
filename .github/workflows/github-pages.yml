@@ -48,6 +48,8 @@ jobs:
         run: npm run build
       - name: Montar espelho no GitHub Pages
         run: node scripts/finalize-official-preview.mjs
+      - name: Gerar proposta V2 e blog
+        run: node scripts/build-v2.mjs
       - name: Enviar Lab e espelho oficial
         uses: actions/upload-pages-artifact@v3
         with:
