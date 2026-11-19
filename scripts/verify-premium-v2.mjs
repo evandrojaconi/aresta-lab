@@ -37,6 +37,18 @@ if(!home.includes('alt="Símbolo oficial do Aresta Climb, aplicativo e guia de c
 if(!home.includes('title="Aresta Climb — croquis e guia de escalada em BH e Minas Gerais"'))errors.push("Logo oficial: título ausente");
 if(!officialIcon.includes('viewBox="0 0 343 194"')||!officialIcon.includes('Símbolo oficial Aresta Climb'))errors.push("Logo oficial: arquivo SVG inválido ou sem identificação");
 if(home.includes('src="data:image/webp;base64,UklGRj4AAABXRUJQ'))errors.push("Logo placeholder antiga ainda presente");
+const blogLogo=base+"assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg";
+const blogPages=["blog/index.html","blog/croqui-nao-comeca-na-parede/index.html","blog/offline-e-preparacao/index.html","blog/territorio-e-comunidade/index.html"];
+for(const path of blogPages) {
+ const page=file(path);
+ if(!page.includes('class="brandlink lab-brand-lockup"'))errors.push("Blog marca oficial ausente: "+path);
+ if(!page.includes('src="'+blogLogo+'"'))errors.push("Blog logo: imagem ausente "+path);
+ if(!page.includes('alt="Símbolo oficial Aresta Climb"'))errors.push("Blog logo: descrição ausente "+path);
+ if(page.includes('>▲ ARESTA</a>'))errors.push("Blog logo antigo ainda presente: "+path);
+ if(!page.includes('class="lab-footer-brand"'))errors.push("Blog rodapé sem marca oficial: "+path);
+}
+const brandCSS=file("blog.css");
+if(!brandCSS.includes(".lab-brand-mark") || !brandCSS.includes(".lab-brand-lockup"))errors.push("Blog: estilos da logo ausentes");
 if(!css.includes("premiumMobileMenu"))errors.push("CSS mobile ausente");
 if(!body.includes("HTML premium integral"))errors.push("Metadados sem origem exata");
 if(source.length<750000||home.length<750000)errors.push("Imagens premium ausentes ou arquivo truncado");
