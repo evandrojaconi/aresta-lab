@@ -1,3 +1,4 @@
+import { localHref } from "@/lib/local-href";
 import { Link } from "@tanstack/react-router";
 import { Menu, Mountain, X } from "lucide-react";
 import { useState } from "react";
@@ -32,13 +33,13 @@ export function SiteHeader({ homeMode: _homeMode = false }: SiteHeaderProps) {
 
         <nav aria-label="Navegação principal" className="hidden items-center gap-5 lg:flex">
           {links.map((item) => item.external ? (
-            <a key={item.href} href={item.href} className="text-[11px] font-bold uppercase tracking-[0.10em] text-muted-foreground transition-colors hover:text-primary">{item.label}</a>
+            <a key={item.href} href={item.external ? item.href : localHref(item.href)} className="text-[11px] font-bold uppercase tracking-[0.10em] text-muted-foreground transition-colors hover:text-primary">{item.label}</a>
           ) : (
-            <a key={item.href} href={item.href} className="text-[11px] font-bold uppercase tracking-[0.10em] text-muted-foreground transition-colors hover:text-primary">{item.label}</a>
+            <a key={item.href} href={item.external ? item.href : localHref(item.href)} className="text-[11px] font-bold uppercase tracking-[0.10em] text-muted-foreground transition-colors hover:text-primary">{item.label}</a>
           ))}
         </nav>
 
-        <a href="/#testar" className="hidden min-h-11 items-center justify-center rounded-full bg-primary px-5 text-[11px] font-bold uppercase tracking-[0.10em] text-primary-foreground shadow-glow md:inline-flex">
+        <a href={localHref("/#testar")} className="hidden min-h-11 items-center justify-center rounded-full bg-primary px-5 text-[11px] font-bold uppercase tracking-[0.10em] text-primary-foreground shadow-glow md:inline-flex">
           Baixar aplicativo
         </a>
 
@@ -51,11 +52,11 @@ export function SiteHeader({ homeMode: _homeMode = false }: SiteHeaderProps) {
         <nav id="mobile-nav" aria-label="Navegação móvel" className="border-t border-border bg-background lg:hidden">
           <div className="mx-auto grid w-[min(1120px,92%)] gap-1 py-4">
             {links.map((item) => (
-              <a key={item.href} href={item.href} onClick={() => setOpen(false)} className="min-h-11 content-center rounded-lg px-3 py-2 text-sm font-bold text-foreground hover:bg-card hover:text-primary">
+              <a key={item.href} href={item.external ? item.href : localHref(item.href)} onClick={() => setOpen(false)} className="min-h-11 content-center rounded-lg px-3 py-2 text-sm font-bold text-foreground hover:bg-card hover:text-primary">
                 {item.label}
               </a>
             ))}
-            <a href="/#testar" onClick={() => setOpen(false)} className="mt-2 inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground">Baixar aplicativo</a>
+            <a href={localHref("/#testar")} onClick={() => setOpen(false)} className="mt-2 inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground">Baixar aplicativo</a>
           </div>
         </nav>
       )}

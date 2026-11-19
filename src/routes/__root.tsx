@@ -7,10 +7,9 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 
 const SITE_URL = "https://arestaclimb.com";
 
@@ -59,11 +58,8 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
-  useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
 
-  return (
+return (
     <div className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
@@ -100,7 +96,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "theme-color", content: "#E95624" },
-      { name: "robots", content: "index, follow, max-image-preview:large" },
+      { name: "robots", content: import.meta.env.BASE_URL === "/" ? "index, follow, max-image-preview:large" : "noindex, nofollow" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Aresta Climb" },
       { property: "og:locale", content: "pt_BR" },
