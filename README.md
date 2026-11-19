@@ -33,7 +33,7 @@ Veja [a documentação de homologação](docs/ESPELHO-SITE-OFICIAL.md).
 - **Proposta V2 (reestilizada):** https://evandrojaconi.github.io/aresta-lab/v2/
 - **Diário de Rocha (blog piloto):** https://evandrojaconi.github.io/aresta-lab/v2/blog/
 
-A proposta V2 é **gerada a partir do build real** do site oficial: copia HTML, imagens, CSS, JavaScript e rotas do espelho, aplica somente alterações editoriais e visuais e adiciona um blog estático. Consulte `lab-v2/design.css`, `lab-v2/posts.json` e `scripts/build-v2.mjs`.
+A V2 preserva páginas e assets do build oficial, mas agora usa o **HTML, CSS, JavaScript e logo da landing histórica do Google Drive (31/08/2026)** como base visual da homepage. Integra catálogo, aplicativo, Editor, formulário contextual de cinco jornadas e blog com pesquisa/filtros. Consulte [a implementação V2](docs/V2-DRIVE-IMPLEMENTACAO.md), `lab-v2/drive-reference/`, `lab-v2/drive-enhancements.css`, `lab-v2/posts.json` e `scripts/build-v2.mjs`.
 
 Não substitui /croquis (Cloudflare Worker), não altera a produção, não envia telemetria e usa `noindex` por ser ambiente de avaliação. Dados exibidos na landing de produção continuam sujeitos a validação de data e qualidade antes da futura publicação. Os três textos do blog são **rascunhos editoriais para discussão**, não notícias validadas.
 
