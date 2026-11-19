@@ -26,6 +26,9 @@ for (const path of walk(to)) {
   source = source.replace(/ARESTA LAB · Espelho do site oficial \(homologação\)/g, "ARESTA LAB · NOVA DIREÇÃO VISUAL · PROTÓTIPO");
   writeFileSync(path, source);
 }
+// A marca oficial vem da imagem enviada pelo usuário; mantém a fonte premium imutável.
+mkdirSync(join(to, "assets"), {recursive:true});
+cpSync("lab-v2/premium/assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg",join(to, "assets", "aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg"));
 write("premium-enhancements.css", readFileSync("lab-v2/premium/enhancements.css", "utf8"));
 write("premium-enhancements.js", readFileSync("lab-v2/premium/enhancements.js", "utf8"));
 write("blog.css", readFileSync("lab-v2/premium/blog.css", "utf8"));
@@ -56,6 +59,12 @@ replaceOnce("</head>",
 replaceOnce('<a href="#codigo">Código Aberto</a><a href="#faq">FAQ</a>',
   '<a href="#codigo">Código Aberto</a><a href="https://arestaclimb.com/croquis">Croquis web</a><a href="' +
   link("blog/") + '">Diário de rocha</a><a href="#faq">FAQ</a>', "desktop navigation");
+// Substitui só o marcador visual original (uma miniatura de 66 bytes) pelo símbolo oficial.
+const markPattern=/<span class="mark"><img src="data:image\/webp;base64,[^"]+" alt=""><\/span>/g;
+const markHits=[...html.matchAll(markPattern)];
+if(markHits.length!==1)throw Error("Imagem de logo original não encontrada: "+markHits.length);
+html=html.replace(markPattern,
+  '<span class="mark"><img src="' + link("assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg") + '" width="343" height="194" alt="Símbolo oficial do Aresta Climb, aplicativo e guia de croquis de escalada em Belo Horizonte (BH), Minas Gerais" title="Aresta Climb — croquis e guia de escalada em BH e Minas Gerais" decoding="async"></span>');
 const menu =
   '<details class="premiumMobileMenu"><summary aria-label="Abrir menu de navegação">Menu</summary>' +
   '<div class="mobileMenuLinks"><a href="#aplicativo">Aplicativo</a><a href="#offline">Offline</a>' +
