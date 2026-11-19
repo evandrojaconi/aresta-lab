@@ -27,7 +27,7 @@ export function SiteHeader({ homeMode: _homeMode = false }: SiteHeaderProps) {
       {isLabPreview && (
         <div className="border-b border-primary/35 bg-primary/10 px-4 py-2 text-center text-[11px] font-semibold tracking-wide text-foreground">
           <strong className="text-primary">ARESTA LAB</strong> · Prévia de desenvolvimento ·{" "}
-          <a className="underline underline-offset-2 hover:text-primary" href={localHref("/oficial/")}>
+          <a className="underline underline-offset-2 hover:text-primary" href="https://evandrojaconi.github.io/aresta-lab/oficial/">
             Ver espelho oficial
           </a>
           {" · "}
