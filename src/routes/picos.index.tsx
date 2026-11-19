@@ -5,9 +5,9 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { pageHead, SITE_URL } from "@/lib/seo";
 
-const TITLE = "Picos de escalada em Minas Gerais | Aresta Climb";
+const TITLE = "Picos e croquis de escalada em Minas Gerais | Aresta";
 const DESCRIPTION =
-  "Hub de picos de escalada em Minas Gerais: croquis, acesso, setores e informações da comunidade local — começando por Pedra Grande, em Igarapé.";
+  "Encontre guias e informações de picos de escalada em Minas Gerais. Consulte os croquis publicados no catálogo oficial do Aresta.";
 
 const picos = [
   {
@@ -51,6 +51,7 @@ function PicosIndex() {
     <div className="min-h-dvh bg-background text-foreground">
       <SiteHeader />
       <main className="py-20 md:py-24">
+      <div className="mx-auto mt-2 w-[min(1120px,92%)]"><a href="https://arestaclimb.com/croquis" className="inline-flex min-h-11 items-center rounded-full bg-primary px-6 text-sm font-bold text-primary-foreground">Explorar catálogo de croquis ↗</a></div>
         <div className="mx-auto w-[min(1120px,92%)]">
           <nav aria-label="Trilha" className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
             <Link to="/" className="hover:text-foreground">Home</Link>

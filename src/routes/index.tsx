@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import {
   ArrowRight,
   Cloud,
@@ -16,9 +16,9 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { pageHead, SITE_URL, OG_IMAGE } from "@/lib/seo";
 
-const TITLE = "Aresta Climb | Croquis e guias de escalada offline";
+const TITLE = "Aresta Climb | App de escalada e croquis offline";
 const DESCRIPTION =
-  "Encontre croquis, acessos, previsão do tempo, setores e boas práticas para escalar com menos incerteza. Guias de escalada offline feitos com a comunidade.";
+  "Explore croquis de escalada em rocha, picos, setores e informações de acesso. Baixe o aplicativo gratuito para Android e iOS e consulte croquis offline.";
 
 const faqItems = [
   {
@@ -31,11 +31,11 @@ const faqItems = [
   },
   {
     q: "Como saber se a rocha está boa para escalar?",
-    a: "Clima, chuva recente, umidade, incidência de sol e vento influenciam a condição da rocha. Por isso, a ideia do Aresta é reunir previsão do tempo e informações locais para apoiar a decisão.",
+    a: "Clima, chuva recente, umidade, incidência de sol e vento influenciam a condição da rocha. O Aresta ajuda a organizar informações do pico, mas não determina se a rocha está segura para escalar. Consulte previsão, chuva recente e orientações locais.",
   },
   {
     q: "Onde escalar perto de Belo Horizonte?",
-    a: "Minas Gerais tem diferentes áreas de escalada e boulder, como Igarapé, Serra do Cipó, Ouro Preto e outros picos conhecidos pela comunidade. O Aresta pretende organizar essas informações por região, pico e setor.",
+    a: "Minas Gerais tem diferentes áreas de escalada e boulder, como Igarapé, Serra do Cipó, Ouro Preto e outros picos conhecidos pela comunidade. Consulte o catálogo do Aresta para ver a cobertura publicada e os guias territoriais.",
   },
   {
     q: "O Aresta já substitui um curso ou guia profissional?",
@@ -43,7 +43,7 @@ const faqItems = [
   },
   {
     q: "A comunidade pode atualizar informações?",
-    a: "A proposta é que croquis, acessos, setores e observações possam ser construídos com apoio da comunidade local, com curadoria para evitar informação errada.",
+    a: "O Aresta recebe contribuições e sugestões de correções, respeitando a autoria e os processos de curadoria dos croquis.",
   },
 ];
 
@@ -65,8 +65,8 @@ export const Route = createFileRoute("/")({
             url: `${SITE_URL}/`,
             image: OG_IMAGE,
             description:
-              "Aplicativo de croquis de escalada com uso offline, informações de acesso, setores e contribuição da comunidade. Em fase de lançamento e testes.",
-            releaseNotes: "Em fase de lançamento e testes fechados.",
+              "Aplicativo de croquis de escalada com uso offline, informações de acesso, setores e contribuição da comunidade. Disponível para Android e iOS.",
+            releaseNotes: "Disponível para Android e iOS.",
             creator: { "@type": "Organization", name: "Aresta Climb" },
           }),
         },
@@ -102,7 +102,7 @@ function HomePage() {
         <PicosPreview />
         <AudienceTabs />
         <Trust />
-        <Waitlist />
+        <DownloadSection />
         <FaqSection />
       </main>
       <SiteFooter />
@@ -120,7 +120,7 @@ function Hero() {
         <div>
           <span className="font-display mb-5 inline-flex items-center gap-3 text-[11px] font-extrabold tracking-[0.22em] text-primary">
             <span aria-hidden="true" className="h-px w-8 bg-primary" />
-            Messy Middle da escalada
+            CROQUIS DE ESCALADA · OFFLINE
           </span>
           <h1 className="text-balance text-[clamp(44px,7vw,86px)] font-bold leading-[0.96] tracking-[-0.05em]">
             Menos incerteza. <span className="text-primary">Mais parede.</span>
@@ -135,7 +135,7 @@ function Hero() {
               href="#testar"
               className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 text-xs font-extrabold uppercase tracking-[0.12em] text-primary-foreground shadow-glow transition-transform hover:-translate-y-0.5"
             >
-              Quero testar <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              Baixar aplicativo <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </a>
             <a
               href="#duvida"
@@ -146,8 +146,7 @@ function Hero() {
           </div>
 
           <p className="mt-5 max-w-md text-[13px] text-muted-foreground/80">
-            Primeiro a dor. Depois a solução. Produto empurrado antes da hora é igual sapatilha
-            apertada: até funciona, mas ninguém aguenta muito tempo.
+            Primeiro a dor. Depois a solução. Conheça os picos e setores publicados, escolha sua próxima escalada e leve o croqui baixado para o campo.
           </p>
         </div>
 
@@ -381,7 +380,7 @@ function Solution() {
     { n: "1", title: "Picos e setores organizados", text: "Menos busca solta. Mais contexto para decidir." },
     { n: "2", title: "Croquis offline", text: "Informação útil mesmo quando o sinal some." },
     { n: "3", title: "Acesso e estacionamento", text: "Chegada mais clara, menos tempo perdido." },
-    { n: "4", title: "Alertas locais", text: "Condições, acesso sensível e avisos importantes." },
+    { n: "4", title: "Contexto territorial", text: "Regras, recomendações e observações locais quando disponíveis." },
     { n: "5", title: "Contribuição da comunidade", text: "Informação viva, validada por quem usa o território." },
     { n: "6", title: "Boas práticas", text: "Escalar melhor também é impactar menos." },
   ];
@@ -448,11 +447,10 @@ function Flow() {
             Da dúvida ao pico
           </span>
           <h2 className="mt-4 text-[clamp(28px,3.4vw,44px)] font-bold leading-[1.08]">
-            O site conduz a decisão, não despeja funcionalidade.
+            Da busca pelo pico ao croqui no seu bolso.
           </h2>
           <p className="mt-4 text-muted-foreground">
-            A lógica é sair do Messy Middle: reconhecer a dúvida, ganhar confiança, planejar e
-            testar.
+            Descubra informações do território, explore o croqui no aplicativo e baixe antes de ir para a rocha.
           </p>
         </header>
 
@@ -474,67 +472,37 @@ function Flow() {
   );
 }
 
-/* ---------------- Picos preview ---------------- */
+/* ---------------- Picos e catálogo oficial ---------------- */
 
 function PicosPreview() {
-  const picos = [
-    {
-      to: "/picos/pedra-grande-igarape" as const,
-      name: "Pedra Grande",
-      place: "Igarapé · MG",
-      live: true,
-    },
-    { to: "/picos" as const, name: "Pedra Rachada", place: "MG", live: false },
-    { to: "/picos" as const, name: "Serra do Cipó", place: "MG", live: false },
-    { to: "/picos" as const, name: "Ouro Preto", place: "MG", live: false },
-  ];
-
   return (
-    <section className="py-20 md:py-24">
+    <section className="py-20 md:py-24" aria-labelledby="picos-title">
       <div className="mx-auto w-[min(1120px,92%)]">
-        <header className="max-w-2xl">
-          <span className="font-display text-[11px] font-extrabold tracking-[0.22em] text-primary">
-            Picos
-          </span>
-          <h2 className="mt-4 text-[clamp(28px,3.4vw,44px)] font-bold leading-[1.08]">
-            Picos que já fazem parte da conversa
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            Croquis, acesso, clima, setores e informações da comunidade em um só lugar.
-          </p>
-        </header>
-
-        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {picos.map((p) => (
-            <li key={p.name}>
-              <Link
-                to={p.to}
-                className="group block h-full rounded-2xl border border-border bg-card p-6 transition-colors hover:border-border-strong"
-              >
-                <div className="flex items-center justify-between">
-                  <Mountain className="h-5 w-5 text-primary" aria-hidden="true" />
-                  <span
-                    className={
-                      "rounded-full px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.1em] " +
-                      (p.live
-                        ? "bg-primary/15 text-primary"
-                        : "border border-border text-muted-foreground")
-                    }
-                  >
-                    {p.live ? "Página ativa" : "Em construção"}
-                  </span>
-                </div>
-                <h3 className="mt-5 text-lg font-bold">{p.name}</h3>
-                <p className="mt-1 text-xs uppercase tracking-[0.14em] text-muted-foreground">
-                  {p.place}
-                </p>
-                <span className="mt-5 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-[0.12em] text-primary">
-                  Ver pico <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <span className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">Explore os picos</span>
+        <h2 id="picos-title" className="mt-4 max-w-3xl text-[clamp(28px,3.4vw,44px)] font-bold leading-tight">
+          Descubra onde escalar. Encontre o croqui.
+        </h2>
+        <p className="mt-4 max-w-2xl text-muted-foreground">Comece pelo catálogo oficial ou leia os guias para conhecer os picos. A disponibilidade de vias e setores varia por croqui publicado.</p>
+        <div className="mt-10 grid gap-4 md:grid-cols-3">
+          <a href="https://arestaclimb.com/croquis" data-event="catalog_click" className="group rounded-2xl border border-primary/40 bg-primary/10 p-7 transition-colors hover:border-primary">
+            <Map className="h-7 w-7 text-primary" aria-hidden="true" />
+            <h3 className="mt-6 text-xl font-bold">Catálogo de croquis</h3>
+            <p className="mt-3 min-h-16 text-sm text-muted-foreground">Explore os croquis publicados e consulte a cobertura no site oficial.</p>
+            <span className="mt-5 inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wide text-primary">Abrir catálogo <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
+          </a>
+          <Link to="/picos/pedra-grande-igarape" className="group rounded-2xl border border-border bg-card p-7 transition-colors hover:border-primary">
+            <Mountain className="h-7 w-7 text-primary" aria-hidden="true" />
+            <h3 className="mt-6 text-xl font-bold">Pedra Grande — Igarapé</h3>
+            <p className="mt-3 min-h-16 text-sm text-muted-foreground">Conheça o contexto territorial, recomendações e informações da área.</p>
+            <span className="mt-5 inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wide text-primary">Conhecer o pico <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
+          </Link>
+          <Link to="/guias/onde-escalar-em-belo-horizonte" className="group rounded-2xl border border-border bg-card p-7 transition-colors hover:border-primary">
+            <MapPin className="h-7 w-7 text-primary" aria-hidden="true" />
+            <h3 className="mt-6 text-xl font-bold">Onde escalar perto de BH?</h3>
+            <p className="mt-3 min-h-16 text-sm text-muted-foreground">Um ponto de partida para descobrir regiões de escalada em Minas Gerais.</p>
+            <span className="mt-5 inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wide text-primary">Ler guia <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
+          </Link>
+        </div>
       </div>
     </section>
   );
@@ -691,128 +659,35 @@ function Trust() {
   );
 }
 
-/* ---------------- Waitlist ---------------- */
+/* ---------------- Download e descoberta ---------------- */
 
-function Waitlist() {
-  const [sent, setSent] = useState(false);
-
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setSent(true);
-  }
-
+function DownloadSection() {
   return (
-    <section
-      id="testar"
-      className="border-y border-border py-20 md:py-24"
-      style={{
-        backgroundImage:
-          "radial-gradient(circle at 40% 0%, color-mix(in oklab, var(--primary) 16%, transparent), transparent 32%)",
-      }}
-    >
-      <div className="mx-auto w-[min(1120px,92%)] grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+    <section id="testar" className="border-y border-border bg-surface py-20 md:py-24" aria-labelledby="download-title">
+      <div className="mx-auto grid w-[min(1120px,92%)] items-center gap-10 lg:grid-cols-[1fr_1fr]">
         <div>
-          <span className="font-display text-[11px] font-extrabold tracking-[0.22em] text-primary">
-            Primeiros testadores
-          </span>
-          <h2 className="mt-4 text-[clamp(28px,3.4vw,44px)] font-bold leading-[1.08]">
-            Entre na lista antes do próximo rolê.
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            Poucos campos. O suficiente para entender onde você escala e te chamar quando o teste
-            fizer sentido.
-          </p>
+          <span className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">Disponível para Android e iOS</span>
+          <h2 id="download-title" className="mt-4 text-[clamp(30px,4vw,52px)] font-bold leading-[1.06]">O próximo croqui está no seu bolso.</h2>
+          <p className="mt-5 max-w-xl text-muted-foreground">Baixe o Aresta gratuitamente, explore os picos publicados e salve o croqui antes de sair. O conteúdo previamente baixado pode ser consultado sem internet.</p>
+          <p className="mt-4 text-sm text-muted-foreground">Sem lista de espera. As informações e a cobertura variam conforme cada pico.</p>
         </div>
-
-        <div className="rounded-[28px] border border-border bg-card p-7 md:p-8">
-          <h3 className="text-xl font-bold">Quero testar o Aresta</h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Cadastro de interesse para MVP, croquis, QR Codes e testes com a comunidade.
-          </p>
-
-          <form
-            onSubmit={onSubmit}
-            className="mt-6 grid gap-3.5"
-            data-event="waitlist_submit"
-            data-source="landing_home"
-            data-project="aresta_climb"
-            noValidate
-          >
-            <div className="grid gap-3.5 sm:grid-cols-2">
-              <Field label="Nome" id="name" name="name" required />
-              <Field label="Cidade" id="city" name="city" required />
-            </div>
-            <div className="grid gap-3.5 sm:grid-cols-2">
-              <Field label="WhatsApp" id="whatsapp" name="whatsapp" inputMode="tel" />
-              <Field label="E-mail" id="email" name="email" type="email" required />
-            </div>
-            <div>
-              <label
-                htmlFor="climbing_spot"
-                className="mb-1.5 block text-xs font-extrabold uppercase tracking-[0.1em] text-muted-foreground"
-              >
-                Onde você costuma escalar?
-              </label>
-              <input
-                id="climbing_spot"
-                name="climbing_spot"
-                placeholder="Ex.: Pedra Grande, Cipó, ginásio em BH…"
-                className="min-h-[48px] w-full rounded-2xl border border-border bg-background/70 px-4 text-sm text-foreground outline-none transition-colors focus:border-primary"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="mt-2 inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-xs font-extrabold uppercase tracking-[0.12em] text-primary-foreground shadow-glow hover:-translate-y-0.5"
-            >
-              Enviar interesse
-            </button>
-
-            <p className="text-xs text-muted-foreground/80">
-              Modelo visual. Os dados ainda não são enviados — o formulário será conectado a um CRM
-              em seguida.
-            </p>
-
-            {sent && (
-              <p
-                role="status"
-                className="mt-2 rounded-2xl border border-[color-mix(in_oklab,var(--accent-sage)_40%,transparent)] bg-[color-mix(in_oklab,var(--accent-sage)_18%,transparent)] p-4 text-sm text-foreground"
-              >
-                Interesse registrado neste modelo. Próximo passo: conectar o formulário ao CRM.
-              </p>
-            )}
-          </form>
+        <div className="rounded-[28px] border border-border bg-card p-7 md:p-9">
+          <h3 className="text-xl font-bold">Escolha como começar</h3>
+          <div className="mt-6 grid gap-3">
+            <a href="https://play.google.com/store/apps/details?id=app.escalada.croquis" data-event="store_click" data-platform="android" target="_blank" rel="noopener noreferrer" className="flex min-h-14 items-center justify-between gap-4 rounded-full bg-primary px-6 text-sm font-extrabold text-primary-foreground transition-transform hover:-translate-y-0.5">
+              Google Play · Android <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </a>
+            <a href="https://apps.apple.com/br/app/aresta-climb-guia-de-escalada/id6776467893" data-event="store_click" data-platform="ios" target="_blank" rel="noopener noreferrer" className="flex min-h-14 items-center justify-between gap-4 rounded-full border border-border bg-background px-6 text-sm font-extrabold text-foreground transition-colors hover:border-primary">
+              App Store · iPhone <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </a>
+            <a href="https://arestaclimb.com/croquis" data-event="catalog_click" className="flex min-h-14 items-center justify-between gap-4 rounded-full border border-border px-6 text-sm font-extrabold text-foreground transition-colors hover:border-primary">
+              Explorar croquis na web <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </a>
+          </div>
+          <p className="mt-5 text-xs text-muted-foreground">Abertura direta de um croqui no aplicativo depende da URL fornecida pelo catálogo e do app instalado.</p>
         </div>
       </div>
     </section>
-  );
-}
-
-function Field(props: {
-  label: string;
-  id: string;
-  name: string;
-  type?: string;
-  required?: boolean;
-  inputMode?: "tel" | "email" | "text";
-}) {
-  return (
-    <div>
-      <label
-        htmlFor={props.id}
-        className="mb-1.5 block text-xs font-extrabold uppercase tracking-[0.1em] text-muted-foreground"
-      >
-        {props.label}
-      </label>
-      <input
-        id={props.id}
-        name={props.name}
-        type={props.type ?? "text"}
-        required={props.required}
-        inputMode={props.inputMode}
-        className="min-h-[48px] w-full rounded-2xl border border-border bg-background/70 px-4 text-sm text-foreground outline-none transition-colors focus:border-primary"
-      />
-    </div>
   );
 }
 
@@ -828,7 +703,7 @@ function FaqSection() {
             Perguntas de quem está avaliando
           </span>
           <h2 className="mt-4 text-[clamp(28px,3.4vw,44px)] font-bold leading-[1.08]">
-            Antes de testar, faz sentido perguntar.
+            Antes de ir para a rocha, vale conferir.
           </h2>
         </header>
 
