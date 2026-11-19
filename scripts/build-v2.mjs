@@ -57,9 +57,25 @@ function replaceOnce(needle, value, label) {
 replaceOnce("</head>",
   '<meta name="robots" content="noindex,nofollow"><link rel="stylesheet" href="' + link("premium-enhancements.css") + '">' +
   '<script defer src="' + link("premium-enhancements.js") + '"></script></head>', "head");
-replaceOnce('<a href="#codigo">Código Aberto</a><a href="#faq">FAQ</a>',
-  '<a href="#codigo">Código Aberto</a><a href="https://arestaclimb.com/croquis">Croquis web</a><a href="' +
-  link("blog/") + '">Diário de rocha</a><a href="#faq">FAQ</a>', "desktop navigation");
+// Quatro destinos principais + agrupamento. Nenhuma seção da landing é apagada.
+const sourceNavigation =
+  '<div class="navLinks"><a class="active" href="#aplicativo">Aplicativo</a>' +
+  '<a href="#offline">Offline</a><a href="#cobertura">Cobertura</a>' +
+  '<a href="#autoria">Autoria</a><a href="#editor">Editor</a>' +
+  '<a href="#codigo">Código Aberto</a><a href="#faq">FAQ</a></div>';
+const compactNavigation =
+  '<div class="navLinks">' +
+  '<a class="active" href="#aplicativo">Aplicativo</a>' +
+  '<a href="https://arestaclimb.com/croquis">Croquis</a>' +
+  '<a href="#comunidade">Comunidade</a>' +
+  '<a href="' + link("blog/") + '">Diário de Rocha</a>' +
+  '<details class="premiumMore"><summary aria-label="Abrir mais informações sobre o Aresta">Sobre</summary>' +
+  '<div class="moreMenu"><a href="#croquis">Por que Aresta</a>' +
+  '<a href="#editor" class="highlightLink">Editor Aresta</a>' +
+  '<a href="#offline">Acesso offline</a><a href="#cobertura">Picos e cobertura</a>' +
+  '<a href="#autoria">Autoria e comunidade</a><a href="#codigo">Código aberto</a>' +
+  '<a href="#faq">Dúvidas frequentes</a></div></details></div>';
+replaceOnce(sourceNavigation,compactNavigation,"menu principal simplificado");
 // Substitui só o marcador visual original (uma miniatura de 66 bytes) pelo símbolo oficial.
 const markPattern=/<span class="mark"><img src="data:image\/webp;base64,[^"]+" alt=""><\/span>/g;
 const markHits=[...html.matchAll(markPattern)];
@@ -68,12 +84,33 @@ html=html.replace(markPattern,
   '<span class="mark"><img src="' + link("assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg") + '" width="343" height="194" alt="Símbolo oficial do Aresta Climb, aplicativo e guia de croquis de escalada em Belo Horizonte (BH), Minas Gerais" title="Aresta Climb — croquis e guia de escalada em BH e Minas Gerais" decoding="async"></span>');
 const menu =
   '<details class="premiumMobileMenu"><summary aria-label="Abrir menu de navegação">Menu</summary>' +
-  '<div class="mobileMenuLinks"><a href="#aplicativo">Aplicativo</a><a href="#offline">Offline</a>' +
-  '<a href="#cobertura">Cobertura</a><a href="#autoria">Autoria</a><a href="#editor">Editor</a>' +
-  '<a href="#codigo">Código aberto</a><a href="https://arestaclimb.com/croquis" class="premiumMenuAccent">Croquis web ↗</a>' +
-  '<a href="' + link("blog/") + '" class="premiumMenuAccent">Diário de rocha ↗</a><a href="#faq">FAQ</a></div></details>';
+  '<div class="mobileMenuLinks">' +
+  '<a class="mobileDownload" href="' + link("app/") + '">Baixar aplicativo ↗</a>' +
+  '<a href="#aplicativo">Aplicativo</a>' +
+  '<a href="https://arestaclimb.com/croquis" class="premiumMenuAccent">Croquis ↗</a>' +
+  '<a href="#comunidade">Comunidade</a>' +
+  '<a href="' + link("blog/") + '" class="premiumMenuAccent">Diário de Rocha ↗</a>' +
+  '<div class="menuSectionTitle">Conheça o Aresta</div>' +
+  '<a href="#croquis">Por que Aresta</a><a href="#editor">Editor Aresta</a>' +
+  '<a href="#offline">Acesso offline</a><a href="#cobertura">Picos e cobertura</a>' +
+  '<a href="#autoria">Autoria e comunidade</a><a href="#codigo">Código aberto</a>' +
+  '<a href="#faq">Dúvidas frequentes</a></div></details>';
 replaceOnce('<button class="theme" id="theme" aria-label="Alternar tema">☼</button>',
   '<button class="theme" id="theme" aria-label="Alternar tema">☼</button>' + menu, "mobile navigation");
+// Barra de navegação fora da seção hero (overflow:hidden) para rolagem persistente.
+const navStartTag='<div class="navWrap"><div class="wrap"><nav class="nav">';
+const navCloseTag='</nav></div></div>';
+const navStart=html.indexOf(navStartTag);
+const navClose=html.indexOf(navCloseTag,navStart);
+if(navStart<0 || navClose<0 || html.indexOf(navStartTag,navStart+1)!==-1) {
+  throw Error("Não foi possível isolar o header premium sem perder a fonte");
+}
+const navHTML=html.slice(navStart,navClose+navCloseTag.length);
+html=html.slice(0,navStart)+html.slice(navClose+navCloseTag.length);
+replaceOnce('<body>\n<section class="hero" id="inicio">',
+  '<body>\n' + navHTML + '\n<section class="hero" id="inicio">',
+  "header fixo acessível fora do hero");
+
 // O build oficial é copiado no próprio Lab: os links institucionais podem ser testados sem tocar em produção.
 html = html.split('https://arestaclimb.com/app').join(link("app/"));
 html = html.split('https://arestaclimb.com/editor').join(link("editor/"));
