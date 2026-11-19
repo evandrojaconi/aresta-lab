@@ -32,6 +32,8 @@ jobs:
         working-directory: official-source
       - run: node scripts/finalize-official-preview.mjs
       - run: node scripts/build-v2.mjs
+      - name: Verificar proposta V2 baseada no Drive
+        run: node scripts/verify-drive-v2.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: aresta-lab-espelho-oficial
