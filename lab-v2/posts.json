@@ -1,0 +1,83 @@
+[
+  {
+    "slug": "croqui-nao-comeca-na-parede",
+    "tag": "Cultura de escalada",
+    "reading": "4 min",
+    "title": "Um croqui não começa na parede. Começa com quem conhece o lugar.",
+    "summary": "Por trás de uma linha de via existem pessoas, história e conhecimento acumulado.",
+    "image": "brand/croqui-mineral.png",
+    "lead": "Um croqui não é só um desenho de vias. É uma forma de organizar conhecimento compartilhado sobre um território.",
+    "sections": [
+      [
+        "Antes da linha, existe a história",
+        "Quem conquistou, equipou, fotografou, manteve ou revisou uma via participa de uma história que vai além do grau. Registrar autoria e contexto ajuda a entender o pico como algo maior do que uma lista de escaladas. O Aresta organiza informações sobre setores e vias e apresenta a preservação das fontes como parte de sua proposta."
+      ],
+      [
+        "Uma informação pode mudar",
+        "Acesso, trilha e condição de uso podem mudar com o tempo. Um croqui pode precisar de revisão. Um nome pode guardar a história de quem o criou. Por isso, um registro útil precisa indicar contexto, permitir correções e separar o que está documentado daquilo que ainda precisa ser conferido em campo."
+      ],
+      [
+        "Tecnologia com pé na rocha",
+        "O aplicativo permite consultar croquis interativos e manter conteúdos baixados para consulta sem internet. Mas a tecnologia não substitui o olhar de quem conhece o território. O valor está em aproximar essas duas dimensões: o conhecimento local e a possibilidade de encontrá-lo quando é necessário."
+      ],
+      [
+        "O próximo capítulo é coletivo",
+        "Quem identifica um erro, conhece a origem de um croqui ou participa da manutenção de um pico tem uma contribuição importante. O conhecimento sobre a escalada fica mais útil quando pode ser revisado com respeito, clareza e crédito."
+      ]
+    ]
+  },
+  {
+    "slug": "offline-e-preparacao",
+    "tag": "Produto em campo",
+    "reading": "3 min",
+    "title": "Offline não é um detalhe. É parte do planejamento.",
+    "summary": "O que conferir antes de sair da cidade e por que um croqui no bolso não substitui decisão na rocha.",
+    "image": "assets/app/croqui-interativo.png",
+    "lead": "Quando o sinal desaparece, a informação que você baixou antes da viagem pode continuar disponível. Isso facilita a preparação, mas não elimina os riscos.",
+    "sections": [
+      [
+        "O primeiro passo acontece na cidade",
+        "Consulte o pico disponível no catálogo do Aresta, explore os setores de interesse e baixe o conteúdo necessário antes de perder a conexão. Abra o croqui ainda conectado para verificar se fotos e informações de acesso foram salvas corretamente."
+      ],
+      [
+        "No setor, confirme o contexto",
+        "O croqui ajuda a localizar linhas e entender o que está documentado. Ele não verifica condições de proteção, estabilidade da rocha, clima ou permissão de acesso em tempo real. A decisão de escalar exige avaliação própria, equipamentos adequados e respeito às recomendações de segurança."
+      ],
+      [
+        "Na volta, atualize o conhecimento",
+        "O conteúdo offline corresponde à versão armazenada no aparelho. Quando recuperar o sinal, consulte mudanças e considere relatar informações incorretas ou desatualizadas pelos canais oficiais de colaboração. O croqui melhora quando a informação volta do campo."
+      ],
+      [
+        "Experimente a jornada",
+        "Explore primeiro os croquis publicados na web. Depois, instale o Aresta para Android ou iPhone e salve o material disponível para a próxima saída."
+      ]
+    ]
+  },
+  {
+    "slug": "territorio-e-comunidade",
+    "tag": "Território e comunidade",
+    "reading": "4 min",
+    "title": "Escalar também é aprender a chegar, permanecer e cuidar.",
+    "summary": "Informação responsável conecta acesso, autoria, preparação e convivência.",
+    "image": "assets/app/pedra-grande.png",
+    "lead": "Um pico não é apenas um destino esportivo. É um lugar com relações locais, histórias, regras e pessoas que mantêm o acesso e a informação.",
+    "sections": [
+      [
+        "O acesso começa antes da trilha",
+        "Consulte orientações atualizadas sobre chegada, estacionamento, trilhas e eventuais restrições. Uma via registrada não significa que todas as áreas estejam liberadas, nem garante que as condições de acesso continuem iguais às descritas anteriormente."
+      ],
+      [
+        "Quem mantém também conta a história",
+        "Croquis, trilhas e vias são fruto de trabalho contínuo. Reconhecer autoria, conquista e manutenção ajuda a construir uma relação mais responsável com quem vive, frequenta e cuida dos territórios."
+      ],
+      [
+        "Colaboração não elimina curadoria",
+        "Relatos de escaladores podem indicar mudanças importantes. Mas um relato individual não equivale à confirmação de uma regra local. É preciso avaliar a fonte, o período e a possibilidade de verificar o que foi informado."
+      ],
+      [
+        "Menos incerteza, mais responsabilidade",
+        "O Aresta organiza informações para apoiar a preparação. A preservação também depende de ações concretas: verificar acesso, seguir orientações locais, respeitar pessoas e reduzir os impactos da visita."
+      ]
+    ]
+  }
+]
