@@ -33,7 +33,7 @@ Veja [a documentação de homologação](docs/ESPELHO-SITE-OFICIAL.md).
 - **Proposta V2 (reestilizada):** https://evandrojaconi.github.io/aresta-lab/v2/
 - **Diário de Rocha (blog piloto):** https://evandrojaconi.github.io/aresta-lab/v2/blog/
 
-A V2 preserva páginas e assets do build oficial, mas agora usa o **HTML, CSS, JavaScript e logo da landing histórica do Google Drive (31/08/2026)** como base visual da homepage. Integra catálogo, aplicativo, Editor, formulário contextual de cinco jornadas e blog com pesquisa/filtros. Consulte [a implementação V2](docs/V2-DRIVE-IMPLEMENTACAO.md), `lab-v2/drive-reference/`, `lab-v2/drive-enhancements.css`, `lab-v2/posts.json` e `scripts/build-v2.mjs`.
+**Fonte de verdade visual da V2:** o arquivo premium `aresta-climb-home-premium-conteudo-oficial-LEVE(2).html` fornecido pelo usuário, versionado integralmente em [`lab-v2/premium/source.html`](lab-v2/premium/source.html). Contém foto de rocha, capturas reais do aplicativo e Editor, modo claro/escuro, título “Menos caça à informação. Mais tempo na parede.” e as seções originais. **Não** usa mais a versão antiga do Drive (31/08/2026) para construir a home. O build conserva páginas e assets técnicos do repositório oficial, integra links do catálogo web, app, Editor e blog de três artigos piloto. Consulte [documentação atual](docs/V2-PREMIUM-SOURCE.md), `lab-v2/premium/`, `lab-v2/posts.json` e `scripts/build-v2.mjs`.
 
 Não substitui /croquis (Cloudflare Worker), não altera a produção, não envia telemetria e usa `noindex` por ser ambiente de avaliação. Dados exibidos na landing de produção continuam sujeitos a validação de data e qualidade antes da futura publicação. Os três textos do blog são **rascunhos editoriais para discussão**, não notícias validadas.
 

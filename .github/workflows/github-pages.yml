@@ -50,8 +50,8 @@ jobs:
         run: node scripts/finalize-official-preview.mjs
       - name: Gerar proposta V2 e blog
         run: node scripts/build-v2.mjs
-      - name: Verificar proposta V2 baseada no Drive
-        run: node scripts/verify-drive-v2.mjs
+      - name: Verificar fonte HTML premium e páginas V2
+        run: node scripts/verify-premium-v2.mjs
       - name: Enviar Lab e espelho oficial
         uses: actions/upload-pages-artifact@v3
         with:
