@@ -53,7 +53,7 @@ export const Route = createFileRoute("/picos/pedra-grande-igarape")({
 
 function PedraGrandePage() {
   const cards = [
-    { icon: Mountain, title: "Croqui", text: "Croqui em construção com colaboração da comunidade de Igarapé. Em breve disponível para uso offline no app." },
+    { icon: Mountain, title: "Croqui", text: "Explore o catálogo oficial para verificar o croqui, a versão publicada e o conteúdo disponível para download no aplicativo." },
     { icon: MapPin, title: "Acesso e estacionamento", text: "Aproximação a partir de Igarapé MG, com trecho final em estrada de terra. Detalhes de trilha e ponto de estacionamento na página do pico no app." },
     { icon: Cloud, title: "Condições e clima", text: "Atenção à chuva recente e umidade. Em dias muito úmidos, a rocha pode demorar a secar — sempre confirme antes de subir." },
     { icon: Users, title: "Comunidade local", text: "A Pedra Grande tem grupos e iniciativas que cuidam do acesso, das vias e da boa convivência. Apoiar essas associações é parte da escalada." },
@@ -81,17 +81,17 @@ function PedraGrandePage() {
               Pedra Grande, Igarapé
             </h1>
             <p className="mt-5 text-lg text-muted-foreground">
-              Croqui, acesso, setores, clima e informação da comunidade reunidos em um só lugar.
+              Informações sobre a Pedra Grande, seus acessos e cuidados locais. Confira os croquis e detalhes publicados no aplicativo.
               Esta página é o ponto de partida — os detalhes completos chegam com o app, pensados
               para uso offline na base da rocha.
             </p>
 
             <div className="mt-7 flex flex-wrap gap-3">
               <a
-                href="/#testar"
+                href="https://arestaclimb.com/croquis"
                 className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-xs font-extrabold uppercase tracking-[0.12em] text-primary-foreground shadow-glow hover:-translate-y-0.5"
               >
-                Quero o croqui offline
+                Ver catálogo de croquis
               </a>
               <Link
                 to="/comunidade"

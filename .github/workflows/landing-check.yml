@@ -1,0 +1,20 @@
+name: Landing build check
+
+on:
+  push:
+    branches: ["main", "feat/landing-navegavel-croquis-2026-11"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Build site
+        run: bun run build

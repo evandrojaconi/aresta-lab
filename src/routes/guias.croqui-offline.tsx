@@ -82,8 +82,7 @@ function OfflineGuide() {
               <h2 className="text-2xl font-bold">E por que o Aresta entrega isso de graça</h2>
               <p className="mt-3 text-muted-foreground">
                 Offline e mapa em escalada outdoor são segurança, não recurso premium. O Aresta
-                nasce com essa premissa: a base é gratuita, o app é colaborativo e os croquis
-                pertencem à comunidade que os mantém.
+                nasce com essa premissa: a base é gratuita, o app é colaborativo e a autoria de cada croqui deve ser respeitada.
               </p>
             </section>
           </div>
