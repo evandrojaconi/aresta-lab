@@ -36,3 +36,22 @@
 @media(max-width:960px){.lab-article-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lab-blog-hero{grid-template-columns:1fr;gap:8px}}
 @media(max-width:670px){.lab-blog-layout,.lab-article-layout{padding-top:58px}.lab-article-grid{grid-template-columns:1fr}.lab-blog-nav{padding:20px 18px;flex-wrap:wrap}.lab-blog-nav .links{gap:12px}.lab-blog-hero h1{font-size:clamp(55px,12vw,80px)}.lab-blog-footer{display:grid}.lab-blog-tools input{min-width:100%}}
 @media(prefers-reduced-motion:reduce){.lab-article-card{transition:none}}
+
+/* Identidade do blog alinhada à marca oficial presente no cabeçalho premium. */
+.lab-blog-nav .lab-brand-lockup,.lab-blog-footer .lab-footer-brand{display:inline-flex;align-items:center;gap:11px;flex:none;text-decoration:none}
+.lab-blog-nav .lab-brand-lockup{min-height:48px}
+.lab-brand-mark{width:45px;height:45px;flex:none;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#df553f,#ca4733);box-shadow:0 9px 22px rgba(223,85,63,.18)}
+.lab-brand-mark img{display:block;width:32px;height:23px;object-fit:contain}
+.lab-blog-nav .lab-brand-name{font:800 16px/1 Epilogue,sans-serif;letter-spacing:-.035em;white-space:nowrap;color:#171816}
+.lab-blog-nav .lab-brand-lockup:hover .lab-brand-name{color:#b53e29}
+.lab-blog-footer .lab-footer-brand{color:#f5f1e9}
+.lab-blog-footer .lab-brand-mark{width:36px;height:36px;border-radius:10px;box-shadow:none}
+.lab-blog-footer .lab-brand-mark img{width:27px;height:20px}
+.lab-blog-footer .lab-footer-brand strong{font:800 13px/1.1 Epilogue,sans-serif;letter-spacing:.01em}
+@media(max-width:670px){
+ .lab-blog-nav .lab-brand-lockup{min-height:44px}
+ .lab-blog-nav .lab-brand-mark{width:40px;height:40px;border-radius:11px}
+ .lab-blog-nav .lab-brand-mark img{width:29px;height:21px}
+ .lab-blog-nav .lab-brand-name{font-size:14px}
+ .lab-blog-nav .links{gap:10px}
+}

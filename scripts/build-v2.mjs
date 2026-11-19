@@ -96,6 +96,8 @@ write("design-source.json", JSON.stringify({
   changes:["noindex","links institucionais de homologação","menu acessível para mobile","atalho do catálogo web","Diário de Rocha"],
   disclaimer:"O site de produção e o espelho oficial estão intactos."
 },null,2)+"\n");
+// A mesma marca vetorial da home premium deve aparecer no cabeçalho e rodapé
+// de todas as páginas do blog. Não reconstruir símbolos com texto ou emoji.
 function shell(title, body) {
   return '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">' +
   '<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">' +
@@ -103,10 +105,14 @@ function shell(title, body) {
   '<meta name="description" content="Histórias de croquis, escalada em rocha, preparação e território.">' +
   '<link rel="icon" href="' + link("assets/logo_app.png") + '"><link rel="stylesheet" href="' + link("blog.css") + '"><script defer src="' + link("blog.js") + '"></script></head>' +
   '<body class="lab-site"><nav class="lab-blog-nav" aria-label="Navegação do Diário">' +
-  '<a href="' + link("") + '" class="brandlink">▲ ARESTA</a><div class="links">' +
+  '<a href="' + link("") + '" class="brandlink lab-brand-lockup" aria-label="Aresta Climb — página inicial">' +
+  '<span class="lab-brand-mark"><img src="' + link("assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg") + '" width="343" height="194" alt="Símbolo oficial Aresta Climb" decoding="async"></span>' +
+  '<span class="lab-brand-name">ARESTA CLIMB</span></a><div class="links">' +
   '<a href="' + link("") + '">Aresta Climb</a><a href="https://arestaclimb.com/croquis">Croquis</a>' +
   '<a href="' + link("blog/") + '">Diário de rocha</a><a href="' + link("app/") + '">Baixar app</a></div></nav>' +
-  body + '<footer class="lab-blog-footer"><strong>ARESTA CLIMB · CONHECIMENTO EM MOVIMENTO</strong>' +
+  body + '<footer class="lab-blog-footer"><a href="' + link("") + '" class="lab-footer-brand" aria-label="Voltar para Aresta Climb">' +
+  '<span class="lab-brand-mark"><img src="' + link("assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg") + '" width="343" height="194" alt="" decoding="async" loading="lazy"></span>' +
+  '<strong>ARESTA CLIMB</strong></a>' +
   '<span>Proposta editorial para homologação · <a href="https://arestaclimb.com">Site oficial</a> · ' +
   '<a href="' + original + '">Comparar original</a></span></footer></body></html>';
 }
