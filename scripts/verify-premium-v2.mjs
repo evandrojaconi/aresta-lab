@@ -13,7 +13,7 @@ const file=p=>readFileSync(join(folder,p),"utf8");
 const home=file("index.html"),blog=file("blog/index.html"),css=file("premium-enhancements.css"),body=file("design-source.json");
 const source=readFileSync("lab-v2/premium/source.html","utf8");
 const checks=[
-["hero premium","Menos caça à informação. Mais tempo na parede."],
+["hero premium","Menos caça à informação."],["continuação hero","Mais tempo na parede."],
 ["telas reais","Tela real de setores no Aresta Climb"],
 ["captura do Editor","Editor Aresta Desktop real"],
 ["imagem embutida","data:image/webp;base64,"],
