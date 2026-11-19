@@ -102,3 +102,7 @@ body{overflow-x:hidden}
 @media(max-width:900px){.nav-mobile{display:block}.site-header nav[aria-label="Navegação principal"]{display:none}.site-header .header-cta{display:none}.nav-mobile nav{display:grid}.web-journey-grid{grid-template-columns:1fr}.web-journey-grid>a{border-right:0;border-bottom:1px solid var(--line);min-height:190px}.web-journey-grid>a:last-child{border:0}.web-journey-grid h3{margin-top:24px}.lab-article-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lab-editorial-heading,.lab-blog-hero{grid-template-columns:1fr;gap:16px}}
 @media(max-width:680px){.lab-article-grid{grid-template-columns:1fr}.lab-blog-section,.web-journey{padding:78px 22px}.lab-editorial-heading h2{font-size:clamp(39px,9vw,55px)}.lab-blog-nav{min-height:72px;flex-wrap:wrap}.lab-blog-nav .links{gap:15px}.lab-blog-layout,.lab-article-layout{padding-top:65px}.lab-blog-hero h1{font-size:clamp(53px,12vw,78px)}.lab-blog-tools input[type=search]{min-width:100%}.hero .phone{transform:none}.hero .phone:hover{transform:none}}
 @media(prefers-reduced-motion:reduce){.lab-article-card,.lab-article-photo img,.hero .phone,.btn-primary,.store-badge{transition:none}}
+
+/* Esconde realmente cards filtrados, mesmo com display:flex definido pelo autor. */
+.lab-article-card[hidden], .lab-no-results[hidden] { display:none !important; }
+.lab-blog-filters button:focus-visible,.lab-blog-tools input:focus-visible,.lab-blog-nav a:focus-visible { outline:3px solid var(--orange);outline-offset:3px; }
