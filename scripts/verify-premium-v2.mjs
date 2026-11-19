@@ -74,6 +74,29 @@ for(const path of blogPages) {
 }
 const brandCSS=file("blog.css");
 if(!brandCSS.includes(".lab-brand-mark") || !brandCSS.includes(".lab-brand-lockup"))errors.push("Blog: estilos da logo ausentes");
+// Design da V2.1 — acessibilidade da navegação, contraste e comportamento de rolagem.
+const navAt=home.indexOf('<div class="navWrap">');
+const heroAt=home.indexOf('<section class="hero" id="inicio">');
+if(navAt<0||heroAt<0||navAt>heroAt)errors.push("O header ainda está dentro do hero, impossibilitando navegação persistente");
+const navOnly=home.slice(navAt,heroAt);
+if(!navOnly.includes('<div class="navLinks"><a class="active" href="#aplicativo">Aplicativo</a>'))errors.push("Menu principal errado");
+for(const label of [
+  '>Croquis</a>', '>Comunidade</a>', '>Diário de Rocha</a>',
+  'class="premiumMore"', '>Sobre</summary>',
+  'class="moreMenu"', '>Editor Aresta</a>',
+  '>Acesso offline</a>', '>Picos e cobertura</a>',
+  '>Dúvidas frequentes</a>', 'class="premiumMobileMenu"',
+  'class="mobileMenuLinks"', 'class="mobileDownload"',
+  '>Baixar aplicativo ↗</a>', 'id="theme"'
+]) if(!navOnly.includes(label))errors.push("Navegação sem: "+label);
+if(navOnly.includes('<a href="#offline">Offline</a>') && navOnly.slice(0,navOnly.indexOf('class="premiumMobileMenu"')).includes('<a href="#offline">Offline</a>'))errors.push("Desktop: links antigos ainda no menu principal");
+if(!css.includes(".hero::before")||!css.includes(".hero::after")||!css.includes("brightness(.62)"))errors.push("Contraste: a imagem do hero não foi escurecida");
+if(!css.includes(".navWrap.is-hidden")||!css.includes(".navWrap.is-scrolled"))errors.push("Header: falta estado de rolagem");
+if(!css.includes(".premiumMore")||!css.includes("@media(max-width:720px)")||!css.includes("prefers-reduced-motion"))errors.push("Header: falta responsividade ou redução de movimento");
+const headerJs=file("premium-enhancements.js");
+for(const behavior of ["requestAnimationFrame(updateHeader)",'window.addEventListener("scroll"',"is-hidden","is-scrolled",'event.key !== "Escape"',"focusin","prefersReducedMotion"])
+ if(!headerJs.includes(behavior))errors.push("Comportamento do header: "+behavior);
+
 if(!css.includes("premiumMobileMenu"))errors.push("CSS mobile ausente");
 if(!body.includes("HTML premium integral"))errors.push("Metadados sem origem exata");
 if(source.length<750000||home.length<750000)errors.push("Imagens premium ausentes ou arquivo truncado");
