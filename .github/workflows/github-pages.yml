@@ -14,30 +14,47 @@ concurrency:
 
 jobs:
   build:
-    name: Gerar e enviar site
+    name: Gerar Lab e espelho oficial
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - name: Baixar codigo
+      - name: Baixar Aresta Lab
         uses: actions/checkout@v4
       - name: Preparar Bun
         uses: oven-sh/setup-bun@v2
-      - name: Instalar dependencias
+      - name: Instalar dependencias do laboratorio
         run: bun install --frozen-lockfile
-      - name: Construir paginas estaticas
+      - name: Gerar paginas do laboratorio
         run: bun run build
         env:
           GITHUB_PAGES: "true"
-      - name: Verificar rotas e preparar preview
+      - name: Validar laboratorio
         run: node scripts/verify-static.mjs
-      - name: Enviar arquivos do site
+      - name: Baixar site oficial em copia temporaria
+        uses: actions/checkout@v4
+        with:
+          repository: aresta-climb/arestaclimb.com
+          ref: main
+          path: official-source
+          persist-credentials: false
+      - name: Preparar homologacao sem analytics ou Sentry produtivos
+        run: node scripts/prepare-official-preview.mjs
+      - name: Instalar dependencias do site oficial
+        working-directory: official-source
+        run: npm ci
+      - name: Gerar build do site oficial
+        working-directory: official-source
+        run: npm run build
+      - name: Montar espelho no GitHub Pages
+        run: node scripts/finalize-official-preview.mjs
+      - name: Enviar Lab e espelho oficial
         uses: actions/upload-pages-artifact@v3
         with:
           path: .output/public
 
   deploy:
-    name: Publicar apos artefato estar disponivel
+    name: Publicar apos build
     needs: build
     runs-on: ubuntu-latest
     permissions:
@@ -48,6 +65,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Publicar no GitHub Pages
+      - name: Publicar site
         id: deployment
         uses: actions/deploy-pages@v4
