@@ -7,19 +7,17 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: aresta-lab-pages
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  build:
+    name: Gerar e enviar site
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
     steps:
       - name: Baixar codigo
         uses: actions/checkout@v4
@@ -31,16 +29,25 @@ jobs:
         run: bun run build
         env:
           GITHUB_PAGES: "true"
-      - name: Verificar rotas, links e preparar preview
+      - name: Verificar rotas e preparar preview
         run: node scripts/verify-static.mjs
-      - name: Configurar Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - name: Enviar arquivos do site
         uses: actions/upload-pages-artifact@v3
         with:
           path: .output/public
-      - name: Publicar site
+
+  deploy:
+    name: Publicar apos artefato estar disponivel
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar no GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
