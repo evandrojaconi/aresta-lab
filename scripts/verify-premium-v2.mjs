@@ -4,8 +4,8 @@ const slug=process.env.GITHUB_REPOSITORY?.split("/").at(-1)||"aresta-lab";
 const base="/"+slug+"/v2/";
 const folder=".output/public/v2";
 const expected=["index.html","app/index.html","editor/index.html","premium-enhancements.css","premium-enhancements.js",
-  "blog.css","blog.js","assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg","design-source.json","source.json","blog/index.html",
-  "blog/croqui-nao-comeca-na-parede/index.html","blog/offline-e-preparacao/index.html","blog/territorio-e-comunidade/index.html"];
+  "blog.css","blog.js","assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg","assets/gruta-da-lapinha-mapa-historico-2002.webp","design-source.json","source.json","blog/index.html",
+  "blog/historia-escalada-gruta-da-lapinha/index.html","blog/croqui-nao-comeca-na-parede/index.html","blog/offline-e-preparacao/index.html","blog/territorio-e-comunidade/index.html"];
 const errors=[];
 for(const p of expected)if(!existsSync(join(folder,p)))errors.push("Arquivo ausente: "+p);
 if(errors.length){console.error(errors.join("\n"));process.exit(1);}
@@ -30,6 +30,31 @@ const checks=[
 ];
 for(const [name,needle] of checks)if(!home.includes(needle))errors.push("Home premium: "+name);
 for(const [name,needle] of [["busca",'id="lab-blog-search"'],["filtros","data-blog-filter"],["posts","data-blog-card"],["caminho","noindex,nofollow"]])if(!blog.includes(needle))errors.push("Blog: "+name);
+const lapinha=file("blog/historia-escalada-gruta-da-lapinha/index.html");
+const slugLapinha=base+"blog/historia-escalada-gruta-da-lapinha/";
+const cards=blog.match(/data-blog-card/g)||[];
+if(cards.length!==4)errors.push("Blog: esperados 4 cards, incluindo artigo inaugural, recebidos "+cards.length);
+const firstLink=blog.indexOf('href="'+slugLapinha+'"');
+const pilotLink=blog.indexOf('href="'+base+'blog/croqui-nao-comeca-na-parede/"');
+if(firstLink<0||pilotLink<0||firstLink>pilotLink)errors.push("Primeiro post não aparece antes dos pilotos");
+const coverData=readFileSync(join(folder,"assets/gruta-da-lapinha-mapa-historico-2002.webp"));
+if(coverData.length<10000 || coverData.subarray(0,4).toString()!=="RIFF")errors.push("Mapa histórico 2002 não é WebP válido");
+for(const needle of [
+  "Gruta da Lapinha: a escalada que resistiu","Diego Contaldo de Lara",
+  "Rupestre da Lapa","ACEC-MG","2011","2026","2002","Grupo de Trabalho de Escalada da Lapinha",
+  "www.rupestredalapa.com.br","www.biblioteca.pucminas.br/teses/TratInfEspacial_LaraDC_1.pdf",
+  "https://www.ief.mg.gov.br/w/parque-estadual-do-sumidouro",
+  "lab-history-timeline","lab-partner-story","lab-story-sources",
+  'rel="noopener noreferrer"',
+  '"@type":"BlogPosting"',
+  'name="robots" content="noindex,nofollow"'
+])if(!lapinha.includes(needle))errors.push("Artigo Lapinha sem: "+needle);
+if(!home.includes(slugLapinha))errors.push("Home não destaca a estreia");
+if(!blog.includes("EDIÇÃO 01 · GRUTA DA LAPINHA"))errors.push("Blog não identifica estreia");
+const blogStyles=file("blog.css");
+for(const selector of [".lab-article-card--featured",".lab-partner-story",".lab-history-timeline"])
+ if(!blogStyles.includes(selector))errors.push("Blog CSS sem: "+selector);
+
 const officialIcon=file("assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg");
 const officialLogoSrc=base+"assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg";
 if(!home.includes('src="'+officialLogoSrc+'"'))errors.push("Logo oficial: URL do arquivo não usada na navegação");
@@ -38,7 +63,7 @@ if(!home.includes('title="Aresta Climb — croquis e guia de escalada em BH e Mi
 if(!officialIcon.includes('viewBox="0 0 343 194"')||!officialIcon.includes('Símbolo oficial Aresta Climb'))errors.push("Logo oficial: arquivo SVG inválido ou sem identificação");
 if(home.includes('src="data:image/webp;base64,UklGRj4AAABXRUJQ'))errors.push("Logo placeholder antiga ainda presente");
 const blogLogo=base+"assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg";
-const blogPages=["blog/index.html","blog/croqui-nao-comeca-na-parede/index.html","blog/offline-e-preparacao/index.html","blog/territorio-e-comunidade/index.html"];
+const blogPages=["blog/index.html","blog/historia-escalada-gruta-da-lapinha/index.html","blog/croqui-nao-comeca-na-parede/index.html","blog/offline-e-preparacao/index.html","blog/territorio-e-comunidade/index.html"];
 for(const path of blogPages) {
  const page=file(path);
  if(!page.includes('class="brandlink lab-brand-lockup"'))errors.push("Blog marca oficial ausente: "+path);

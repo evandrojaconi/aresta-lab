@@ -1,5 +1,166 @@
 [
   {
+    "slug": "historia-escalada-gruta-da-lapinha",
+    "tag": "Memória da escalada",
+    "category": "territorio",
+    "status": "publicado",
+    "featured": true,
+    "date": "2026-11-19",
+    "author": "Equipe Aresta Climb",
+    "reading": "8 min",
+    "title": "Gruta da Lapinha: a escalada que resistiu e continua sendo cuidada",
+    "summary": "Das primeiras conquistas ao fechamento de 2002, da reabertura de 2011 ao trabalho coletivo de 2026: conheça a história da Lapinha e quem ajuda a mantê-la viva.",
+    "image": "assets/gruta-da-lapinha-mapa-historico-2002.webp",
+    "imageAlt": "Mapa histórico da área de escalada no Maciço Lapinha em 2002, em Lagoa Santa, Minas Gerais",
+    "imageCredit": "Mapa histórico do Guia de Escaladas da Lapinha (2002), de Daniel Ferreira Mariano e Eustáquio Macedo Melo Júnior. Acervo preservado na base ArestaDB.",
+    "lead": "Há vias que carregam mais do que um grau. No calcário da Lapinha, em Lagoa Santa, cada geração de escaladores encontrou a mesma pergunta: como continuar escalando sem perder a história, o acesso e o cuidado com a rocha?",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "Entre as galerias da Gruta da Lapinha, as paredes de calcário e o caminho até os setores, existe uma história que vai muito além da escalada esportiva. É a história de um território de importância científica, arqueológica e ambiental, de pessoas que abriram caminhos com equipamento improvisado e de uma comunidade que precisou se organizar para voltar a escalar."
+      },
+      {
+        "type": "paragraph",
+        "text": "Essa trajetória foi reconstruída em 2018 pelo geógrafo Diego Contaldo de Lara, em uma dissertação de mestrado na PUC Minas. O pesquisador ouviu escaladores e gestores, reuniu registros e examinou a relação entre visitação, gestão do parque e montanhismo. O que contamos aqui é uma adaptação jornalística dessa pesquisa, conectada a registros mais recentes do próprio Aresta."
+      },
+      {
+        "type": "timeline",
+        "events": [
+          {
+            "year": "Anos 1980",
+            "text": "Primeiras experiências de escalada no Maciço Lapinha, ainda com técnicas e proteções improvisadas."
+          },
+          {
+            "year": "2001–2002",
+            "text": "Organização da Associação Mineira de Escalada e proibição da escalada por decreto municipal, em meio às tensões de acesso e manejo."
+          },
+          {
+            "year": "2011",
+            "text": "Reabertura regulamentada de áreas de escalada no Parque Estadual do Sumidouro após mobilização e negociação."
+          },
+          {
+            "year": "2026",
+            "text": "O registro digital das vias e o trabalho de inspeção e manutenção seguem mobilizando grupos locais."
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "text": "Antes dos croquis digitais, corda na árvore e proteção improvisada"
+      },
+      {
+        "type": "paragraph",
+        "text": "O Maciço Lapinha integra o ambiente cárstico de Lagoa Santa, marcado por rochas calcárias, cavernas e um patrimônio que atrai pesquisadores desde o século XIX. A Gruta da Lapinha foi estudada no contexto das expedições do naturalista Peter Lund. Muito antes de se tornar um destino de escalada esportiva, o lugar já fazia parte de outras histórias da região."
+      },
+      {
+        "type": "paragraph",
+        "text": "Segundo os depoimentos reunidos por Diego Lara, os primeiros escaladores chegaram na década de 1980 por meio de atividades excursionistas e de exploração de cavernas. Aloysio de Carvalho Cunha Júnior descreveu uma fase em que cordas eram passadas sobre árvores e equipamentos móveis eram adaptados para proteger as primeiras linhas. A escalada era descoberta quase artesanalmente, e chegar até ali exigia tempo e esforço."
+      },
+      {
+        "type": "paragraph",
+        "text": "Nos anos 1990, a escalada esportiva em calcário ganhou força na região de Belo Horizonte. A Lapinha se tornou referência para quem queria aprender, evoluir tecnicamente e dividir o dia na rocha. Mas o aumento da prática também expôs tensões importantes sobre impactos, acesso e responsabilidade dentro de uma área natural sensível."
+      },
+      {
+        "type": "figure",
+        "src": "assets/gruta-da-lapinha-mapa-historico-2002.webp",
+        "alt": "Mapa histórico de 2002 que representa os setores de escalada do Maciço Lapinha e a entrada da Gruta da Lapinha",
+        "caption": "Documento histórico: distribuição dos setores da Lapinha registrada em 2002 por Mariano e Melo Júnior. Não utilize este mapa antigo para decidir acesso ou condição de vias hoje."
+      },
+      {
+        "type": "heading",
+        "text": "Quando o acesso fechou, a comunidade precisou abrir outro caminho"
+      },
+      {
+        "type": "paragraph",
+        "text": "A escalada no Maciço Lapinha foi proibida em 2002 por um decreto municipal. A disputa não dizia respeito apenas à presença de pessoas nas paredes: envolvia formas de gerir um território com valor ambiental, turístico, cultural e esportivo. O fechamento marcou uma geração e ajudou a impulsionar a organização dos praticantes em Minas Gerais."
+      },
+      {
+        "type": "paragraph",
+        "text": "A Associação Mineira de Escalada (AME), fundada em 2001, teve papel central nas negociações de acesso. Com a implementação efetiva do Parque Estadual do Sumidouro, o diálogo entre escaladores, representantes da unidade de conservação e gestores criou condições para uma nova etapa. Em 2011, uma portaria estadual regulamentou a retomada da escalada nas áreas delimitadas do parque."
+      },
+      {
+        "type": "callout",
+        "title": "Reabrir não significa liberar tudo",
+        "text": "O Maciço Lapinha possui setores com condições e restrições específicas. Para qualquer visita, a referência é a orientação atual do Parque Estadual do Sumidouro e dos grupos de manejo. Croquis históricos não substituem regras de acesso, avaliação de segurança ou avisos de interdição."
+      },
+      {
+        "type": "heading",
+        "text": "Cuidar da Lapinha não ficou no passado"
+      },
+      {
+        "type": "paragraph",
+        "text": "A mobilização que permitiu a reabertura não encerrou o trabalho. Uma área de escalada exige atenção contínua: acompanhar o estado das proteções, revisar informações, respeitar autorias e observar as necessidades de conservação do lugar. Em 2026, esse cuidado aparece formalmente nos créditos atuais do guia da Lapinha mantido na base do Aresta."
+      },
+      {
+        "type": "paragraph",
+        "text": "Os registros atribuem inspeções técnicas e manutenções à ACEC-MG — Associação Cultural e Esportiva do Carste de Minas Gerais — e à Rupestre da Lapa Aventuras, em articulação com o Grupo de Trabalho de Escalada da Lapinha (GTEL). O documento também indica a observância dos procedimentos do parque e das autorizações dos conquistadores. São ações locais de quem conhece as vias, acompanha o território e sustenta o trabalho que não aparece quando alguém olha apenas para um grau no croqui."
+      },
+      {
+        "type": "heading",
+        "text": "Onde o Aresta entra nessa história"
+      },
+      {
+        "type": "paragraph",
+        "text": "O Aresta não substitui quem conquista, equipa, fiscaliza ou cuida das vias. Sua contribuição está em organizar e manter acessível o conhecimento: croquis, setores, referências, nomes, graduações, datas e créditos. O guia histórico da Lapinha, de Daniel Ferreira Mariano e Eustáquio Macedo Melo Júnior, publicado em 2002, está identificado como fonte na base do projeto — porque digitalizar uma via não dá a ninguém o direito de apagar quem a registrou primeiro."
+      },
+      {
+        "type": "paragraph",
+        "text": "Registros técnicos de novembro de 2026 documentam um trabalho de revisão no croqui da Lapinha pelo Editor Aresta: correções em referências de mapa, nomes, graduações, datas de conquista e atribuições de conquistadores. É uma forma concreta de aproximar material histórico e estrutura digital, permitindo que erros sejam tratados sem perder sua origem. Esses registros de desenvolvimento não devem ser confundidos, por si sós, com a confirmação de que toda alteração já chegou aos aparelhos dos usuários."
+      },
+      {
+        "type": "paragraph",
+        "text": "No aplicativo, a proposta é que o escalador possa consultar os croquis publicados, compreender os setores e baixar informações para usar sem sinal. Na rocha, entretanto, as decisões continuam dependendo de experiência, observação direta e respeito às regras do parque. Tecnologia ajuda a lembrar e localizar; a responsabilidade permanece com as pessoas."
+      },
+      {
+        "type": "partner",
+        "eyebrow": "GENTE DO TERRITÓRIO · APOIO LOCAL",
+        "title": "Rupestre da Lapa: quem recebe escaladores também faz parte do cuidado",
+        "text": "A Rupestre da Lapa não aparece aqui apenas como um lugar para dormir. Além de atuar com hospedagem e apoio a visitantes da região de Fidalgo, em Pedro Leopoldo, a Rupestre da Lapa Aventuras é creditada, junto à ACEC-MG, nas inspeções e manutenções da Lapinha em 2026. Para quem planeja conhecer o carste mineiro com mais tempo e respeito ao território, vale conhecer o espaço e os serviços da casa, consultando diretamente a disponibilidade. Uma boa viagem começa com informação — e melhora quando valoriza quem vive e trabalha perto da rocha.",
+        "href": "https://www.rupestredalapa.com.br/",
+        "linkText": "Conheça a Rupestre da Lapa"
+      },
+      {
+        "type": "heading",
+        "text": "O futuro da escalada também depende da memória"
+      },
+      {
+        "type": "paragraph",
+        "text": "A história da Lapinha ensina que acesso não é uma garantia automática e que a escalada não se sustenta apenas por conquistas esportivas. A continuidade exige diálogo com a gestão do parque, cuidado com a rocha, trabalho de associações, conhecimento de quem mantém as vias e ferramentas capazes de reunir essa memória sem apagá-la."
+      },
+      {
+        "type": "paragraph",
+        "text": "É nesse encontro que o Aresta quer contribuir: a comunidade segue construindo a história; a tecnologia ajuda a não deixá-la dispersa. Menos incerteza, mais parede — e mais respeito por tudo o que existe antes da primeira agarra."
+      },
+      {
+        "type": "sources",
+        "title": "Fontes e créditos desta reportagem",
+        "items": [
+          {
+            "label": "Diego Contaldo de Lara (2018) — Geografia, montanhismo e escalada: o caso do Maciço Lapinha em Lagoa Santa, Minas Gerais. Dissertação, PUC Minas.",
+            "href": "https://www.biblioteca.pucminas.br/teses/TratInfEspacial_LaraDC_1.pdf"
+          },
+          {
+            "label": "ArestaDB — Créditos do guia da Lapinha, autoria de 2002, ACEC-MG, Rupestre da Lapa Aventuras e GTEL.",
+            "href": "https://github.com/aresta-climb/aresta_db/blob/main/database/br_mg_lagoa_santa_gruta_da_lapinha/creditos.md"
+          },
+          {
+            "label": "ArestaDB — Revisão técnica do croqui da Lapinha em novembro de 2026.",
+            "href": "https://github.com/aresta-climb/aresta_db/blob/main/openspec/changes/archive/2026-11-09-mcp-lote-migrar-escalada-e-revisao-lapinha/tasks.md"
+          },
+          {
+            "label": "Instituto Estadual de Florestas — Parque Estadual do Sumidouro, orientações e visitação.",
+            "href": "https://www.ief.mg.gov.br/w/parque-estadual-do-sumidouro"
+          }
+        ]
+      },
+      {
+        "type": "callout",
+        "title": "Antes de ir escalar",
+        "text": "Confirme diretamente com o Parque Estadual do Sumidouro os setores autorizados, as normas e condições atuais de acesso. Informações históricas e croquis não representam autorização para escalar em áreas fechadas ou garantia de condições seguras."
+      }
+    ]
+  },
+  {
     "slug": "croqui-nao-comeca-na-parede",
     "tag": "Cultura de escalada",
     "reading": "4 min",
