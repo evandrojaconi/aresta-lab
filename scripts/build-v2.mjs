@@ -71,7 +71,7 @@ const compactNavigation =
   '<a href="https://arestaclimb.com/croquis">Croquis</a>' +
   '<a href="' + link("blog/") + '">Diário de Rocha</a>' +
   '<details class="premiumMore"><summary aria-label="Abrir mais informações sobre o Aresta">Sobre</summary>' +
-  '<div class="moreMenu"><a href="#comunidade">Comunidade</a><a href="#croquis">Por que Aresta</a>' +
+  '<div class="moreMenu"><a href="#web">Web + aplicativo</a><a href="#comunidade">Comunidade</a><a href="#croquis">Por que Aresta</a>' +
   '<a href="#editor" class="highlightLink">Editor Aresta</a>' +
   '<a href="#offline">Acesso offline</a><a href="#cobertura">Picos e cobertura</a>' +
   '<a href="#autoria">Autoria e comunidade</a><a href="#codigo">Código aberto</a>' +
@@ -95,6 +95,7 @@ const menu =
   '<a href="#comunidade">Comunidade</a>' +
   '<a href="' + link("blog/") + '" class="premiumMenuAccent">Diário de Rocha ↗</a>' +
   '<div class="menuSectionTitle">Conheça o Aresta</div>' +
+  '<a href="#web">Web + aplicativo</a>' +
   '<a href="#croquis">Por que Aresta</a><a href="#editor">Editor Aresta</a>' +
   '<a href="#offline">Acesso offline</a><a href="#cobertura">Picos e cobertura</a>' +
   '<a href="#autoria">Autoria e comunidade</a><a href="#codigo">Código aberto</a>' +
