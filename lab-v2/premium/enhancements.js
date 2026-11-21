@@ -1,91 +1,103 @@
-/* Progressive enhancement: menus acessíveis + barra discreta ao rolar.
-   O tema claro/escuro continua sendo controlado pelo script original da landing. */
+/* Aresta Lab V2.5 — navegação flutuante, curta e inteligente.
+   Desce: desaparece. Sobe: reaparece. Menu aberto ou foco de teclado: visível.
+   Funciona no desktop e no mobile; não depende da direção do touch gesture. */
 (() => {
   const bar = document.querySelector(".navWrap");
   if (!bar) return;
 
-  const menuMobile = bar.querySelector(".premiumMobileMenu");
-  const menuMore = bar.querySelector(".premiumMore");
-  const menus = [menuMobile, menuMore].filter(Boolean);
-  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const mobile = bar.querySelector(".premiumMobileMenu");
+  const more = bar.querySelector(".premiumMore");
+  const menus = [mobile, more].filter(Boolean);
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const openMenu = () => menus.some(menu => menu.open);
+  const keyboardFocus = () =>
+    bar.contains(document.activeElement) &&
+    Boolean(document.activeElement?.matches?.(":focus-visible"));
+  const reveal = () => bar.classList.remove("is-hidden");
 
-  function closeMenus(except = null) {
-    for (const menu of menus) {
-      if (menu !== except) menu.open = false;
-    }
+  function closeMenus(keep = null) {
+    for (const menu of menus) if (menu !== keep) menu.open = false;
   }
 
-  menus.forEach(menu => {
+  for (const menu of menus) {
     menu.addEventListener("toggle", () => {
       if (menu.open) {
         closeMenus(menu);
-        bar.classList.remove("is-hidden");
+        reveal();
       }
     });
-    menu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+    menu.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
       menu.open = false;
-      bar.classList.remove("is-hidden");
+      reveal();
     }));
-  });
+  }
 
   document.addEventListener("click", event => {
     if (!menus.some(menu => menu.contains(event.target))) closeMenus();
   });
-
   document.addEventListener("keydown", event => {
     if (event.key !== "Escape") return;
-    const active = menus.find(menu => menu.open);
-    if (active) {
-      active.open = false;
-      active.querySelector("summary")?.focus();
-      event.preventDefault();
-    }
+    const current = menus.find(menu => menu.open);
+    if (!current) return;
+    current.open = false;
+    current.querySelector("summary")?.focus();
+    reveal();
+    event.preventDefault();
+  });
+  bar.addEventListener("focusin", event => {
+    if (event.target?.matches?.(":focus-visible")) reveal();
   });
 
-  bar.addEventListener("focusin", () => bar.classList.remove("is-hidden"));
-  bar.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener("click", () => {
-    bar.classList.remove("is-hidden");
-  }));
-
-  let previousY = Math.max(0, window.scrollY);
-  let direction = 0;
-  let travel = 0;
+  let lastY = Math.max(0, window.scrollY);
+  let lastDirection = 0;
+  let distanceInDirection = 0;
   let scheduled = false;
 
-  function updateHeader() {
+  function syncWithScroll() {
     scheduled = false;
-    const currentY = Math.max(0, window.scrollY);
-    const delta = currentY - previousY;
-    bar.classList.toggle("is-scrolled", currentY > 80);
+    const y = Math.max(0, window.scrollY);
+    const delta = y - lastY;
+    lastY = y;
+    bar.classList.toggle("is-scrolled", y > 60);
 
-    if (currentY < 95 || prefersReducedMotion) {
-      bar.classList.remove("is-hidden");
-      travel = 0;
-    } else if (Math.abs(delta) > 0) {
-      const nextDirection = Math.sign(delta);
-      if (nextDirection !== direction) {
-        travel = 0;
-        direction = nextDirection;
-      }
-      travel += Math.abs(delta);
-
-      if (nextDirection > 0 && currentY > 210 && travel > 22 && !menus.some(m => m.open)) {
-        bar.classList.add("is-hidden");
-      } else if (nextDirection < 0 && travel > 15) {
-        bar.classList.remove("is-hidden");
-      }
+    if (y < 105 || openMenu() || keyboardFocus()) {
+      reveal();
+      distanceInDirection = 0;
+      return;
     }
-    previousY = currentY;
+    if (Math.abs(delta) < 1) return;
+
+    const direction = Math.sign(delta);
+    if (direction !== lastDirection) {
+      lastDirection = direction;
+      distanceInDirection = 0;
+    }
+    distanceInDirection += Math.abs(delta);
+
+    // Evita piscar com pequenas mudanças de direção ou rolagem elástica.
+    if (direction > 0 && y > 160 && distanceInDirection > 19) {
+      bar.classList.add("is-hidden");
+    } else if (direction < 0 && distanceInDirection > 11) {
+      reveal();
+    }
   }
 
   window.addEventListener("scroll", () => {
-    if (!scheduled) {
-      scheduled = true;
-      window.requestAnimationFrame(updateHeader);
-    }
-  }, {passive:true});
+    if (scheduled) return;
+    scheduled = true;
+    window.requestAnimationFrame(syncWithScroll);
+  }, { passive:true });
+
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 820 && menuMobile) menuMobile.open = false;
-  }, {passive:true});
-  updateHeader();
+    if (window.innerWidth > 840 && mobile) mobile.open = false;
+    if (window.innerWidth <= 840 && more) more.open = false;
+    reveal();
+    lastY = Math.max(0, window.scrollY);
+    distanceInDirection = 0;
+  }, { passive:true });
+
+  // Movimento reduzido mantém o comportamento sem transições visuais.
+  // O browser aplica transition:none; a barra ainda é escondida ao descer.
+  reducedMotion.addEventListener?.("change", reveal);
+  syncWithScroll();
 })();
