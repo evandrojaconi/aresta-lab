@@ -66,6 +66,7 @@ if(home.includes('src="data:image/webp;base64,UklGRj4AAABXRUJQ'))errors.push("Pl
 if(!css.includes("width:min(1000px")||!css.includes("min-height:65px")||!css.includes(".navWrap .inpiLogo"))errors.push("Header não foi compactado");
 if(!css.includes("@media(max-width:960px)")||!css.includes("@media(min-width:961px)"))errors.push("Header sem media queries otimizadas");
 
+const blogLogo=officialLogoSrc;
 const blogPages=["blog/index.html","blog/historia-escalada-gruta-da-lapinha/index.html","blog/croqui-nao-comeca-na-parede/index.html","blog/offline-e-preparacao/index.html","blog/territorio-e-comunidade/index.html"];
 for(const path of blogPages) {
  const page=file(path);
