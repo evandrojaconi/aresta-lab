@@ -153,6 +153,24 @@ if(!headerJs.includes("bar.classList.add(\"is-hidden\")") ||
    !headerJs.includes("openMenu() || keyboardFocus()"))
   errors.push("Header: esconder ao descer, reaparecer ao subir e manter aberto durante interação");
 
+// V2.6: itens 01–04 da seção Aplicativo, sem bolinhas ou desalinhamento.
+const featureSection=home.slice(home.indexOf('<section class="product'),home.indexOf('<section class="product')+2800);
+const featureNumbers=[...featureSection.matchAll(/<div class="feature"><div class="n">(0[1-4])<\/div>/g)].map(m=>m[1]);
+if(featureNumbers.join(",")!=="01,02,03,04")
+  errors.push("Aplicativo: 4 itens 01–04 alterados ou desordenados");
+for(const selector of [
+  ".product .featureList",
+  ".product .feature{",
+  "grid-template-columns:46px minmax(0,1fr)",
+  "align-items:center",
+  ".product .feature .n",
+  "border-radius:9px",
+  "@media(max-width:720px)",
+  "grid-template-columns:40px minmax(0,1fr)"
+]) if(!css.includes(selector))errors.push("Estilo cards App: "+selector);
+if(!css.includes("background:#1c2420")||!css.includes("color:#fffdf8"))
+  errors.push("Cards App: contraste/estilo do aplicativo não encontrado");
+
 if(!css.includes("premiumMobileMenu"))errors.push("CSS mobile ausente");
 if(!body.includes("HTML premium integral"))errors.push("Metadados sem origem exata");
 if(source.length<750000||home.length<610000)errors.push("Imagens premium ausentes ou arquivo truncado");
