@@ -29,6 +29,7 @@ for (const path of walk(to)) {
 // A marca oficial vem da imagem enviada pelo usuário; mantém a fonte premium imutável.
 mkdirSync(join(to, "assets"), {recursive:true});
 cpSync("lab-v2/premium/assets/aresta-climb-logo-oficial-inpi.jpg",join(to, "assets", "aresta-climb-logo-oficial-inpi.jpg"));
+cpSync("lab-v2/premium/assets/aresta-climb-simbolo-montanha-branco.svg",join(to, "assets", "aresta-climb-simbolo-montanha-branco.svg"));
 cpSync("lab-v2/premium/assets/gruta-da-lapinha-mapa-historico-2002.webp",join(to,"assets","gruta-da-lapinha-mapa-historico-2002.webp"));
 write("premium-enhancements.css", readFileSync("lab-v2/premium/enhancements.css", "utf8"));
 write("premium-enhancements.js", readFileSync("lab-v2/premium/enhancements.js", "utf8"));
@@ -75,13 +76,14 @@ const compactNavigation =
   '<a href="#autoria">Autoria e comunidade</a><a href="#codigo">Código aberto</a>' +
   '<a href="#faq">Dúvidas frequentes</a></div></details></div>';
 replaceOnce(sourceNavigation,compactNavigation,"menu principal simplificado");
-// O JPEG original do INPI contém símbolo + lettering. Renderizar lockup único, sem texto duplicado.
-// A janela CSS enquadra a arte interna do JPEG (com margens brancas originais).
+// O símbolo branco mantém o desenho da montanha presente na marca oficial INPI.
+// O nome deixa de ficar abaixo do desenho e aparece lateralmente; sem margem branca de JPEG.
 const markPattern=/<span class="mark"><img src="data:image\/webp;base64,[^"]+" alt=""><\/span><span class="brandName">ARESTA CLIMB<\/span>/g;
 const markHits=[...html.matchAll(markPattern)];
 if(markHits.length!==1)throw Error("Marca premium de origem não encontrada: "+markHits.length);
-const officialLogoUrl=link("assets/aresta-climb-logo-oficial-inpi.jpg");
-const officialBrand='<span class="inpiLogo"><img src="'+officialLogoUrl+'" width="945" height="945" alt="Aresta Climb — logotipo oficial com montanha e nome. Aplicativo e croquis de escalada" title="Aresta Climb — logotipo oficial INPI" fetchpriority="high" decoding="async"></span>';
+const officialLogoUrl=link("assets/aresta-climb-simbolo-montanha-branco.svg");
+const officialBrand='<span class="brandIcon"><img src="'+officialLogoUrl+'" width="300" height="167" alt="Símbolo da montanha Aresta Climb" title="Aresta Climb — escalada, croquis e território" decoding="async" fetchpriority="high"></span>' +
+  '<span class="brandName">ARESTA CLIMB</span>';
 html=html.replace(markPattern,officialBrand);
 const menu =
   '<details class="premiumMobileMenu"><summary aria-label="Abrir menu de navegação">Menu</summary>' +
@@ -166,11 +168,13 @@ function shell(title, body, post=null) {
   '<link rel="icon" href="' + link("assets/logo_app.png") + '"><link rel="stylesheet" href="' + link("blog.css") + '"><script defer src="' + link("blog.js") + '"></script></head>' +
   '<body class="lab-site"><nav class="lab-blog-nav" aria-label="Navegação do Diário">' +
   '<a href="' + link("") + '" class="brandlink lab-brand-lockup" aria-label="Aresta Climb — página inicial">' +
-  '<span class="lab-brand-inpi"><img src="' + officialLogoUrl + '" width="945" height="945" alt="Logotipo oficial Aresta Climb" decoding="async"></span></a><div class="links">' +
+  '<span class="lab-brand-symbol"><img src="' + officialLogoUrl + '" width="300" height="167" alt="Símbolo da montanha Aresta Climb" decoding="async"></span>' +
+  '<span class="lab-brand-name">ARESTA CLIMB</span></a><div class="links">' +
   '<a href="' + link("") + '">Aresta Climb</a><a href="https://arestaclimb.com/croquis">Croquis</a>' +
   '<a href="' + link("blog/") + '">Diário de Rocha</a><a href="' + link("app/") + '">Baixar app</a></div></nav>' +
   body + '<footer class="lab-blog-footer"><a href="' + link("") + '" class="lab-footer-brand" aria-label="Voltar para Aresta Climb">' +
-  '<span class="lab-brand-inpi"><img src="' + officialLogoUrl + '" width="945" height="945" alt="" decoding="async" loading="lazy"></span></a>' +
+  '<span class="lab-brand-symbol"><img src="' + officialLogoUrl + '" width="300" height="167" alt="" decoding="async" loading="lazy"></span>' +
+  '<strong>ARESTA CLIMB</strong></a>' +
   '<span>Proposta editorial para homologação · <a href="https://arestaclimb.com">Site oficial</a> · ' +
   '<a href="' + original + '">Comparar original</a></span></footer></body></html>';
 }

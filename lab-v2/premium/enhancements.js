@@ -85,7 +85,7 @@
     }
   }, {passive:true});
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 960 && menuMobile) menuMobile.open = false;
+    if (window.innerWidth > 820 && menuMobile) menuMobile.open = false;
   }, {passive:true});
   updateHeader();
 })();
