@@ -104,12 +104,12 @@
 /* Marca INPI original em todo o Diário de Rocha (não repetir palavra escrita). */
 .lab-blog-nav .lab-brand-lockup{min-height:55px;gap:0}
 .lab-brand-inpi{position:relative;display:block;width:90px;height:56px;overflow:hidden;border-radius:10px;background:#fff;flex:none}
-.lab-brand-inpi img{position:absolute;display:block;width:119px;height:119px;max-width:none;left:-14px;top:-28px;object-fit:fill}
+.lab-brand-inpi img{position:absolute;display:block;width:111px;height:111px;max-width:none;left:-10px;top:-26.5px;object-fit:fill}
 .lab-blog-footer .lab-footer-brand{gap:0}
 .lab-blog-footer .lab-brand-inpi{width:73px;height:46px;border-radius:9px}
-.lab-blog-footer .lab-brand-inpi img{width:97px;height:97px;left:-12px;top:-23px}
+.lab-blog-footer .lab-brand-inpi img{width:93px;height:93px;left:-10px;top:-22.5px}
 @media(max-width:670px){
   .lab-blog-nav .lab-brand-lockup{min-height:48px}
   .lab-blog-nav .lab-brand-inpi{width:79px;height:50px}
-  .lab-blog-nav .lab-brand-inpi img{width:105px;height:105px;left:-13px;top:-25px}
+  .lab-blog-nav .lab-brand-inpi img{width:100px;height:100px;left:-10px;top:-24px}
 }
