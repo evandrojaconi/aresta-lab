@@ -307,3 +307,5 @@ for (const path of ["index.html","premium-enhancements.css","premium-enhancement
 if (!read("index.html").includes("Menos caça à informação.") || !read("index.html").includes("Diário de rocha")) throw Error("Home V2 não atualizada");
 if (!read("index.html").includes("https://arestaclimb.com/croquis")) throw Error("Catálogo de croquis perdido");
 console.log("Aresta Lab V2 publicada no artefato:", base, "Artigos:", posts.length);
+// Unificar visual, links internos e CTAs sem afetar a página oficial nem o HTML premium original.
+await import("./unify-v2-pages.mjs");

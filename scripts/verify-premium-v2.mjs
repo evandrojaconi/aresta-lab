@@ -22,7 +22,7 @@ const checks=[
 ["seções oficiais",'id="croquis"'],["app",'id="aplicativo"'],["offline",'id="offline"'],
 ["cobertura",'id="cobertura"'],["autoria",'id="autoria"'],["editor",'id="editor"'],
 ["código",'id="codigo"'],["comunidade",'id="comunidade"'],["faq",'id="faq"'],
-["blog",'id="blog"'],["blog CTA",base+"blog/"],["página web","https://arestaclimb.com/croquis"],
+["blog",'id="blog"'],["blog CTA",base+"blog/"],["página web",base+"croquis/"],
 ["acesso Editor",base+"editor/"],["acesso App",base+"app/"],
 ["menu mobile",'class="premiumMobileMenu"'],["CSS de extensão",base+"premium-enhancements.css"],
 ["anti-indexação",'name="robots" content="noindex,nofollow"'],
@@ -66,7 +66,7 @@ for(const needle of [
  "Croquis melhores, etapa por etapa.","Painel de Qualidade","Três etapas",
  "Integração MCP","Servidor local integrado","Publicação com critérios",
  "Captura real de 20/11/2026", "id=\"web\"","Web + Aplicativo",
- "https://arestaclimb.com/croquis","DO NAVEGADOR À PAREDE",
+ base+"croquis/","DO NAVEGADOR À PAREDE",
  "class=\"communityMedia\"","class=\"communityShot\"",
  "Contribuição feita no contexto do pico",
  "Tela real do aplicativo Aresta Climb para enviar problemas"
@@ -170,6 +170,52 @@ for(const selector of [
 ]) if(!css.includes(selector))errors.push("Estilo cards App: "+selector);
 if(!css.includes("background:#1c2420")||!css.includes("color:#fffdf8"))
   errors.push("Cards App: contraste/estilo do aplicativo não encontrado");
+
+// V2.7 — navegação interna, identidade e CTA comuns em todas as páginas.
+const sharedCss=file("shared-pages.css"),sharedJs=file("shared-pages.js");
+const croquisHub=file("croquis/index.html");
+for(const needle of ["lab-unified-nav","lab-unified-nav__mobile","lab-next-steps",".lab-v2-unified",".lab-action"])
+ if(!sharedCss.includes(needle))errors.push("CSS compartilhado sem "+needle);
+for(const needle of ["is-hidden","data-lab-theme","requestAnimationFrame(sync)","Escape"])
+ if(!sharedJs.includes(needle))errors.push("Navegação compartilhada sem "+needle);
+if(!croquisHub.includes("Catálogo de dados em operação")||
+   !croquisHub.includes('href="https://arestaclimb.com/croquis"')||
+   !croquisHub.includes('href="'+base+'app/"'))
+ errors.push("Hub de croquis web: ligação com catálogo real/app ausente");
+for(const path of [
+ "app/index.html","download/index.html","editor/index.html","editor/beta/index.html",
+ "comunidade/index.html","contato/index.html","blog/index.html",
+ "blog/historia-escalada-gruta-da-lapinha/index.html","politica-de-privacidade/index.html"
+]){
+ const page=file(path);
+ if(!page.includes('class="lab-v2-unified"')&&!page.includes(" lab-v2-unified"))
+  errors.push("Falta design compartilhado em "+path);
+ if(!page.includes('class="lab-unified-nav"')||!page.includes('href="'+base+'shared-pages.css"'))
+  errors.push("Sem menu e CSS compartilhados em "+path);
+ if(/<a\b[^>]*href="https:\/\/arestaclimb\.com\/(?:croquis|editor|app)\/?"/.test(page))
+  errors.push("Botão ainda aponta para a página de produção em "+path);
+ if(!path.includes("privacidade")&&!page.includes('class="lab-next-steps"'))
+  errors.push("Sem CTAs de continuidade em "+path);
+}
+// A geração V2 deve preservar o espelho /oficial, mas não conter links internos quebrados.
+for(const path of [
+ "index.html","croquis/index.html","app/index.html","editor/index.html",
+ "comunidade/index.html","blog/index.html","blog/historia-escalada-gruta-da-lapinha/index.html"
+]){
+ const page=file(path);
+ for(const match of page.matchAll(/<a\b[^>]*href="([^"]+)"/g)){
+  if(!match[1].startsWith(base))continue;
+  const destination=match[1].slice(base.length).split(/[?#]/)[0];
+  const target=destination===""?"index.html":destination.endsWith("/")?
+   destination+"index.html":destination;
+  const finalPath=/\.[a-z0-9]+$/i.test(target)?target:target+"/index.html";
+  if(!existsSync(join(folder,finalPath)))errors.push(path+" aponta para rota V2 ausente: "+match[1]);
+ }
+}
+if(home.includes('href="https://arestaclimb.com/croquis"'))
+ errors.push("Home: links de croquis ainda saem do Lab");
+if(home.includes('>Comunidade oficial</a>')&&!home.includes('href="'+base+'comunidade/">Comunidade oficial</a>'))
+ errors.push("Home: botão comunidade não abre a página do Lab");
 
 if(!css.includes("premiumMobileMenu"))errors.push("CSS mobile ausente");
 if(!body.includes("HTML premium integral"))errors.push("Metadados sem origem exata");
