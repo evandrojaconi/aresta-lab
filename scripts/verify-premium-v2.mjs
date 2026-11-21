@@ -4,7 +4,7 @@ const slug=process.env.GITHUB_REPOSITORY?.split("/").at(-1)||"aresta-lab";
 const base="/"+slug+"/v2/";
 const folder=".output/public/v2";
 const expected=["index.html","app/index.html","editor/index.html","premium-enhancements.css","premium-enhancements.js",
-  "blog.css","blog.js","assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg","assets/gruta-da-lapinha-mapa-historico-2002.webp","design-source.json","source.json","blog/index.html",
+  "blog.css","blog.js","assets/aresta-climb-logo-oficial-inpi.jpg","assets/gruta-da-lapinha-mapa-historico-2002.webp","design-source.json","source.json","blog/index.html",
   "blog/historia-escalada-gruta-da-lapinha/index.html","blog/croqui-nao-comeca-na-parede/index.html","blog/offline-e-preparacao/index.html","blog/territorio-e-comunidade/index.html"];
 const errors=[];
 for(const p of expected)if(!existsSync(join(folder,p)))errors.push("Arquivo ausente: "+p);
@@ -55,25 +55,30 @@ const blogStyles=file("blog.css");
 for(const selector of [".lab-article-card--featured",".lab-partner-story",".lab-history-timeline"])
  if(!blogStyles.includes(selector))errors.push("Blog CSS sem: "+selector);
 
-const officialIcon=file("assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg");
-const officialLogoSrc=base+"assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg";
-if(!home.includes('src="'+officialLogoSrc+'"'))errors.push("Logo oficial: URL do arquivo não usada na navegação");
-if(!home.includes('alt="Símbolo oficial do Aresta Climb, aplicativo e guia de croquis de escalada em Belo Horizonte (BH), Minas Gerais"'))errors.push("Logo oficial: texto alternativo SEO incompleto");
-if(!home.includes('title="Aresta Climb — croquis e guia de escalada em BH e Minas Gerais"'))errors.push("Logo oficial: título ausente");
-if(!officialIcon.includes('viewBox="0 0 343 194"')||!officialIcon.includes('Símbolo oficial Aresta Climb'))errors.push("Logo oficial: arquivo SVG inválido ou sem identificação");
-if(home.includes('src="data:image/webp;base64,UklGRj4AAABXRUJQ'))errors.push("Logo placeholder antiga ainda presente");
-const blogLogo=base+"assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg";
+const officialJpg=readFileSync(join(folder,"assets/aresta-climb-logo-oficial-inpi.jpg"));
+const officialLogoSrc=base+"assets/aresta-climb-logo-oficial-inpi.jpg";
+if(officialJpg.length<50000 || officialJpg[0]!==0xff || officialJpg[1]!==0xd8)errors.push("Imagem INPI não é o JPG válido original");
+if(!home.includes('src="'+officialLogoSrc+'"'))errors.push("Header não usa logo INPI");
+if(!home.includes('class="inpiLogo"'))errors.push("Falta enquadramento do lockup INPI");
+if(!home.includes('alt="Aresta Climb — logotipo oficial com montanha e nome. Aplicativo e croquis de escalada"'))errors.push("Logo INPI: descrição ausente");
+if(home.includes('class="brandName"'))errors.push("Header ainda duplica o lettering da logo");
+if(home.includes('src="data:image/webp;base64,UklGRj4AAABXRUJQ'))errors.push("Placeholder antigo reapareceu");
+if(!css.includes("width:min(1000px")||!css.includes("min-height:65px")||!css.includes(".navWrap .inpiLogo"))errors.push("Header não foi compactado");
+if(!css.includes("@media(max-width:960px)")||!css.includes("@media(min-width:961px)"))errors.push("Header sem media queries otimizadas");
+
+const blogLogo=officialLogoSrc;
 const blogPages=["blog/index.html","blog/historia-escalada-gruta-da-lapinha/index.html","blog/croqui-nao-comeca-na-parede/index.html","blog/offline-e-preparacao/index.html","blog/territorio-e-comunidade/index.html"];
 for(const path of blogPages) {
  const page=file(path);
  if(!page.includes('class="brandlink lab-brand-lockup"'))errors.push("Blog marca oficial ausente: "+path);
  if(!page.includes('src="'+blogLogo+'"'))errors.push("Blog logo: imagem ausente "+path);
- if(!page.includes('alt="Símbolo oficial Aresta Climb"'))errors.push("Blog logo: descrição ausente "+path);
+ if(!page.includes('alt="Logotipo oficial Aresta Climb"'))errors.push("Blog logo: descrição ausente "+path);
  if(page.includes('>▲ ARESTA</a>'))errors.push("Blog logo antigo ainda presente: "+path);
  if(!page.includes('class="lab-footer-brand"'))errors.push("Blog rodapé sem marca oficial: "+path);
+ if(!page.includes('class="lab-brand-inpi"'))errors.push("Blog com marca antiga: "+path);
 }
 const brandCSS=file("blog.css");
-if(!brandCSS.includes(".lab-brand-mark") || !brandCSS.includes(".lab-brand-lockup"))errors.push("Blog: estilos da logo ausentes");
+if(!brandCSS.includes(".lab-brand-inpi") || !brandCSS.includes(".lab-brand-lockup"))errors.push("Blog: estilos da logo INPI ausentes");
 // Design da V2.1 — acessibilidade da navegação, contraste e comportamento de rolagem.
 const navAt=home.indexOf('<div class="navWrap">');
 const heroAt=home.indexOf('<section class="hero" id="inicio">');

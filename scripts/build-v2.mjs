@@ -28,7 +28,7 @@ for (const path of walk(to)) {
 }
 // A marca oficial vem da imagem enviada pelo usuário; mantém a fonte premium imutável.
 mkdirSync(join(to, "assets"), {recursive:true});
-cpSync("lab-v2/premium/assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg",join(to, "assets", "aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg"));
+cpSync("lab-v2/premium/assets/aresta-climb-logo-oficial-inpi.jpg",join(to, "assets", "aresta-climb-logo-oficial-inpi.jpg"));
 cpSync("lab-v2/premium/assets/gruta-da-lapinha-mapa-historico-2002.webp",join(to,"assets","gruta-da-lapinha-mapa-historico-2002.webp"));
 write("premium-enhancements.css", readFileSync("lab-v2/premium/enhancements.css", "utf8"));
 write("premium-enhancements.js", readFileSync("lab-v2/premium/enhancements.js", "utf8"));
@@ -67,21 +67,22 @@ const compactNavigation =
   '<div class="navLinks">' +
   '<a class="active" href="#aplicativo">Aplicativo</a>' +
   '<a href="https://arestaclimb.com/croquis">Croquis</a>' +
-  '<a href="#comunidade">Comunidade</a>' +
   '<a href="' + link("blog/") + '">Diário de Rocha</a>' +
   '<details class="premiumMore"><summary aria-label="Abrir mais informações sobre o Aresta">Sobre</summary>' +
-  '<div class="moreMenu"><a href="#croquis">Por que Aresta</a>' +
+  '<div class="moreMenu"><a href="#comunidade">Comunidade</a><a href="#croquis">Por que Aresta</a>' +
   '<a href="#editor" class="highlightLink">Editor Aresta</a>' +
   '<a href="#offline">Acesso offline</a><a href="#cobertura">Picos e cobertura</a>' +
   '<a href="#autoria">Autoria e comunidade</a><a href="#codigo">Código aberto</a>' +
   '<a href="#faq">Dúvidas frequentes</a></div></details></div>';
 replaceOnce(sourceNavigation,compactNavigation,"menu principal simplificado");
-// Substitui só o marcador visual original (uma miniatura de 66 bytes) pelo símbolo oficial.
-const markPattern=/<span class="mark"><img src="data:image\/webp;base64,[^"]+" alt=""><\/span>/g;
+// O JPEG original do INPI contém símbolo + lettering. Renderizar lockup único, sem texto duplicado.
+// A janela CSS enquadra a arte interna do JPEG (com margens brancas originais).
+const markPattern=/<span class="mark"><img src="data:image\/webp;base64,[^"]+" alt=""><\/span><span class="brandName">ARESTA CLIMB<\/span>/g;
 const markHits=[...html.matchAll(markPattern)];
-if(markHits.length!==1)throw Error("Imagem de logo original não encontrada: "+markHits.length);
-html=html.replace(markPattern,
-  '<span class="mark"><img src="' + link("assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg") + '" width="343" height="194" alt="Símbolo oficial do Aresta Climb, aplicativo e guia de croquis de escalada em Belo Horizonte (BH), Minas Gerais" title="Aresta Climb — croquis e guia de escalada em BH e Minas Gerais" decoding="async"></span>');
+if(markHits.length!==1)throw Error("Marca premium de origem não encontrada: "+markHits.length);
+const officialLogoUrl=link("assets/aresta-climb-logo-oficial-inpi.jpg");
+const officialBrand='<span class="inpiLogo"><img src="'+officialLogoUrl+'" width="945" height="945" alt="Aresta Climb — logotipo oficial com montanha e nome. Aplicativo e croquis de escalada" title="Aresta Climb — logotipo oficial INPI" fetchpriority="high" decoding="async"></span>';
+html=html.replace(markPattern,officialBrand);
 const menu =
   '<details class="premiumMobileMenu"><summary aria-label="Abrir menu de navegação">Menu</summary>' +
   '<div class="mobileMenuLinks">' +
@@ -165,13 +166,11 @@ function shell(title, body, post=null) {
   '<link rel="icon" href="' + link("assets/logo_app.png") + '"><link rel="stylesheet" href="' + link("blog.css") + '"><script defer src="' + link("blog.js") + '"></script></head>' +
   '<body class="lab-site"><nav class="lab-blog-nav" aria-label="Navegação do Diário">' +
   '<a href="' + link("") + '" class="brandlink lab-brand-lockup" aria-label="Aresta Climb — página inicial">' +
-  '<span class="lab-brand-mark"><img src="' + link("assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg") + '" width="343" height="194" alt="Símbolo oficial Aresta Climb" decoding="async"></span>' +
-  '<span class="lab-brand-name">ARESTA CLIMB</span></a><div class="links">' +
+  '<span class="lab-brand-inpi"><img src="' + officialLogoUrl + '" width="945" height="945" alt="Logotipo oficial Aresta Climb" decoding="async"></span></a><div class="links">' +
   '<a href="' + link("") + '">Aresta Climb</a><a href="https://arestaclimb.com/croquis">Croquis</a>' +
   '<a href="' + link("blog/") + '">Diário de Rocha</a><a href="' + link("app/") + '">Baixar app</a></div></nav>' +
   body + '<footer class="lab-blog-footer"><a href="' + link("") + '" class="lab-footer-brand" aria-label="Voltar para Aresta Climb">' +
-  '<span class="lab-brand-mark"><img src="' + link("assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg") + '" width="343" height="194" alt="" decoding="async" loading="lazy"></span>' +
-  '<strong>ARESTA CLIMB</strong></a>' +
+  '<span class="lab-brand-inpi"><img src="' + officialLogoUrl + '" width="945" height="945" alt="" decoding="async" loading="lazy"></span></a>' +
   '<span>Proposta editorial para homologação · <a href="https://arestaclimb.com">Site oficial</a> · ' +
   '<a href="' + original + '">Comparar original</a></span></footer></body></html>';
 }

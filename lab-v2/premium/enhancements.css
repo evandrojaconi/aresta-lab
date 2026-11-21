@@ -171,3 +171,55 @@ html[data-theme="dark"] .navWrap.is-scrolled .nav{background:rgba(17,20,18,.96)}
 @media(prefers-reduced-motion:reduce){
   .navWrap,.navWrap .nav,.navLinks .premiumMore > summary::after{transition:none}
 }
+
+
+/* V2.2 — barra curta e lockup oficial INPI, sem duplicar o nome da marca.
+   A imagem JPG original tem margens brancas; o enquadramento é somente CSS. */
+.navWrap .wrap{width:min(1000px,calc(100% - 28px))}
+.navWrap{padding-top:16px}
+.navWrap .nav{
+  min-height:65px;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  gap:clamp(10px,1vw,17px);
+  padding:5px 12px;
+  border-radius:18px;
+}
+.navWrap .brand{min-width:0;gap:0;flex:none}
+.navWrap .inpiLogo{
+  position:relative;display:block;flex:none;width:93px;height:57px;
+  border-radius:9px;overflow:hidden;background:#fff;
+}
+.navWrap .inpiLogo img{
+  display:block;width:113px;height:113px;max-width:none;
+  object-fit:fill;position:absolute;left:-9px;top:-27px;
+}
+.navWrap .navLinks{gap:clamp(12px,1.25vw,20px)}
+.navWrap .navLinks > a{font-size:12px;padding:16px 0}
+.navWrap .navLinks > a.active::after{bottom:2px}
+.navWrap .navLinks .premiumMore > summary{font-size:12px;padding:16px 0}
+.navWrap .navActions{gap:9px}
+.navWrap .theme{width:38px;height:38px}
+.navWrap .navActions > .btn{font-size:11px;padding:13px 14px}
+.navWrap .navLinks .premiumMore .moreMenu{min-width:230px}
+@media(min-width:961px) and (max-width:1180px){
+  .navWrap .nav{grid-template-columns:auto minmax(0,1fr) auto}
+  .navWrap .navLinks{display:flex}
+  .premiumMobileMenu{display:none}
+}
+@media(max-width:960px){
+  .navWrap .nav{grid-template-columns:1fr auto}
+  .navWrap .navLinks{display:none}
+  .premiumMobileMenu{display:block}
+}
+@media(max-width:720px){
+  .navWrap{padding-top:10px}
+  .navWrap .nav{min-height:57px;padding:4px 8px;border-radius:16px}
+  .navWrap .inpiLogo{width:82px;height:51px;border-radius:8px}
+  .navWrap .inpiLogo img{width:102px;height:102px;left:-11px;top:-24.5px}
+  .navWrap .navActions{gap:8px}
+  .navWrap .theme{width:35px;height:35px}
+}
+@media(max-width:390px){
+  .navWrap .inpiLogo{width:78px;height:49px}
+  .navWrap .inpiLogo img{width:98px;height:98px;left:-10px;top:-23.6px}
+}
