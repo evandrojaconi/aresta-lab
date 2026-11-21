@@ -31,6 +31,7 @@ mkdirSync(join(to, "assets"), {recursive:true});
 cpSync("lab-v2/premium/assets/aresta-climb-logo-oficial-inpi.jpg",join(to, "assets", "aresta-climb-logo-oficial-inpi.jpg"));
 cpSync("lab-v2/premium/assets/aresta-climb-simbolo-montanha-branco.svg",join(to, "assets", "aresta-climb-simbolo-montanha-branco.svg"));
 cpSync("lab-v2/premium/assets/gruta-da-lapinha-mapa-historico-2002.webp",join(to,"assets","gruta-da-lapinha-mapa-historico-2002.webp"));
+cpSync("lab-v2/premium/assets/aresta-editor-painel-qualidade-real-2026-11-20.webp",join(to,"assets","aresta-editor-painel-qualidade-real-2026-11-20.webp"));
 write("premium-enhancements.css", readFileSync("lab-v2/premium/enhancements.css", "utf8"));
 write("premium-enhancements.js", readFileSync("lab-v2/premium/enhancements.js", "utf8"));
 write("blog.css", readFileSync("lab-v2/premium/blog.css", "utf8"));
@@ -70,7 +71,7 @@ const compactNavigation =
   '<a href="https://arestaclimb.com/croquis">Croquis</a>' +
   '<a href="' + link("blog/") + '">Diário de Rocha</a>' +
   '<details class="premiumMore"><summary aria-label="Abrir mais informações sobre o Aresta">Sobre</summary>' +
-  '<div class="moreMenu"><a href="#comunidade">Comunidade</a><a href="#croquis">Por que Aresta</a>' +
+  '<div class="moreMenu"><a href="#web">Web + aplicativo</a><a href="#comunidade">Comunidade</a><a href="#croquis">Por que Aresta</a>' +
   '<a href="#editor" class="highlightLink">Editor Aresta</a>' +
   '<a href="#offline">Acesso offline</a><a href="#cobertura">Picos e cobertura</a>' +
   '<a href="#autoria">Autoria e comunidade</a><a href="#codigo">Código aberto</a>' +
@@ -94,6 +95,7 @@ const menu =
   '<a href="#comunidade">Comunidade</a>' +
   '<a href="' + link("blog/") + '" class="premiumMenuAccent">Diário de Rocha ↗</a>' +
   '<div class="menuSectionTitle">Conheça o Aresta</div>' +
+  '<a href="#web">Web + aplicativo</a>' +
   '<a href="#croquis">Por que Aresta</a><a href="#editor">Editor Aresta</a>' +
   '<a href="#offline">Acesso offline</a><a href="#cobertura">Picos e cobertura</a>' +
   '<a href="#autoria">Autoria e comunidade</a><a href="#codigo">Código aberto</a>' +
@@ -117,6 +119,58 @@ replaceOnce('<body>\n<section class="hero" id="inicio">',
 // O build oficial é copiado no próprio Lab: os links institucionais podem ser testados sem tocar em produção.
 html = html.split('https://arestaclimb.com/app').join(link("app/"));
 html = html.split('https://arestaclimb.com/editor').join(link("editor/"));
+// Atualizações editoriais derivadas de capturas reais, mantendo a fonte HTML premium intacta.
+const editorScreenshot=link("assets/aresta-editor-painel-qualidade-real-2026-11-20.webp");
+const oldEditorPattern=/<div class="editorShot"><img src="data:image\/webp;base64,[^"]+" alt="Editor Aresta Desktop real com croqui do Igarameca"><\/div>/g;
+const editorHits=[...html.matchAll(oldEditorPattern)];
+if(editorHits.length!==1)throw Error("Captura antiga Editor inesperada: "+editorHits.length);
+html=html.replace(oldEditorPattern,
+  '<div class="editorShot"><figure class="editorFigure">' +
+  '<a class="editorScreenLink" href="'+editorScreenshot+'" target="_blank" rel="noopener noreferrer" aria-label="Ampliar captura real do painel de qualidade do Editor Aresta">' +
+  '<img src="'+editorScreenshot+'" width="1600" height="944" alt="Captura real do Editor Aresta Beta v0.6.8: Painel de Qualidade do Croqui com etapas para publicação e pontuação no rascunho da Pedreira Dr. Gravatá" loading="lazy" decoding="async"></a>' +
+  '<figcaption>Editor Aresta Beta v0.6.8 · Painel de Qualidade · Captura real de 20/11/2026 <span>Ampliar ↗</span></figcaption></figure></div>');
+
+const sourceContribution=html.match(/<div class="phone mid"><img src="(data:image\/webp;base64,[^"]+)" alt="Tela real de contribuição no Aresta Climb"><\/div>/);
+if(!sourceContribution)throw Error("Tela de contribuição original não encontrada");
+const oldCommunity=/<div class="communityShot"><img src="data:image\/webp;base64,[^"]+" alt="Aba Comunidade real do aplicativo Aresta Climb"><\/div>/g;
+if([...html.matchAll(oldCommunity)].length!==1)throw Error("Tela da comunidade original mudou");
+html=html.replace(oldCommunity,
+  '<div class="communityMedia"><div class="communityAmbient" aria-hidden="true"></div>' +
+  '<figure class="communityShot"><img src="'+sourceContribution[1]+'" width="709" height="1536" alt="Tela real do aplicativo Aresta Climb para enviar problemas e sugestões sobre setores e croquis" loading="lazy" decoding="async">' +
+  '<figcaption>Contribuição feita no contexto do pico. <span>Captura real do aplicativo.</span></figcaption></figure></div>');
+replaceOnce(
+  '<h2 class="display">Quem conhece o pico constrói o Aresta.</h2><p>O Editor Aresta é a ferramenta desktop oficial para trabalhar sobre fotos de alta resolução, desenhar linhas, organizar informações técnicas e publicar atualizações para o ecossistema.</p>',
+  '<h2 class="display">Croquis melhores, etapa por etapa.</h2><p>O Editor Aresta reúne a criação dos croquis em um Painel de Qualidade: tarefas objetivas, pontuação de completude e etapas que orientam a preparação para publicação. O desenho vetorial sobre a foto continua fazendo parte da ferramenta.</p>',
+  "copy atualizada do editor");
+replaceOnce(
+  '<p>O aplicativo permite enviar sugestões e correções. A página oficial também direciona a comunidade para o WhatsApp para trocar informações, sugerir novos picos e acompanhar o desenvolvimento.</p>',
+  '<p>Quem escala pode identificar um trecho, apontar um problema e enviar sugestões pelo aplicativo. O conhecimento local alimenta revisões e correções, preservando créditos e curadoria. A comunidade acompanha a evolução dos picos e croquis.</p>',
+  "copy atualizada comunidade");
+// Recursos técnicos verificados em aresta_db: painel guiado e MCP local integrado.
+const editorStart=html.indexOf('<div class="editorBullets">');
+const editorEnd=html.indexOf('<a class="btn darkGhost"',editorStart);
+if(editorStart<0||editorEnd<0||html.indexOf('<div class="editorBullets">',editorStart+1)>=0)
+  throw Error("Lista de recursos do editor não encontrada");
+const editorBullets='<div class="editorBullets">' +
+  '<div><b>Painel de Qualidade</b><span>Três etapas, nota de completude, tarefas guiadas e atalhos para corrigir pendências.</span></div>' +
+  '<div><b>Edição visual</b><span>Traçado de vias, paradas, proteções e referências diretamente na imagem.</span></div>' +
+  '<div><b>Integração MCP</b><span>Servidor local integrado ao Editor para assistentes compatíveis consultarem estruturas e realizarem edições rastreáveis.</span></div>' +
+  '<div><b>Publicação com critérios</b><span>Rascunhos devem concluir os itens essenciais da primeira etapa antes de liberar a publicação.</span></div>' +
+  '</div>';
+html=html.slice(0,editorStart)+editorBullets+html.slice(editorEnd);
+const webSection='<section class="webBridge section" id="web" aria-labelledby="web-title"><div class="wrap webBridgeGrid">' +
+  '<div class="webBridgeCopy"><div class="caps">Web + Aplicativo</div>' +
+  '<h2 class="display" id="web-title">Descubra na web. Prepare para a rocha.</h2>' +
+  '<p>Os croquis do Aresta também têm uma porta de entrada no navegador. Explore o catálogo web para consultar as informações disponíveis; antes de ir para o pico, prepare no aplicativo os dados que quer levar offline.</p>' +
+  '<div class="webBridgeActions"><a class="btn" href="https://arestaclimb.com/croquis" target="_blank" rel="noopener noreferrer">Abrir croquis na web ↗</a>' +
+  '<a class="webBridgeSecondary" href="'+link("app/")+'">Conhecer o aplicativo →</a></div>' +
+  '<p class="webBridgeNote">A experiência web é complementar. A disponibilidade de conteúdos e recursos pode variar em relação ao aplicativo.</p></div>' +
+  '<div class="webBridgeVisual" aria-label="Como usar a web e o aplicativo para preparar uma escalada"><span class="webBridgeKicker">DO NAVEGADOR À PAREDE</span>' +
+  '<div class="webFlowStep"><span class="webFlowNumber">01</span><div><strong>Conheça os croquis na web</strong><small>Entre pelo navegador e consulte o catálogo disponível.</small></div></div>' +
+  '<div class="webFlowStep"><span class="webFlowNumber">02</span><div><strong>Planeje no aplicativo</strong><small>Explore vias, setores, acessos e informações do pico.</small></div></div>' +
+  '<div class="webFlowStep"><span class="webFlowNumber">03</span><div><strong>Leve os dados à rocha</strong><small>Baixe o conteúdo antes de perder o sinal.</small></div></div>' +
+  '<span class="webBridgeClosing">MENOS INCERTEZA. MAIS PAREDE.</span></div></div></section>\n';
+replaceOnce('<section class="offline section" id="offline">',webSection+'<section class="offline section" id="offline">',"experiência web");
 const blogSection =
   '<section class="premiumBlog section" id="blog" aria-labelledby="premium-blog-title"><div class="wrap">' +
   '<div class="blogHeader"><div><div class="caps" style="color:var(--accent2)">Diário de rocha · cultura & território</div>' +
