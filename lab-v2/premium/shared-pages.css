@@ -32,7 +32,8 @@ html[data-theme="dark"] .lab-v2-unified{
   transition:transform .26s cubic-bezier(.2,.8,.2,1),opacity .22s ease;
 }
 .lab-unified-nav.is-hidden{transform:translateY(calc(-100% - 18px));opacity:0;pointer-events:none}
-.lab-unified-nav.is-hidden:focus-within{transform:none;opacity:1;pointer-events:auto}
+.lab-unified-nav.is-hidden:has(:focus-visible){transform:none;opacity:1;pointer-events:auto}
+.lab-unified-nav.is-hidden:focus-within:not(:has(:focus-visible)){transform:translateY(calc(-100% - 18px));opacity:0;pointer-events:none}
 .lab-unified-nav__brand{display:inline-flex;align-items:center;flex:none;gap:9px;min-width:0;text-decoration:none!important;color:var(--lab-ink)!important}
 .lab-unified-nav__mark{
   display:grid;place-items:center;flex:none;width:35px;height:35px;
