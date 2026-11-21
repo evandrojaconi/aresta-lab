@@ -1,15 +1,18 @@
-# Logo oficial — Aresta Climb / V2
-A imagem foi fornecida pelo usuário nesta conversa e contém o símbolo de montanha e o logotipo “ARESTA CLIMB BETA”.
+# Identidade oficial Aresta Climb — fonte INPI (V2.2)
 
-## Implementação na prévia
-- Origem: `logo_splash.png` (imagem fornecida pelo usuário).
-- Adaptação: símbolo de montanha vetorizado a partir da imagem, invertido em branco para uso sobre o marcador coral que já existe no cabeçalho premium, ao lado do texto “ARESTA CLIMB”.
-- Arquivo no projeto: `lab-v2/premium/assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg`.
-- URL de teste: `https://evandrojaconi.github.io/aresta-lab/v2/assets/aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg`.
-- HTML com `alt` descritivo, `title`, dimensões explícitas e caminho de imagem legível. A logo substitui a miniatura WebP embutida que antes era usada no elemento `<span class="mark">`.
-- O original `lab-v2/premium/source.html` permanece preservado para rastreabilidade. A troca ocorre durante a geração da V2.
+## Fonte de verdade
+A identidade **atual do cabeçalho** vem **sem redesenho** de [`aresta-climb/aresta_app/frontend/assets/logo_splash_inpi.jpg`](https://github.com/aresta-climb/aresta_app/blob/main/frontend/assets/logo_splash_inpi.jpg). Cópia binária com o mesmo SHA `64b198d619a04f6706cef2be1f428ee1ea11e888` em `lab-v2/premium/assets/aresta-climb-logo-oficial-inpi.jpg`.
 
-## SEO
-Intenções relevantes: **Aresta Climb**, **aplicativo de escalada**, **croquis de escalada**, **guia de escalada**, **Belo Horizonte / BH** e **Minas Gerais**. Distribuídas naturalmente entre o nome do arquivo e a descrição; não repetir uma lista de palavras-chave no `alt`.
+O arquivo contém o símbolo da montanha e o nome ARESTA CLIMB juntos. O build retira o lettering HTML redundante e mostra a marca completa usando um **recorte visual via CSS** das grandes margens brancas do JPG; não altera a imagem original. Usado na landing e no Diário de Rocha (índice, artigos e rodapé).
 
-**Limitação:** `/v2/` é homologação e usa `noindex`. A imagem poderá contribuir para SEO depois de sua integração ao site oficial, com URL pública e indexável e os demais elementos da página revisados. Este trabalho não modifica `arestaclimb.com`.
+**LEGADO:** o SVG `aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg` foi uma vetorização provisória. Não deve voltar a aparecer no cabeçalho.
+
+## Layout
+- Barra de navegação com largura máxima 1.000 px e altura compacta, com marca única e CTA.
+- Links principais: Aplicativo · Croquis · Diário de Rocha · Sobre. Comunidade, Editor e informações institucionais continuam acessíveis em Sobre.
+- A navegação mobile entra em telas de 960 px ou menos; comportamento de ocultar ao descer e revelar ao subir permanece.
+
+## SEO e acessibilidade
+Nome do arquivo com marca e identificação institucional. Texto alternativo claro: “Aresta Climb — logotipo oficial com montanha e nome. Aplicativo e croquis de escalada”. A imagem está dentro de um link para a home. Não carregar lista artificial de palavras-chave no alt.
+
+O Aresta Lab segue marcado como `noindex`. A implementação **não altera** o domínio oficial `arestaclimb.com` nem prova indexação em mecanismos de busca.
