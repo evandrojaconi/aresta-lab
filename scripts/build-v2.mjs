@@ -145,6 +145,31 @@ replaceOnce(
   '<p>O aplicativo permite enviar sugestões e correções. A página oficial também direciona a comunidade para o WhatsApp para trocar informações, sugerir novos picos e acompanhar o desenvolvimento.</p>',
   '<p>Quem escala pode identificar um trecho, apontar um problema e enviar sugestões pelo aplicativo. O conhecimento local alimenta revisões e correções, preservando créditos e curadoria. A comunidade acompanha a evolução dos picos e croquis.</p>',
   "copy atualizada comunidade");
+// Recursos técnicos verificados em aresta_db: painel guiado e MCP local integrado.
+const editorStart=html.indexOf('<div class="editorBullets">');
+const editorEnd=html.indexOf('<a class="btn darkGhost"',editorStart);
+if(editorStart<0||editorEnd<0||html.indexOf('<div class="editorBullets">',editorStart+1)>=0)
+  throw Error("Lista de recursos do editor não encontrada");
+const editorBullets='<div class="editorBullets">' +
+  '<div><b>Painel de Qualidade</b><span>Três etapas, nota de completude, tarefas guiadas e atalhos para corrigir pendências.</span></div>' +
+  '<div><b>Edição visual</b><span>Traçado de vias, paradas, proteções e referências diretamente na imagem.</span></div>' +
+  '<div><b>Integração MCP</b><span>Servidor local integrado ao Editor para assistentes compatíveis consultarem estruturas e realizarem edições rastreáveis.</span></div>' +
+  '<div><b>Publicação com critérios</b><span>Rascunhos devem concluir os itens essenciais da primeira etapa antes de liberar a publicação.</span></div>' +
+  '</div>';
+html=html.slice(0,editorStart)+editorBullets+html.slice(editorEnd);
+const webSection='<section class="webBridge section" id="web" aria-labelledby="web-title"><div class="wrap webBridgeGrid">' +
+  '<div class="webBridgeCopy"><div class="caps">Web + Aplicativo</div>' +
+  '<h2 class="display" id="web-title">Descubra na web. Prepare para a rocha.</h2>' +
+  '<p>Os croquis do Aresta também têm uma porta de entrada no navegador. Explore o catálogo web para consultar as informações disponíveis; antes de ir para o pico, prepare no aplicativo os dados que quer levar offline.</p>' +
+  '<div class="webBridgeActions"><a class="btn" href="https://arestaclimb.com/croquis" target="_blank" rel="noopener noreferrer">Abrir croquis na web ↗</a>' +
+  '<a class="webBridgeSecondary" href="'+link("app/")+'">Conhecer o aplicativo →</a></div>' +
+  '<p class="webBridgeNote">A experiência web é complementar. A disponibilidade de conteúdos e recursos pode variar em relação ao aplicativo.</p></div>' +
+  '<div class="webBridgeVisual" aria-label="Como usar a web e o aplicativo para preparar uma escalada"><span class="webBridgeKicker">DO NAVEGADOR À PAREDE</span>' +
+  '<div class="webFlowStep"><span class="webFlowNumber">01</span><div><strong>Conheça os croquis na web</strong><small>Entre pelo navegador e consulte o catálogo disponível.</small></div></div>' +
+  '<div class="webFlowStep"><span class="webFlowNumber">02</span><div><strong>Planeje no aplicativo</strong><small>Explore vias, setores, acessos e informações do pico.</small></div></div>' +
+  '<div class="webFlowStep"><span class="webFlowNumber">03</span><div><strong>Leve os dados à rocha</strong><small>Baixe o conteúdo antes de perder o sinal.</small></div></div>' +
+  '<span class="webBridgeClosing">MENOS INCERTEZA. MAIS PAREDE.</span></div></div></section>\n';
+replaceOnce('<section class="offline section" id="offline">',webSection+'<section class="offline section" id="offline">',"experiência web");
 const blogSection =
   '<section class="premiumBlog section" id="blog" aria-labelledby="premium-blog-title"><div class="wrap">' +
   '<div class="blogHeader"><div><div class="caps" style="color:var(--accent2)">Diário de rocha · cultura & território</div>' +
