@@ -66,7 +66,7 @@ for(const needle of [
  "Croquis melhores, etapa por etapa.","Painel de Qualidade","Três etapas",
  "Integração MCP","Servidor local integrado","Publicação com critérios",
  "Captura real de 20/11/2026", "id=\"web\"","Web + Aplicativo",
- "https://arestaclimb.com/croquis","Do navegador",
+ "https://arestaclimb.com/croquis","DO NAVEGADOR À PAREDE",
  "class=\"communityMedia\"","class=\"communityShot\"",
  "Contribuição feita no contexto do pico",
  "Tela real do aplicativo Aresta Climb para enviar problemas"
