@@ -660,3 +660,75 @@ html[data-theme="dark"] .product .phones::before{
 @media(prefers-reduced-motion:reduce){
   .navWrap{transition:none!important;will-change:auto}
 }
+
+
+/* V2.6 — recursos do app: linhas retangulares, como itens de ação do aplicativo.
+   São descrições de funcionalidades, não botões com ação inexistente. */
+.product .featureList{
+  display:grid;
+  gap:10px;
+  margin-top:28px;
+}
+.product .feature{
+  display:grid;
+  grid-template-columns:46px minmax(0,1fr);
+  align-items:center;
+  gap:15px;
+  min-height:80px;
+  padding:14px 16px;
+  background:#1c2420;
+  border:1px solid rgba(144,169,137,.22);
+  border-radius:14px;
+  box-shadow:0 4px 10px rgba(12,18,14,.07);
+}
+.product .feature .n{
+  display:grid;
+  place-items:center;
+  width:46px;
+  height:42px;
+  flex:none;
+  margin:0;
+  background:#df553f;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:9px;
+  color:#fff;
+  font:800 12px/1 Epilogue,Inter,sans-serif;
+  letter-spacing:.02em;
+}
+.product .feature > div:last-child{
+  min-width:0;
+  align-self:center;
+}
+.product .feature b{
+  display:block;
+  margin:0 0 5px;
+  color:#fffdf8;
+  font:700 14px/1.3 Epilogue,Inter,sans-serif;
+}
+.product .feature span{
+  display:block;
+  color:#c9d1c9;
+  font:400 12px/1.55 Inter,sans-serif;
+}
+@media(max-width:720px){
+  .product .featureList{gap:9px;margin-top:22px}
+  .product .feature{
+    grid-template-columns:40px minmax(0,1fr);
+    gap:12px;
+    min-height:72px;
+    padding:12px;
+    border-radius:12px;
+  }
+  .product .feature .n{
+    width:40px;height:40px;
+    border-radius:8px;
+    font-size:11px;
+  }
+  .product .feature b{font-size:13px}
+  .product .feature span{font-size:12px;line-height:1.48}
+}
+@media(max-width:360px){
+  .product .feature{gap:10px;padding:11px}
+  .product .feature b{font-size:12px}
+  .product .feature span{font-size:11px}
+}
