@@ -31,6 +31,7 @@ mkdirSync(join(to, "assets"), {recursive:true});
 cpSync("lab-v2/premium/assets/aresta-climb-logo-oficial-inpi.jpg",join(to, "assets", "aresta-climb-logo-oficial-inpi.jpg"));
 cpSync("lab-v2/premium/assets/aresta-climb-simbolo-montanha-branco.svg",join(to, "assets", "aresta-climb-simbolo-montanha-branco.svg"));
 cpSync("lab-v2/premium/assets/gruta-da-lapinha-mapa-historico-2002.webp",join(to,"assets","gruta-da-lapinha-mapa-historico-2002.webp"));
+cpSync("lab-v2/premium/assets/aresta-editor-painel-qualidade-real-2026-11-20.webp",join(to,"assets","aresta-editor-painel-qualidade-real-2026-11-20.webp"));
 write("premium-enhancements.css", readFileSync("lab-v2/premium/enhancements.css", "utf8"));
 write("premium-enhancements.js", readFileSync("lab-v2/premium/enhancements.js", "utf8"));
 write("blog.css", readFileSync("lab-v2/premium/blog.css", "utf8"));
@@ -117,6 +118,33 @@ replaceOnce('<body>\n<section class="hero" id="inicio">',
 // O build oficial é copiado no próprio Lab: os links institucionais podem ser testados sem tocar em produção.
 html = html.split('https://arestaclimb.com/app').join(link("app/"));
 html = html.split('https://arestaclimb.com/editor').join(link("editor/"));
+// Atualizações editoriais derivadas de capturas reais, mantendo a fonte HTML premium intacta.
+const editorScreenshot=link("assets/aresta-editor-painel-qualidade-real-2026-11-20.webp");
+const oldEditorPattern=/<div class="editorShot"><img src="data:image\/webp;base64,[^"]+" alt="Editor Aresta Desktop real com croqui do Igarameca"><\/div>/g;
+const editorHits=[...html.matchAll(oldEditorPattern)];
+if(editorHits.length!==1)throw Error("Captura antiga Editor inesperada: "+editorHits.length);
+html=html.replace(oldEditorPattern,
+  '<div class="editorShot"><figure class="editorFigure">' +
+  '<a class="editorScreenLink" href="'+editorScreenshot+'" target="_blank" rel="noopener noreferrer" aria-label="Ampliar captura real do painel de qualidade do Editor Aresta">' +
+  '<img src="'+editorScreenshot+'" width="1600" height="944" alt="Captura real do Editor Aresta Beta v0.6.8: Painel de Qualidade do Croqui com etapas para publicação e pontuação no rascunho da Pedreira Dr. Gravatá" loading="lazy" decoding="async"></a>' +
+  '<figcaption>Editor Aresta Beta v0.6.8 · Painel de Qualidade · Captura real de 20/11/2026 <span>Ampliar ↗</span></figcaption></figure></div>');
+
+const sourceContribution=html.match(/<div class="phone mid"><img src="(data:image\/webp;base64,[^"]+)" alt="Tela real de contribuição no Aresta Climb"><\/div>/);
+if(!sourceContribution)throw Error("Tela de contribuição original não encontrada");
+const oldCommunity=/<div class="communityShot"><img src="data:image\/webp;base64,[^"]+" alt="Aba Comunidade real do aplicativo Aresta Climb"><\/div>/g;
+if([...html.matchAll(oldCommunity)].length!==1)throw Error("Tela da comunidade original mudou");
+html=html.replace(oldCommunity,
+  '<div class="communityMedia"><div class="communityAmbient" aria-hidden="true"></div>' +
+  '<figure class="communityShot"><img src="'+sourceContribution[1]+'" width="709" height="1536" alt="Tela real do aplicativo Aresta Climb para enviar problemas e sugestões sobre setores e croquis" loading="lazy" decoding="async">' +
+  '<figcaption>Contribuição feita no contexto do pico. <span>Captura real do aplicativo.</span></figcaption></figure></div>');
+replaceOnce(
+  '<h2 class="display">Quem conhece o pico constrói o Aresta.</h2><p>O Editor Aresta é a ferramenta desktop oficial para trabalhar sobre fotos de alta resolução, desenhar linhas, organizar informações técnicas e publicar atualizações para o ecossistema.</p>',
+  '<h2 class="display">Croquis melhores, etapa por etapa.</h2><p>O Editor Aresta reúne a criação dos croquis em um Painel de Qualidade: tarefas objetivas, pontuação de completude e etapas que orientam a preparação para publicação. O desenho vetorial sobre a foto continua fazendo parte da ferramenta.</p>',
+  "copy atualizada do editor");
+replaceOnce(
+  '<p>O aplicativo permite enviar sugestões e correções. A página oficial também direciona a comunidade para o WhatsApp para trocar informações, sugerir novos picos e acompanhar o desenvolvimento.</p>',
+  '<p>Quem escala pode identificar um trecho, apontar um problema e enviar sugestões pelo aplicativo. O conhecimento local alimenta revisões e correções, preservando créditos e curadoria. A comunidade acompanha a evolução dos picos e croquis.</p>',
+  "copy atualizada comunidade");
 const blogSection =
   '<section class="premiumBlog section" id="blog" aria-labelledby="premium-blog-title"><div class="wrap">' +
   '<div class="blogHeader"><div><div class="caps" style="color:var(--accent2)">Diário de rocha · cultura & território</div>' +
