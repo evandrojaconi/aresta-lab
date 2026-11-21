@@ -186,12 +186,12 @@ html[data-theme="dark"] .navWrap.is-scrolled .nav{background:rgba(17,20,18,.96)}
 }
 .navWrap .brand{min-width:0;gap:0;flex:none}
 .navWrap .inpiLogo{
-  position:relative;display:block;flex:none;width:99px;height:60px;
+  position:relative;display:block;flex:none;width:93px;height:57px;
   border-radius:9px;overflow:hidden;background:#fff;
 }
 .navWrap .inpiLogo img{
-  display:block;width:131px;height:131px;max-width:none;
-  object-fit:fill;position:absolute;left:-16px;top:-31px;
+  display:block;width:113px;height:113px;max-width:none;
+  object-fit:fill;position:absolute;left:-9px;top:-27px;
 }
 .navWrap .navLinks{gap:clamp(12px,1.25vw,20px)}
 .navWrap .navLinks > a{font-size:12px;padding:16px 0}
@@ -215,11 +215,11 @@ html[data-theme="dark"] .navWrap.is-scrolled .nav{background:rgba(17,20,18,.96)}
   .navWrap{padding-top:10px}
   .navWrap .nav{min-height:57px;padding:4px 8px;border-radius:16px}
   .navWrap .inpiLogo{width:82px;height:51px;border-radius:8px}
-  .navWrap .inpiLogo img{width:109px;height:109px;left:-13px;top:-26px}
+  .navWrap .inpiLogo img{width:102px;height:102px;left:-11px;top:-24.5px}
   .navWrap .navActions{gap:8px}
   .navWrap .theme{width:35px;height:35px}
 }
 @media(max-width:390px){
   .navWrap .inpiLogo{width:78px;height:49px}
-  .navWrap .inpiLogo img{width:104px;height:104px;left:-12px;top:-25px}
+  .navWrap .inpiLogo img{width:98px;height:98px;left:-10px;top:-23.6px}
 }
