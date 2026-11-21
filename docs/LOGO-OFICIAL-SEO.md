@@ -1,18 +1,21 @@
-# Identidade oficial Aresta Climb — fonte INPI (V2.2)
+# Identidade Aresta Climb — variante branca para header compacto
 
-## Fonte de verdade
-A identidade **atual do cabeçalho** vem **sem redesenho** de [`aresta-climb/aresta_app/frontend/assets/logo_splash_inpi.jpg`](https://github.com/aresta-climb/aresta_app/blob/main/frontend/assets/logo_splash_inpi.jpg). Cópia binária com o mesmo SHA `64b198d619a04f6706cef2be1f428ee1ea11e888` em `lab-v2/premium/assets/aresta-climb-logo-oficial-inpi.jpg`.
+## Fonte
+- Fonte institucional: `aresta-climb/aresta_app/frontend/assets/logo_splash_inpi.jpg`, arquivo JPEG original preservado no laboratório como `lab-v2/premium/assets/aresta-climb-logo-oficial-inpi.jpg`.
+- O símbolo da montanha em branco foi **derivado dos contornos da identidade visual fornecida pelo usuário**, sem troca do desenho por ícone genérico.
+- Variante usada no site: `lab-v2/premium/assets/aresta-climb-simbolo-montanha-branco.svg`.
 
-O arquivo contém o símbolo da montanha e o nome ARESTA CLIMB juntos. O build retira o lettering HTML redundante e mostra a marca completa usando um **recorte visual via CSS** das grandes margens brancas do JPG; não altera a imagem original. Usado na landing e no Diário de Rocha (índice, artigos e rodapé).
+## Aplicação
+O cabeçalho deixa de recortar o JPEG branco com símbolo e lettering empilhado. Passa a combinar um pequeno quadrado coral com o **símbolo branco da montanha** e o nome **ARESTA CLIMB** lateralmente, em texto. Mesmo tratamento no Diário de Rocha. Isso permite legibilidade nos modos claro e escuro e evita marca repetida.
 
-**LEGADO:** o SVG `aresta-climb-logo-oficial-croquis-escalada-belo-horizonte-mg.svg` foi uma vetorização provisória. Não deve voltar a aparecer no cabeçalho.
+**V2.3:** desktop até 780 px de largura e 50 px de altura; mobile até 820 px de viewport, com barra de 46 px. O menu Sobre só exibe opções quando está aberto. Header continua ocultando ao descer e reaparecendo ao subir.
 
-## Layout
-- Barra de navegação com largura máxima 1.000 px e altura compacta, com marca única e CTA.
-- Links principais: Aplicativo · Croquis · Diário de Rocha · Sobre. Comunidade, Editor e informações institucionais continuam acessíveis em Sobre.
-- A navegação mobile entra em telas de 960 px ou menos; comportamento de ocultar ao descer e revelar ao subir permanece.
+## SEO / acessibilidade
+- Nome descritivo do asset e `alt="Símbolo da montanha Aresta Climb"`. O link da marca contém o nome visível completo e leva ao início.
+- Não usar lista de palavras-chave no `alt`. O posicionamento sobre aplicativo, escalada, Belo Horizonte e croquis pertence também às páginas e textos, não somente ao arquivo de logo.
+- A V2 segue `noindex` por ser ambiente de homologação. Não foi alterado `arestaclimb.com`.
 
-## SEO e acessibilidade
-Nome do arquivo com marca e identificação institucional. Texto alternativo claro: “Aresta Climb — logotipo oficial com montanha e nome. Aplicativo e croquis de escalada”. A imagem está dentro de um link para a home. Não carregar lista artificial de palavras-chave no alt.
-
-O Aresta Lab segue marcado como `noindex`. A implementação **não altera** o domínio oficial `arestaclimb.com` nem prova indexação em mecanismos de busca.
+## Estado das variantes
+- **Fonte:** JPEG oficial INPI no repositório `aresta_app`.
+- **Derivado em uso:** SVG de contorno branco + lettering lateral.
+- **Legado:** vetor aproximado usado no protótipo anterior e JPEG completo cortado dentro da barra.
