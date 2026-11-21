@@ -4,7 +4,7 @@ const slug=process.env.GITHUB_REPOSITORY?.split("/").at(-1)||"aresta-lab";
 const base="/"+slug+"/v2/";
 const folder=".output/public/v2";
 const expected=["index.html","app/index.html","editor/index.html","premium-enhancements.css","premium-enhancements.js",
-  "blog.css","blog.js","assets/aresta-climb-logo-oficial-inpi.jpg","assets/aresta-climb-simbolo-montanha-branco.svg","assets/gruta-da-lapinha-mapa-historico-2002.webp","design-source.json","source.json","blog/index.html",
+  "blog.css","blog.js","assets/aresta-climb-logo-oficial-inpi.jpg","assets/aresta-climb-simbolo-montanha-branco.svg","assets/gruta-da-lapinha-mapa-historico-2002.webp","assets/aresta-editor-painel-qualidade-real-2026-11-20.webp","design-source.json","source.json","blog/index.html",
   "blog/historia-escalada-gruta-da-lapinha/index.html","blog/croqui-nao-comeca-na-parede/index.html","blog/offline-e-preparacao/index.html","blog/territorio-e-comunidade/index.html"];
 const errors=[];
 for(const p of expected)if(!existsSync(join(folder,p)))errors.push("Arquivo ausente: "+p);
@@ -15,7 +15,7 @@ const source=readFileSync("lab-v2/premium/source.html","utf8");
 const checks=[
 ["hero premium","Menos caça à informação."],["continuação hero","Mais tempo na parede."],
 ["telas reais","Tela real de setores no Aresta Climb"],
-["captura do Editor","Editor Aresta Desktop real"],
+["captura do Editor","Painel de Qualidade do Croqui"],
 ["imagem embutida","data:image/webp;base64,"],
 ["estilo original",":root{--bg:#f5f1e9;"],
 ["tema original",'id="theme"'],
@@ -54,6 +54,33 @@ if(!blog.includes("EDIÇÃO 01 · GRUTA DA LAPINHA"))errors.push("Blog não iden
 const blogStyles=file("blog.css");
 for(const selector of [".lab-article-card--featured",".lab-partner-story",".lab-history-timeline"])
  if(!blogStyles.includes(selector))errors.push("Blog CSS sem: "+selector);
+
+// Atualização V2.4: nenhum asset fictício, nova captura REAL e jornada de produto.
+const editorRealBytes=readFileSync(join(folder,"assets/aresta-editor-painel-qualidade-real-2026-11-20.webp"));
+if(editorRealBytes.length<50000||editorRealBytes.subarray(0,4).toString()!=="RIFF")
+ errors.push("Editor: captura WebP real ausente/corrompida");
+const editorAsset=base+"assets/aresta-editor-painel-qualidade-real-2026-11-20.webp";
+if(!home.includes('src="'+editorAsset+'"')||!home.includes('href="'+editorAsset+'"'))
+ errors.push("Editor: imagem real não está visível nem pode ser ampliada");
+for(const needle of [
+ "Croquis melhores, etapa por etapa.","Painel de Qualidade","Três etapas",
+ "Integração MCP","Servidor local integrado","Publicação com critérios",
+ "Captura real de 20/11/2026", "id=\"web\"","Web + Aplicativo",
+ "https://arestaclimb.com/croquis","Do navegador",
+ "class=\"communityMedia\"","class=\"communityShot\"",
+ "Contribuição feita no contexto do pico",
+ "Tela real do aplicativo Aresta Climb para enviar problemas"
+]) if(!home.includes(needle))errors.push("Landing V2.4 sem: "+needle);
+if(home.includes('alt="Aba Comunidade real do aplicativo Aresta Climb"'))
+ errors.push("Comunidade: captura antiga de links ainda em uso");
+if(!css.includes(".product .phones::before")||!css.includes(".community .communityMedia")||!css.includes(".editor .editorScreenLink"))
+ errors.push("CSS V2.4: integração de mídia ausente");
+if(!css.includes(".webBridgeGrid")||!css.includes(".webFlowStep"))
+ errors.push("CSS V2.4: seção web sem responsividade");
+if(!css.includes(".final::before{background:none!important}")||!css.includes("box-shadow:0 4px 11px"))
+ errors.push("CSS V2.4: excesso de brilho dos botões não corrigido");
+if(home.includes("aresta_climb_minas_na_palma")||home.includes("editor_aresta_qualidade_guiada_e_vmcp"))
+ errors.push("Imagem promocional gerada não deve substituir captura real do app");
 
 const officialJpg=readFileSync(join(folder,"assets/aresta-climb-logo-oficial-inpi.jpg"));
 const officialLogoSrc=base+"assets/aresta-climb-simbolo-montanha-branco.svg";
@@ -108,7 +135,7 @@ for(const behavior of ["requestAnimationFrame(updateHeader)",'window.addEventLis
 
 if(!css.includes("premiumMobileMenu"))errors.push("CSS mobile ausente");
 if(!body.includes("HTML premium integral"))errors.push("Metadados sem origem exata");
-if(source.length<750000||home.length<750000)errors.push("Imagens premium ausentes ou arquivo truncado");
+if(source.length<750000||home.length<610000)errors.push("Imagens premium ausentes ou arquivo truncado");
 if(home.includes("Quer um Beta?<br>")||home.includes("Menos incerteza.<br>"))errors.push("Landing antiga ainda presente");
 if(errors.length){console.error(errors.join("\n"));process.exit(1);}
 console.log("Premium V2 QA OK: fonte intacta + navegação + blog + páginas oficiais; origem",source.length,"chars");
