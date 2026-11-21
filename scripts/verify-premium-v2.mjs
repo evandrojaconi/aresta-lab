@@ -130,8 +130,28 @@ if(!css.includes(".hero::before")||!css.includes(".hero::after")||!css.includes(
 if(!css.includes(".navWrap.is-hidden")||!css.includes(".navWrap.is-scrolled"))errors.push("Header: falta estado de rolagem");
 if(!css.includes(".premiumMore")||!css.includes("@media(max-width:720px)")||!css.includes("prefers-reduced-motion"))errors.push("Header: falta responsividade ou redução de movimento");
 const headerJs=file("premium-enhancements.js");
-for(const behavior of ["requestAnimationFrame(updateHeader)",'window.addEventListener("scroll"',"is-hidden","is-scrolled",'event.key !== "Escape"',"focusin","prefersReducedMotion"])
+for(const behavior of ["requestAnimationFrame(syncWithScroll)",'window.addEventListener("scroll"',"is-hidden","is-scrolled",'event.key !== "Escape"',"focusin","keyboardFocus","distanceInDirection","window.innerWidth > 840"])
  if(!headerJs.includes(behavior))errors.push("Comportamento do header: "+behavior);
+
+// V2.5: regressões já vistas em dispositivos móveis.
+if(!css.includes(".premiumMobileMenu:not([open]) > .mobileMenuLinks") ||
+   !css.includes(".premiumMobileMenu[open] > .mobileMenuLinks"))
+  errors.push("Menu mobile: deve ocultar o conteúdo fechado e mostrar ao abrir");
+if(!css.includes("width:min(560px,calc(100% - 20px))") ||
+   !css.includes("@media(max-width:840px)") ||
+   !css.includes("height:54px"))
+  errors.push("Menu mobile: barra não é fluida/proporcional");
+if(!css.includes("max-height:min(69dvh,520px)") ||
+   !css.includes("overscroll-behavior:contain"))
+  errors.push("Menu mobile: lista não tem limite para viewport");
+if(!css.includes(":has(:focus-visible)") ||
+   !css.includes(".navWrap.is-hidden:focus-within:not(:has(:focus-visible))"))
+  errors.push("Header: foco de toque continua bloqueando desaparecimento");
+if(!headerJs.includes("bar.classList.add(\"is-hidden\")") ||
+   !headerJs.includes("reveal()") ||
+   !headerJs.includes("distanceInDirection > 11") ||
+   !headerJs.includes("openMenu() || keyboardFocus()"))
+  errors.push("Header: esconder ao descer, reaparecer ao subir e manter aberto durante interação");
 
 if(!css.includes("premiumMobileMenu"))errors.push("CSS mobile ausente");
 if(!body.includes("HTML premium integral"))errors.push("Metadados sem origem exata");
