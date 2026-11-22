@@ -1,3 +1,4 @@
+import {renderProcessToday} from './process-center.js';
 // ARESTA Intelligence: central de execução, design e base operacional.
 // Os dados são servidos pelo Supabase com RLS; integrações externas não são presumidas.
 const E=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -44,6 +45,7 @@ export function renderCommandHome({state,rankTasks,STATUS_LABELS}) {
      '<span class="queue-meta">'+(due?'<em>'+due+'</em>':'')+'<small>'+E(t.track)+' · '+E(STATUS_LABELS[t.status]||t.status)+'</small></span>'+
      '<span aria-hidden="true" class="queue-arrow">›</span></button>';
   }).join(''):'<div class="empty">Nenhuma tarefa aberta. Aproveite para revisar os resultados e preparar a próxima ação.</div>')+'</div>'+
+  renderProcessToday({state})+
   '<section class="section-head slim"><div><h2>Pulso do produto</h2>'+
      '<p>Dados do relatório Aresta, registrados com fonte. Não são dados em tempo real.</p></div>'+
      '<button class="secondary" data-view="dados">Analisar dados</button></section>'+
