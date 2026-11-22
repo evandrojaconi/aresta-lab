@@ -341,3 +341,53 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .mission-today-grid article button{font-size:.76rem}
 @media(max-width:1050px){.mission-work-grid{grid-template-columns:1fr}.mission-today-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:720px){.mission-hero{flex-direction:column;align-items:stretch;padding:21px}.mission-mission-stat{border-left:0;border-top:1px solid #50605b;padding-left:0;padding-top:12px;max-width:none}.mission-stream{grid-template-columns:25px minmax(0,1fr) 16px;gap:9px;padding:13px}.mission-stream-signal{display:none}.mission-evidence{grid-template-columns:1fr}.mission-today-grid{grid-template-columns:1fr}.mission-today-head{flex-direction:column;align-items:start}.mission-tabbar{gap:5px}}
+
+/* Lapinha — camada territorial única e dados rastreáveis */
+.territory-hero{display:flex;justify-content:space-between;gap:28px;align-items:center;background:#1d2522;color:#f5f0e8;border-radius:13px;padding:24px 28px;margin:15px 0 18px}
+.territory-hero .overline{color:#ffa37d}
+.territory-hero h2{font:800 clamp(1.07rem,2vw,1.48rem)/1.3 Epilogue,sans-serif;letter-spacing:-.035em;max-width:780px;margin:8px 0}
+.territory-hero p{font-size:.82rem;color:#e4dcd1;line-height:1.45;max-width:700px;margin:8px 0 0}
+.territory-hero>div:last-child{min-width:100px;display:flex;flex-direction:column;border-left:1px solid #46504b;padding-left:25px}
+.territory-hero>div:last-child b{font:800 2.1rem Epilogue,sans-serif;color:#f18862}
+.territory-hero>div:last-child small{color:#e4dcd1}
+.territory-status,.territory-layer,.territory-governance,.territory-method{border:1px solid #e3d8cb;background:#fcf9f3;padding:20px;border-radius:12px;margin:15px 0}
+.territory-title{display:flex;align-items:start;justify-content:space-between;gap:15px;margin-bottom:16px}
+.territory-title h2{font:800 1rem Epilogue,sans-serif;letter-spacing:-.025em;margin:0 0 7px}
+.territory-title p{font-size:.76rem;margin:0;color:#6d5e51;line-height:1.5}
+.territory-title a{font-size:.75rem;color:#c84b2c}
+.territory-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.territory-stat{padding:15px;background:#f3ece2;border-radius:9px;display:flex;flex-direction:column;gap:6px}
+.territory-stat b{font:800 1.32rem Epilogue,sans-serif;color:#b94728}
+.territory-stat span{font-size:.77rem;font-weight:800;line-height:1.3}
+.territory-stat small{font-size:.67rem;color:#665b50;line-height:1.4}
+.territory-footnote{color:#63594e;font-size:.75rem;margin:16px 0 2px}
+.territory-outcomes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.territory-outcome{display:flex;flex-direction:column;text-align:left;gap:9px;border:1px solid #ded1c0;border-radius:10px;background:#fffdf8;padding:15px;cursor:pointer;color:#22211e}
+.territory-outcome:hover,.territory-outcome.active{border-color:#d95635;background:#faede4}
+.territory-outcome .territory-index{font:.78rem Epilogue,sans-serif;font-weight:800;color:#d95635}
+.territory-outcome strong{font:800 .89rem Epilogue,sans-serif;letter-spacing:-.02em}
+.territory-outcome>span:not(.territory-index){font-size:.75rem;line-height:1.4;color:#4f4943}
+.territory-outcome small{font-size:.7rem;line-height:1.45;color:#776a5c}
+.territory-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.territory-actions a{display:inline-flex;border-radius:8px;border:1px solid #cb755b;padding:10px 13px;text-decoration:none;font-size:.78rem;color:#a13724;font-weight:750}
+.territory-records{margin:15px 0}
+.territory-evidence-row{display:flex;justify-content:space-between;gap:14px;border-top:1px solid #e2d8ca;padding:13px 0}
+.territory-evidence-row h3{font:800 .87rem Epilogue,sans-serif;line-height:1.4;margin:8px 0}
+.territory-evidence-row p{font-size:.77rem;line-height:1.5;color:#59534b}
+.territory-evidence-row small{font-size:.68rem;color:#776b60}
+.territory-evidence-row a{font-size:.73rem;color:#b94728}
+.territory-empty{color:#665d55;font-size:.8rem}
+.territory-capture{background:#f2e9de;border:1px solid #dccbb9;border-radius:10px;padding:16px;margin:16px 0}
+.territory-capture summary{font-weight:800;cursor:pointer;color:#a8482a}
+.territory-capture .form-grid{margin-top:15px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.territory-capture label{display:flex;flex-direction:column;gap:7px;font-size:.77rem;font-weight:700}
+.territory-capture .span-2{grid-column:span 2}
+.territory-actors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.territory-actors article{border-left:3px solid #b95e42;padding:10px 13px;background:#f4eee6;border-radius:0 9px 9px 0}
+.territory-actors article b{font-size:.82rem}
+.territory-actors article p{font-size:.74rem;margin:6px 0}
+.territory-actors article small{font-size:.68rem;color:#6a6056}
+.territory-method h2{font:800 .98rem Epilogue,sans-serif;margin:0 0 9px}
+.territory-method p{font-size:.8rem;line-height:1.6}
+@media(max-width:1050px){.territory-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.territory-hero{flex-direction:column;align-items:stretch;padding:20px}.territory-hero>div:last-child{border-left:0;border-top:1px solid #46504b;padding:12px 0 0}.territory-outcomes,.territory-actors,.territory-capture .form-grid{grid-template-columns:1fr}.territory-capture .span-2{grid-column:span 1}.territory-kpis{grid-template-columns:1fr}.territory-title{flex-direction:column}.territory-evidence-row{flex-direction:column}}
