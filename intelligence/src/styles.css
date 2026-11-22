@@ -194,3 +194,17 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .password-once label{display:flex;flex-direction:column;gap:7px;font-weight:700}
 .password-once input{width:100%;font:700 .93rem ui-monospace,Consolas,monospace;letter-spacing:.015em;background:white}
 .password-once .actions-block{margin-top:14px}
+
+/* Colaboração: monitoramento de PRs públicos do Editor, sem duplicar a revisão */
+.collaboration-panel{margin-bottom:21px}
+.collaboration-panel .panel-title{gap:16px;align-items:flex-start}
+.collaboration-panel .panel-title h2{margin-bottom:6px}
+.collaboration-panel .panel-title button{white-space:nowrap}
+.collaboration-stats{grid-template-columns:repeat(3,minmax(0,1fr));margin:15px 0}
+.collaboration-list{display:grid;gap:8px;margin:16px 0}
+.collaboration-item{border:1px solid #e7dfd5;border-radius:10px;background:#fffaf3;padding:14px 16px;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.collaboration-item h3{font-family:Epilogue,sans-serif;font-size:.87rem;margin:9px 0 6px;line-height:1.35}
+.collaboration-item .actions-block{margin:0;justify-content:flex-end;align-items:center}
+.collaboration-item a.secondary{display:inline-flex;text-decoration:none;align-items:center;color:#5c362a;border:1px solid #c9b3a3;padding:9px 12px;border-radius:8px;font-size:.76rem;white-space:nowrap}
+.collaboration-item .actions-block button{font-size:.76rem;white-space:nowrap}
+@media(max-width:800px){.collaboration-item{align-items:stretch;flex-direction:column}.collaboration-item .actions-block{justify-content:flex-start;flex-wrap:wrap}}
