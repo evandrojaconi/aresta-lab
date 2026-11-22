@@ -67,7 +67,13 @@ function renderProcessCard(pr,process,content,task,readonly){
  '</article>';
 }
 export function renderProcessCenter({state,readonly=()=>true}){
- const info=state.editorSuggestions||{},prs=sorted(info.records||[],state.croquiProcesses||[]);
+ const info=state.editorSuggestions||{};
+ const known=info.records||[];
+ // Casos do CRM permanecem visíveis se saírem da página de 100 PRs consultadas.
+ const missing=(state.croquiProcesses||[]).filter(c=>!known.some(p=>p.number===c.pr_number))
+   .map(c=>({number:c.pr_number,title:'Contribuição #'+c.pr_number+' — consultar GitHub',
+     status:'não verificado',updatedAt:c.updated_at,url:uri(c.pr_number)}));
+ const prs=sorted([...known,...missing],state.croquiProcesses||[]);
  const selected=state.processFilter||'todos';
  const displayed=selected==='acompanhados'?prs.filter(p=>processFor(state,p.number)):
    selected==='abertos'?prs.filter(p=>p.status==='aberta'):prs;
@@ -127,7 +133,27 @@ export function installProcessHandlers(getCtx){
   try{
    if(action==='filter'){state.processFilter=key;state.processLimit=12;render();return}
    if(action==='more'){state.processLimit=(state.processLimit||12)+12;render();return}
-   if(!db||readonly()||!pr)return;
+   if(!db||!pr)return;
+   if(action==='open-content'){
+     if(!row?.communication_content_id)return;
+     state.activeContentId=row.communication_content_id;state.view='marketing';render();
+     document.getElementById('focus-editor')?.scrollIntoView({behavior:'smooth',block:'start'});return;
+   }
+   if(action==='copy-brief'&&row){
+     const content=(state.contents||[]).find(x=>x.id===row.communication_content_id);
+     const task=(state.items||[]).find(x=>x.id===row.followup_task_id);
+     const status=deriveCroquiSteps(pr,row,content);
+     const brief=['PROCESSO ARESTA — PR #'+n,pr.title,'Origem: '+uri(n),
+       ...status.map(x=>x.title+': '+x.status+' | '+x.detail),
+       'Responsável operacional: '+(row.owner_label||'a definir'),
+       'Próxima ação: '+(row.next_action||'a definir'),
+       'Tarefa: '+(task?.title||'não vinculada'),
+       'Notas: '+(row.learning_note||'nenhuma'),
+       'Separar fatos, hipóteses e recomendações; não alegar atualização no app sem confirmação.'].join('\n\n');
+     await navigator.clipboard.writeText(brief);
+     state.notice='Contexto da jornada copiado, com origem e lacunas.';render();return;
+   }
+   if(readonly())return;
    if(action==='track'){
      if(row){state.notice='Este fluxo já está sendo acompanhado.';render();return}
      const {error}=await db.from('crm_croqui_processes').insert({
@@ -181,25 +207,6 @@ export function installProcessHandlers(getCtx){
        .eq('id',row.id).eq('workspace_id',ws());
      if(error)throw error;
      await loadData();state.notice='Pauta vinculada ao processo. Abra Marketing para editar.';render();return;
-   }
-   if(action==='open-content'){
-     if(!row.communication_content_id)return;
-     state.activeContentId=row.communication_content_id;state.view='marketing';render();
-     document.getElementById('focus-editor')?.scrollIntoView({behavior:'smooth',block:'start'});return;
-   }
-   if(action==='copy-brief'){
-     const content=(state.contents||[]).find(x=>x.id===row.communication_content_id);
-     const task=(state.items||[]).find(x=>x.id===row.followup_task_id);
-     const status=deriveCroquiSteps(pr,row,content);
-     const brief=['PROCESSO ARESTA — PR #'+n,pr.title,'Origem: '+uri(n),
-       ...status.map(x=>x.title+': '+x.status+' | '+x.detail),
-       'Responsável operacional: '+(row.owner_label||'a definir'),
-       'Próxima ação: '+(row.next_action||'a definir'),
-       'Tarefa: '+(task?.title||'não vinculada'),
-       'Notas: '+(row.learning_note||'nenhuma'),
-       'Separar fatos, hipóteses e recomendações; não alegar atualização no app sem confirmação.'].join('\n\n');
-     await navigator.clipboard.writeText(brief);
-     state.notice='Contexto da jornada copiado, com origem e lacunas.';render();return;
    }
   }catch(error){state.error=String(error?.message||error);render();}
  });
