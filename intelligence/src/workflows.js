@@ -126,8 +126,8 @@ export function renderInsights({state,esc,readonly}) {
      '<label class="span-2">Notas de interpretação<input name="source_note" maxlength="500" placeholder="Qual fonte, cobertura e limitação?"></label>'+
      '<button class="primary" type="submit">Registrar medição</button></form>')+
    '<div class="metric-toolbar"><select id="metric-filter" aria-label="Fonte da série">'+sources.map(x=>'<option value="'+esc(x.id)+'"'+(x.id===current?' selected':'')+'>'+esc(x.provider)+'</option>').join('')+'</select></div>'+
-   (snapshots.length?'<div class="table-wrap"><table><thead><tr><th>Métrica</th><th>Valor</th><th>Período</th><th>Tipo</th><th>Coleta</th></tr></thead><tbody>'+
-   snapshots.slice(0,35).map(r=>'<tr><td>'+esc(r.metric_name)+'</td><td><strong>'+esc(r.metric_value)+' '+esc(r.metric_unit)+'</strong></td><td>'+esc(r.period_label)+'</td><td>'+esc(r.provenance)+'</td><td>'+date(r.observed_at)+'</td><td>'+buttonAction(r.id,'metric-to-content','Criar pauta',readonly())+'</td></tr>').join('')+'</tbody></table></div>':blank('Nenhum valor conferido. Abra as fontes ou conecte a API antes de interpretar resultados.'))+'</div>';
+   (snapshots.length?'<div class="table-wrap"><table><thead><tr><th>Métrica</th><th>Valor</th><th>Período</th><th>Tipo</th><th>Coleta</th><th>Ação</th></tr></thead><tbody>'+
+   snapshots.slice(0,35).map(r=>'<tr><td>'+esc(r.metric_name)+'</td><td><strong>'+esc(r.metric_value)+' '+esc(r.metric_unit)+'</strong></td><td>'+esc(r.period_label)+'</td><td>'+esc(r.provenance)+'</td><td>'+date(r.observed_at)+'</td><td>'+buttonAction(r.id,'metric-to-content','Criar pauta',readonly())+'</td></tr>').join('')+'</tbody></table></div>':blank('Nenhum valor conferido. Abra as fontes ou conecte a API antes de interpretar resultados.'))+'</div>'+renderStrategicPulse({state});
 }
 
 // Binding funcional no CRM, usando apenas acesso com membership + RLS.
