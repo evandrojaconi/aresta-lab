@@ -1,0 +1,1 @@
+A alteração pretendida em `.github/workflows/github-pages.yml` adiciona build Vite de `intelligence` e copia `dist/` para `.output/public/intelligence/` após as construções atuais, sem substituir o diretório da landing.
