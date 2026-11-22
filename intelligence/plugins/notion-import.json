@@ -1,0 +1,36 @@
+{
+  "schema_version": "1",
+  "key": "notion_import",
+  "name": "Notion — importador de conhecimento",
+  "category": "data",
+  "vendor": "Notion",
+  "auth": {
+    "type": "api_key_server",
+    "scopes": [
+      "content:read"
+    ]
+  },
+  "capabilities": [
+    {
+      "action": "importar_pautas",
+      "kind": "read",
+      "requires_approval": false
+    },
+    {
+      "action": "importar_portfolio",
+      "kind": "read",
+      "requires_approval": false
+    },
+    {
+      "action": "importar_acoes",
+      "kind": "read",
+      "requires_approval": false
+    }
+  ],
+  "data_policy": {
+    "level": "restricted",
+    "notes": "Somente leitura; preservar origem e isolar por workspace. Sem exportar dados pessoais ao GitHub."
+  },
+  "review_required": false,
+  "status": "needs_auth"
+}
