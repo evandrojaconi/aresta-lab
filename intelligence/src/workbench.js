@@ -279,6 +279,10 @@ export function installWorkbenchHandlers(getCtx) {
      if(update.error)throw update.error;
      await loadData();state.view='produto';state.notice='Nota convertida em proposta de Produto.';rerender();return;
    }
+   if(action==='partner-prefill'){
+     state.partnerPrefill=b.dataset.name||'';state.view='pessoas';rerender();
+     document.getElementById('contact-form')?.scrollIntoView({behavior:'smooth',block:'center'});return;
+   }
    if(action==='knowledge-group'){state.knowledgeGroup=b.dataset.key;state.kbLimit=9;rerender();return}
    if(action==='more-knowledge'){state.kbLimit=(state.kbLimit||9)+9;rerender();return}
   }catch(err){state.error=err.message||String(err);rerender()}
