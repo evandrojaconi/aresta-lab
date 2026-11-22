@@ -26,7 +26,7 @@ const previewChannels = ['Instagram/Meta','Facebook','LinkedIn','WhatsApp','Disc
 }));
 const state = {
   view:'hoje', track:'Todas', loading:true, busy:false,
-  session:null, membership:null, items:[], contacts:[], touchpoints:[], channels:[], audit:[],
+  session:null, membership:null, memberships:[], workspaceNames:{}, knowledge:[], extensions:[], knowledgeKind:'all', items:[], contacts:[], touchpoints:[], channels:[], audit:[],
   notice:'', error:'', aiResult:'', aiLoading:false
 };
 const canEdit = () => !!state.membership && ['admin','editor'].includes(state.membership.role);
@@ -156,6 +156,47 @@ function renderChannels() {
       '<p>'+esc(c.notes||'Aguardando validação da API.')+'</p><small>Última verificação: '+esc(c.last_verified_at?new Date(c.last_verified_at).toLocaleString('pt-BR'):'não realizada')+'</small></article>').join('')+'</div>'+
     '<div class="panel"><h2>Política de integração</h2><p>Instagram/Facebook, WhatsApp Business e LinkedIn exigem aprovação de acesso e API oficial aplicável. Publicações são rascunhos até aprovação humana. Drive, Gmail, Calendar e Notion requerem permissões próprias; o login Google não libera seus arquivos.</p></div>';
 }
+
+const KNOWLEDGE_TYPES = [
+  ['all','Tudo'],['task','Ações'],['project','Projetos'],['editorial','Editorial'],
+  ['territory','Territórios'],['evidence','Inteligência'],['partner','Parcerias']
+];
+function renderKnowledge() {
+  const list=state.knowledgeKind==='all'?state.knowledge:
+    state.knowledge.filter(r=>r.record_kind===state.knowledgeKind);
+  const grouped=KNOWLEDGE_TYPES.slice(1).map(([id,label])=>({
+    id,label,count:state.knowledge.filter(r=>r.record_kind===id).length
+  }));
+  const cards=list.map(r=>'<article class="knowledge-card"><div class="item-top">'+
+    badge((KNOWLEDGE_TYPES.find(t=>t[0]===r.record_kind)||[])[1]||r.record_kind,'outline')+
+    '<span class="track-tag">'+esc(r.area||'Aresta')+'</span>'+
+    (r.source_status?badge(r.source_status):'')+'</div>'+
+    '<h3>'+esc(r.title)+'</h3>'+
+    (r.summary?'<p>'+esc(r.summary)+'</p>':'')+
+    '<div class="knowledge-meta"><span>'+esc(r.source_collection)+' · origem: '+esc(r.source_system)+'</span>'+
+    link(r.source_url,'Abrir original')+'</div></article>').join('');
+  return '<section class="section-head"><div><span class="overline">ACERVO CENTRALIZADO · FONTE IDENTIFICADA</span>'+
+    '<h1>Conhecimento do Aresta</h1><p>Tarefas, projetos, editorial, territórios e parceiros migrados com rastreabilidade. O Notion permanece como histórico; esta é a visualização do CRM.</p></div>'+
+    '<div class="actions"><select id="knowledge-filter" aria-label="Filtrar por segmento">'+
+    KNOWLEDGE_TYPES.map(([id,label])=>option(id,label,state.knowledgeKind)).join('')+'</select></div></section>'+
+    '<div class="knowledge-summary">'+grouped.map(c=>'<div><b>'+c.count+'</b><span>'+esc(c.label)+'</span></div>').join('')+'</div>'+
+    '<div class="knowledge-grid">'+(cards||'<div class="empty">Nenhum registro importado neste workspace.</div>')+'</div>'+
+    '<div class="panel"><p class="micro">Registros importados são snapshots com link e data de sincronização. O sistema não altera dados no Notion. Cópias não provam estado de implementação de funcionalidades.</p></div>';
+}
+function renderExtensions() {
+  const cards=state.extensions.map(e=>'<article class="panel extension-card">'+
+    '<div class="item-top">'+badge(e.category,'outline')+
+      badge(e.status==='connected'?'Conectado':e.status==='needs_auth'?'Autorização necessária':
+        e.status==='planned'?'Planejado':'Catalogado',e.status==='connected'?'success':'outline')+'</div>'+
+    '<h2>'+esc(e.display_name)+'</h2><p>'+esc(e.description)+'</p>'+
+    (e.source_url?link(e.source_url,'Documentação'):'')+
+    '<p class="micro">Último teste: '+esc(e.last_verified_at?new Date(e.last_verified_at).toLocaleString('pt-BR'):'nenhum')+'</p></article>').join('');
+  return '<section class="section-head"><div><span class="overline">PLATAFORMA MODULAR</span><h1>Integrações e plugins</h1>'+
+    '<p>O sistema já conhece os serviços e as capacidades do Editor. Cada extensão precisa de autenticação própria e teste real para ser considerada conectada.</p></div></section>'+
+    '<div class="channel-grid">'+(cards||'<div class="empty">Extensões ainda não configuradas.</div>')+'</div>'+
+    '<div class="panel"><h2>Modelo replicável por organização</h2><p>Workspace e permissões isoladas por equipe. Plugins declaram capacidades, escopos e origem. A ponte com o Editor usa APIs/contratos existentes, sem conceder ao CRM acesso direto ao banco público de croquis nem aos tokens do GitHub.</p></div>';
+}
+
 function renderAI() {
   const top=rankTasks(state.items).slice(0,3);
   return '<section class="section-head"><div><span class="overline">EVIDÊNCIA → HIPÓTESE → AÇÃO</span><h1>Assistente de priorização</h1>'+
@@ -185,15 +226,15 @@ function render() {
   if (state.loading) return renderSplash('Carregando o workspace...');
   if (db && !state.session) return renderLogin();
   if (db && !state.membership) return renderNoAccess();
-  const nav=[['hoje','Visão de hoje'],['pipeline','Pipeline'],['pessoas','Relacionamentos'],['canais','Canais'],['ia','IA & Evidências'],['acesso','Configuração']];
-  const body={hoje:renderToday,pipeline:renderPipeline,pessoas:renderContacts,canais:renderChannels,ia:renderAI,acesso:renderAccess}[state.view]();
-  const indicators=stats().map(x=>'<div class="kpi"><strong>'+x.val+'</strong><span>'+esc(x.label)+'</span></div>').join('');
+  const nav=[['hoje','Visão de hoje'],['pipeline','Pipeline'],['acervo','Conhecimento'],['extensoes','Extensões'],['pessoas','Relacionamentos'],['canais','Canais'],['ia','IA & Evidências'],['acesso','Configuração']];
+  const body={hoje:renderToday,pipeline:renderPipeline,acervo:renderKnowledge,extensoes:renderExtensions,pessoas:renderContacts,canais:renderChannels,ia:renderAI,acesso:renderAccess}[state.view]();
+  const indicators=[...stats(),{label:'Acervo',val:state.knowledge.length}].map(x=>'<div class="kpi"><strong>'+x.val+'</strong><span>'+esc(x.label)+'</span></div>').join('');
   app.innerHTML='<div class="shell"><aside class="sidebar"><div class="brand"><span class="brand-mark">A</span><span>ARESTA <em>INTELLIGENCE</em></span></div>'+
     '<div class="sidebar-label">CENTRO DE OPERAÇÕES</div><nav>'+nav.map(([id,label])=>'<button data-view="'+id+'" class="'+(state.view===id?'active':'')+'">'+esc(label)+'</button>').join('')+'</nav>'+
     '<div class="side-bottom"><span class="online-dot"></span>'+(db?'Supabase · acesso autenticado':'Modo demonstração')+
     '<p>'+(db?'Aresta · '+esc(state.membership?.role):'Dados ilustrativos. Nenhum registro será salvo.')+'</p></div></aside>'+
     '<main class="main"><header class="topbar"><div><span class="overline">ARESTA CLIMB / INTELLIGENCE</span><p>'+esc(new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'2-digit'}))+' · Sprint 0 · 23–27/11</p></div>'+
-    '<div class="top-right">'+badge(db?'Workspace autorizado':'Prévia sem conexão',db?'success':'outline')+
+    '<div class="top-right">'+(state.memberships.length>1?'<select aria-label="Organização" id="workspace-select">'+state.memberships.map(m=>option(m.workspace_id,state.workspaceNames[m.workspace_id]||m.workspace_id,m.workspace_id===ws()?m.workspace_id:null)).join('')+'</select>':'')+badge(db?'Workspace autorizado':'Prévia sem conexão',db?'success':'outline')+
     (db?'<button class="ghost" data-action="logout">Sair</button>':'')+'</div></header>'+
     (!db?'<div class="demo-banner"><strong>Prévia técnica:</strong> conecte o Supabase e habilite login Google para trabalhar com dados persistentes. Botões de escrita desabilitados.</div>':'')+
     notice()+'<div class="statbar">'+indicators+'</div><div class="page">'+body+'</div></main></div>';
@@ -206,26 +247,34 @@ async function loadData() {
     db.from('crm_contacts').select('*').eq('workspace_id',id).order('created_at',{ascending:false}).limit(300),
     db.from('crm_touchpoints').select('*').eq('workspace_id',id).order('happened_at',{ascending:false}).limit(100),
     db.from('crm_channels').select('*').eq('workspace_id',id).order('provider',{ascending:true}),
-    db.from('crm_audit_events').select('*').eq('workspace_id',id).order('created_at',{ascending:false}).limit(30)
+    db.from('crm_audit_events').select('*').eq('workspace_id',id).order('created_at',{ascending:false}).limit(30),
+    db.from('crm_knowledge_records').select('*').eq('workspace_id',id).order('last_synced_at',{ascending:false}).limit(500),
+    db.from('crm_extensions').select('*').eq('workspace_id',id).order('display_name',{ascending:true})
   ]);
   const issue=queries.find(q=>q.error)?.error;
   if (issue) throw issue;
-  [state.items,state.contacts,state.touchpoints,state.channels,state.audit]=queries.map(q=>q.data||[]);
+  [state.items,state.contacts,state.touchpoints,state.channels,state.audit,state.knowledge,state.extensions]=queries.map(q=>q.data||[]);
 }
 async function hydrate(session) {
   state.loading=true; state.error=''; state.session=session;
-  state.membership=null; render();
+  state.membership=null; state.memberships=[]; render();
   if (!session) {state.loading=false;render();return;}
-  const res=await db.from('crm_memberships').select('workspace_id,role').eq('user_id',session.user.id).limit(1);
+  const res=await db.from('crm_memberships').select('workspace_id,role').eq('user_id',session.user.id).limit(30);
   if(res.error) {state.error='Falha ao consultar permissão: '+res.error.message; state.loading=false;render();return;}
-  if(res.data?.length) state.membership=res.data[0];
+  state.memberships=res.data||[];
+  if(state.memberships.length) {
+    const chosen=window.sessionStorage.getItem('aresta_intelligence_workspace');
+    state.membership=state.memberships.find(m=>m.workspace_id===chosen)||state.memberships[0];
+    const names=await db.from('crm_workspaces').select('id,name').in('id',state.memberships.map(m=>m.workspace_id));
+    if(!names.error)state.workspaceNames=Object.fromEntries((names.data||[]).map(w=>[w.id,w.name]));
+  }
   if(state.membership) {
     try {await loadData();} catch(error){state.error='Falha ao carregar o CRM: '+error.message;}
   }
   state.loading=false;render();
 }
 function defaultPreview() {
-  state.items=preview;state.contacts=[];state.channels=previewChannels;state.loading=false;render();
+  state.items=preview;state.contacts=[];state.channels=previewChannels;state.knowledge=[];state.extensions=[];state.loading=false;render();
 }
 async function writeRow(table, payload) {
   if (readonly()) throw new Error('Apenas membros editores podem registrar alterações.');
@@ -284,6 +333,13 @@ document.addEventListener('click',async event=>{
 document.addEventListener('change',async event=>{
   const el=event.target;
   if(el.id==='track-filter'){state.track=el.value;render();return;}
+  if(el.id==='knowledge-filter'){state.knowledgeKind=el.value;render();return;}
+  if(el.id==='workspace-select'){
+    const m=state.memberships.find(x=>x.workspace_id===el.value);if(!m)return;
+    state.membership=m;window.sessionStorage.setItem('aresta_intelligence_workspace',m.workspace_id);
+    state.loading=true;render();try{await loadData();state.error='';}catch(error){state.error=error.message;}
+    state.loading=false;render();return;
+  }
   if(el.dataset.change==='contact-stage') {
     if(readonly())return;
     const {error}=await db.from('crm_contacts').update({stage:el.value}).eq('id',el.dataset.id).eq('workspace_id',ws());
