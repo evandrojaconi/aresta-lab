@@ -116,8 +116,13 @@ function renderPipeline() {
       '<button class="primary" type="submit"'+(state.busy?' disabled':'')+'>Salvar tarefa</button></form></div>');
 }
 function renderContacts() {
+  const partners=(state.knowledge||[]).filter(x=>x.record_kind==='partner');
   return '<section class="section-head"><div><span class="overline">RELACIONAMENTO COM HISTÓRICO</span><h1>Parceiros e comunidade</h1>'+
     '<p>Cadastro privado, estágio do relacionamento e próxima conversa. Sem importação automática de contatos.</p></div></section>'+
+    '<div class="panel"><div class="panel-title"><h2>Instituições já mapeadas</h2>'+badge(String(partners.length)+' referências','outline')+'</div>'+
+    '<p class="micro">Histórico institucional importado com origem. Não equivale a um contato pessoal ou parceria formal.</p>'+
+    '<div class="partner-strip">'+partners.map(p=>'<article class="partner-mini"><h3>'+esc(p.title)+'</h3><p>'+esc(p.summary||'Sem contexto registrado')+'</p>'+
+      '<button class="secondary" data-workbench="partner-prefill" data-name="'+esc(p.title)+'">Preparar acompanhamento</button></article>').join('')+'</div></div>'+
     '<div class="panel"><div class="panel-title"><h2>Relacionamentos</h2>'+badge(String(state.contacts.length)+' registros','outline')+'</div>'+
     (state.contacts.length?'<div class="table-wrap"><table><thead><tr><th>Pessoa</th><th>Organização</th><th>Tipo</th><th>Etapa</th><th>Próximo contato</th></tr></thead><tbody>'+
       state.contacts.map(c=>'<tr><td><strong>'+esc(c.name)+'</strong>'+(c.role_label?'<small>'+esc(c.role_label)+'</small>':'')+'</td>'+
@@ -125,7 +130,7 @@ function renderContacts() {
       :'<div class="empty">Ainda não há contatos. O CRM não importa dados pessoais sem permissão.</div>')+'</div>'+
     (readonly()?'':'<div class="two-cols"><div class="panel form-panel"><h2>Novo relacionamento</h2><form id="contact-form" class="form-grid">'+
       '<label class="span-2">Nome<input required maxlength="200" name="name" placeholder="Nome da pessoa ou contato responsável"/></label>'+
-      '<label>Organização<input name="organization" maxlength="200"/></label>'+
+      '<label>Organização<input name="organization" maxlength="200" value="'+esc(state.partnerPrefill||'')+'"/></label>'+
       '<label>Tipo<select name="contact_type">'+['Parceiro','Comunidade','Instituição','Mantenedor','Cliente','Outro'].map(x=>option(x,x,'Parceiro')).join('')+'</select></label>'+
       '<label>Etapa<select name="stage">'+['mapeado','contatado','conversa','proposta','ativo','pausado'].map(x=>option(x,x,'mapeado')).join('')+'</select></label>'+
       '<label>Retomar em<input name="next_follow_up" type="date"/></label>'+
