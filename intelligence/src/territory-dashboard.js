@@ -67,16 +67,19 @@ export async function fetchCroquiStatus(fetchFn=fetch){
    return parseCroquiStatus(await response.text());
  }finally{clearTimeout(timeout)}
 }
+const evidenceKind=r=>r.record_kind==='territory'&&r.properties?.kind==='technical_baseline'?'atlas':r.properties?.evidence_kind;
 export function lapinhaEvidence(state){
- return (state.knowledge||[]).filter(r=>r.record_kind==='evidence'&&
-   r.properties?.territory_id===LAPINHA_ID&&PRODUCTS.some(p=>p.id===r.properties.evidence_kind));
+ return (state.knowledge||[]).filter(r=>r.properties?.territory_id===LAPINHA_ID&&(
+   (r.record_kind==='evidence'&&PRODUCTS.some(p=>p.id===r.properties.evidence_kind))||
+   (r.record_kind==='territory'&&r.properties?.kind==='technical_baseline')
+ ));
 }
 const countText=x=>x?x.done+'/'+x.total:'Sem campo documentado';
 const stat=(label,value,help)=>'<div class="territory-stat"><b>'+E(value)+'</b><span>'+E(label)+'</span><small>'+E(help)+'</small></div>';
 const button=(label,action,extra='')=>'<button class="secondary" data-territory="'+action+'" '+extra+'>'+E(label)+'</button>';
 function renderProductCards(records,selected){
  return '<div class="territory-outcomes">'+PRODUCTS.map(p=>{
- const n=records.filter(r=>r.properties?.evidence_kind===p.id).length;
+ const n=records.filter(r=>evidenceKind(r)===p.id).length;
  return '<button class="territory-outcome '+(selected===p.id?'active':'')+'" data-territory="filter" data-type="'+p.id+'">'+
   '<span class="territory-index">'+String(PRODUCTS.indexOf(p)+1).padStart(2,'0')+'</span>'+
   '<strong>'+E(p.title)+'</strong><span>'+E(p.description)+'</span>'+
@@ -84,12 +87,12 @@ function renderProductCards(records,selected){
  }).join('')+'</div>';
 }
 function renderEvidenceList(records,selected){
- const data=records.filter(r=>selected==='todos'||r.properties?.evidence_kind===selected);
+ const data=records.filter(r=>selected==='todos'||evidenceKind(r)===selected);
  return '<section class="panel territory-evidence-list"><div class="panel-title"><h2>Registros da base única</h2><span class="badge outline">'+data.length+' na seleção</span></div>'+
  (data.length?data.slice(0,30).map(r=>{
- const p=PRODUCTS.find(p=>p.id===r.properties?.evidence_kind);
+ const p=PRODUCTS.find(p=>p.id===evidenceKind(r));
  return '<div class="territory-evidence-row"><div><small>'+E(p?.title||'Sem categoria')+' · '+E(r.source_status||'Sem revisão')+
-    ' · observação: '+E(shortDate(r.properties?.observed_date))+'</small>'+
+    ' · referência: '+E(shortDate(r.properties?.observed_date||r.properties?.as_of||r.source_updated_at))+'</small>'+
    '<h3>'+E(r.title)+'</h3><p>'+E(r.summary)+'</p>'+
    (safe(r.source_url)?'<a href="'+E(safe(r.source_url))+'" target="_blank" rel="noopener noreferrer">Abrir fonte</a>':'<small>Fonte externa não anexada — relato interno</small>')+
    '</div><small>Visibilidade: interna</small></div>';
