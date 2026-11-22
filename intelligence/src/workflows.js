@@ -131,6 +131,41 @@ export function renderInsights({state,esc,readonly}) {
 
 // Binding funcional no CRM, usando apenas acesso com membership + RLS.
 // Cada ação é explícita e deve devolver estado audível ao usuário.
+
+const OPPORTUNITY_STAGES=['mapeada','analisar','preparar','submetida','negociando','aprovada','encerrada'];
+const OPPORTUNITY_TYPES=['Edital','Pesquisa','Parceria','Patrocínio','Expansão','Serviço','Outro'];
+export function renderOpportunities({state,esc,readonly}) {
+  const list=state.opportunities||[];
+  return intro('MAPEAR → AVALIAR → PROPOR → ACOMPANHAR','Oportunidades & Fomento',
+    'Projetos, editais, pesquisa, parcerias e caminhos de receita. Cada oportunidade precisa de fonte, prazo e próxima ação, sem confundir elegibilidade com aprovação.')+
+    '<div class="two-cols"><div class="panel form-panel"><h2>Registrar oportunidade</h2>'+
+    (readonly()?'<p>Você não tem permissão de edição neste workspace.</p>':
+    '<form id="opportunity-form" class="form-grid">'+
+     '<label class="span-2">Oportunidade<input name="title" maxlength="240" required placeholder="Ex.: pesquisa aplicada e monitoramento Lapinha"></label>'+
+     '<label>Tipo<select name="opportunity_type">'+OPPORTUNITY_TYPES.map(x=>opt(x,'Pesquisa')).join('')+'</select></label>'+
+     '<label>Prazo<input type="date" name="deadline"></label>'+
+     '<label class="span-2">Contexto<textarea rows="3" name="summary" placeholder="Problema, organização, edital ou público."></textarea></label>'+
+     '<label class="span-2">Próxima ação<input name="next_action" maxlength="500" placeholder="Qual é o primeiro movimento?"></label>'+
+     '<label class="span-2">Resultado pretendido<input name="expected_result" maxlength="500" placeholder="O que queremos conseguir?"></label>'+
+     '<label class="span-2">Fonte verificável<input type="url" name="source_url" placeholder="https://..."></label>'+
+     '<button type="submit" class="primary">Salvar oportunidade</button></form>')+'</div>'+
+    '<div class="panel"><h2>Critérios de decisão</h2>'+
+      '<div class="milestones vertical-flow"><div><strong>1. Problema e público</strong><small>Quem se beneficia e qual problema está documentado?</small></div>'+
+      '<div><strong>2. Critérios e elegibilidade</strong><small>Regra oficial, prazo, proponente e dependências.</small></div>'+
+      '<div><strong>3. Esforço e reversibilidade</strong><small>O teste menor que produz aprendizado suficiente.</small></div>'+
+      '<div><strong>4. Evidência e retorno</strong><small>Valor social, territorial, financeiro ou científico.</small></div></div>'+
+      '<p class="micro">Esta área funciona para associações e instituições, com acesso controlado por workspace.</p></div></div>'+
+    '<div class="section-head slim"><div><h2>Pipeline de oportunidades</h2><p>Transforme análise em ação, sem documentos desnecessários.</p></div></div>'+
+    '<div class="knowledge-grid">'+(list.length?list.map(x=>'<article class="knowledge-card"><div class="item-top">'+
+     statusTag(esc(x.stage))+'<span class="track-tag">'+esc(x.opportunity_type)+'</span>'+
+     (x.deadline?'<span class="due">Até '+esc(x.deadline.split('-').reverse().join('/'))+'</span>':'')+'</div>'+
+     '<h3>'+esc(x.title)+'</h3><p>'+esc(x.summary||'Sem contexto ainda')+'</p>'+
+     '<p><b>Próxima ação:</b> '+esc(x.next_action||'definir')+'</p>'+
+     (x.source_url&&asUrl(x.source_url)?'<a href="'+esc(x.source_url)+'" class="external" target="_blank" rel="noopener noreferrer">Fonte</a>':'')+
+     '<div class="actions-block">'+buttonAction(x.id,'opportunity-next','Próximo estágio',readonly()||x.stage==='encerrada')+
+     buttonAction(x.id,'opportunity-task','Criar ação',readonly())+'</div></article>').join(''):blank('Sem oportunidades cadastradas neste workspace.'))+'</div>';
+}
+
 export function installWorkflowHandlers(getCtx) {
  const update=async (table,id,values)=>{
    const {db,state,ws,loadData,render}=getCtx();
@@ -140,7 +175,7 @@ export function installWorkflowHandlers(getCtx) {
  };
  const copy=async text=>{await navigator.clipboard.writeText(text)};
  document.addEventListener('submit',async e=>{
-   if(!['content-form','proposal-form','metric-form'].includes(e.target.id))return;
+   if(!['content-form','proposal-form','metric-form','opportunity-form'].includes(e.target.id))return;
    e.preventDefault();const {db,state,ws,readonly,loadData,render}=getCtx();
    if(!db||readonly())return;
    const f=new FormData(e.target);let table,values;
@@ -157,6 +192,13 @@ export function installWorkflowHandlers(getCtx) {
        hypothesis:String(f.get('hypothesis')||'').trim(),evidence_url:f.get('evidence_url')||null,
        impact:String(f.get('impact')||'Médio'),effort:String(f.get('effort')||'A avaliar'),
        stage:'capturada',created_by:state.session.user.id};
+   } else if(e.target.id==='opportunity-form') {
+     table='crm_opportunities';values={
+       title:String(f.get('title')||'').trim(),opportunity_type:String(f.get('opportunity_type')||'Outro'),
+       summary:String(f.get('summary')||'').trim(),next_action:String(f.get('next_action')||'').trim(),
+       expected_result:String(f.get('expected_result')||'').trim(),
+       source_url:f.get('source_url')||null,deadline:f.get('deadline')||null,
+       stage:'mapeada',created_by:state.session.user.id};
    } else {
      table='crm_metric_snapshots';values={
        source_id:String(f.get('source_id')||''),metric_name:String(f.get('metric_name')||'').trim(),
@@ -252,6 +294,21 @@ export function installWorkflowHandlers(getCtx) {
          source_kind:'manual',source_url:x.evidence_url||null,created_by:state.session.user.id
        });
        if(error)throw error;await loadData();state.notice='Tarefa vinculada ao backlog operacional.';render();return;
+     }
+     if(action==='opportunity-next'){
+       if(readonly())return;const x=state.opportunities.find(i=>i.id===id);if(!x)return;
+       const next=OPPORTUNITY_STAGES[OPPORTUNITY_STAGES.indexOf(x.stage)+1];
+       if(next==='aprovada'&&!window.confirm('Esta oportunidade foi de fato aprovada pelo responsável?'))return;
+       await update('crm_opportunities',id,{stage:next});return;
+     }
+     if(action==='opportunity-task'){
+       if(readonly())return;const x=state.opportunities.find(i=>i.id===id);if(!x)return;
+       const {error}=await db.from('crm_work_items').insert({
+         workspace_id:ws(),title:'Oportunidade: '+x.title,track:'Parcerias',priority:'P2',status:'entrada',
+         next_action:x.next_action||'Verificar elegibilidade, prazos e contrapartidas.',
+         definition_of_done:x.expected_result||'Decisão registrada com fonte e responsável.',
+         due_date:x.deadline,source_url:x.source_url,source_kind:'manual',created_by:state.session.user.id});
+       if(error)throw error;await loadData();state.notice='Ação registrada no pipeline de execução.';render();return;
      }
      if(action==='refresh-umami'){
        if(!db||readonly())return;
