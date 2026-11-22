@@ -3,7 +3,7 @@
 const E=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safeLink=(v)=>{try{const x=new URL(v);return ['https:','http:'].includes(x.protocol)?x.href:''}catch{return ''}};
 const tz='America/Sao_Paulo';
-const day=()=>new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+const day=()=>{const parts=new Intl.DateTimeFormat('en-US',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const get=t=>parts.find(x=>x.type===t)?.value||'';return get('year')+'-'+get('month')+'-'+get('day')};
 const displayDate=(d)=>d?new Intl.DateTimeFormat('pt-BR',{timeZone:tz,day:'2-digit',month:'short',year:'numeric'}).format(new Date(d)):'';
 const href=(url,label)=>safeLink(url)?'<a href="'+E(safeLink(url))+'" target="_blank" rel="noopener noreferrer">'+E(label)+'</a>':'';
 const row=(name,value)=>'<div class="small-metric"><b>'+E(value)+'</b><span>'+E(name)+'</span></div>';
@@ -114,6 +114,14 @@ export function renderFocusedContent({state,readonly}) {
    '<p class="micro">Salvar guarda no Supabase. Criativos e publicações continuam com os direitos e permissões do Canva e do canal.</p></div></div></section>';
 }
 
+const APP_SCREENSHOTS=[
+ 'Screenshot_20260601_073945.jpg.jpeg',
+ 'Screenshot_20260601_073956.jpg.jpeg',
+ 'Screenshot_20260601_074006.jpg.jpeg',
+ 'Screenshot_20260601_074027.jpg.jpeg',
+ 'Screenshot_20260601_074219.jpg.jpeg'
+].map((name,i)=>({name:'Tela '+(i+1),url:'https://raw.githubusercontent.com/aresta-climb/aresta_app/main/frontend/assets/'+name}));
+// Capturas históricas de junho de 2026, não representam necessariamente a versão instalada hoje.
 const VIEWS=[
  ['landing','Landing','https://arestaclimb.com/'],
  ['editor','Aresta Editor','https://arestaclimb.com/editor'],
@@ -123,18 +131,21 @@ export function renderUXWorkbench({state,readonly}) {
  const choice=VIEWS.find(v=>v[0]===(state.previewView||'landing'))||VIEWS[0];
  const marks=(state.reviewMarks||[]).filter(x=>x.product_area.toLowerCase()===(choice[0]==='landing'?'landing':choice[0]==='editor'?'editor':'app'));
  const view=choice[0];
+ const shot=APP_SCREENSHOTS.find(x=>x.url===state.previewScreenshot)||APP_SCREENSHOTS[0];
  return '<section class="panel lab-panel"><div class="panel-title"><div><span class="overline">LABORATÓRIO UX</span><h2>Inspecionar produto e registrar melhorias</h2>'+
     '<p class="micro">Revisão funcional de telas reais; não edita automaticamente o app ou código do Editor.</p></div>'+
     '<div class="actions">'+VIEWS.map(v=>'<button type="button" class="secondary '+(v[0]===view?'selected':'')+'" data-workbench="preview-view" data-key="'+v[0]+'">'+v[1]+'</button>').join('')+'</div></div>'+
     '<div class="ux-lab-grid"><div class="ux-frame">'+
-    (view==='app'?'<div class="phone-mock"><span>ARESTA CLIMB</span><p>Prévia do aplicativo nativo</p><small>O app não é uma página web. Utilize uma captura real para comentar sua interface.</small></div>':
+    (view==='app'?'<div class="app-shot"><img src="'+E(shot.url)+'" alt="Captura histórica '+E(shot.name)+' do aplicativo Aresta, arquivo do repositório técnico" loading="lazy"></div>'+
+    '<div class="app-screen-thumbs">'+APP_SCREENSHOTS.map((s,i)=>'<button class="'+(shot.url===s.url?'selected':'')+'" type="button" data-workbench="app-screen" data-url="'+E(s.url)+'">Tela '+(i+1)+'</button>').join('')+'</div>'+
+    '<p class="micro">Capturas técnicas de junho/2026. Podem não representar a versão atual do App Store / Google Play.</p>':
       '<iframe title="Prévia do '+E(choice[1])+'" src="'+E(choice[2])+'" loading="lazy" sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer"></iframe>')+
     '<div class="lab-meta"><span>Origem: '+E(choice[2])+'</span>'+href(choice[2],'Abrir original ↗')+'</div>'+
     '<p class="micro">A incorporação pode ser bloqueada pelo site original. Não equivale a um ambiente Figma nem permite editar a aplicação externa.</p></div>'+
     '<div class="ux-notes"><h3>Notas da interface</h3>'+
     (readonly()?'<p>Acesso de editor necessário.</p>':
     '<form id="review-mark-form" class="form-grid">'+
-      '<label class="span-2">Tela / captura (URL)<input type="url" name="view_url" value="'+E(choice[2])+'" required></label>'+
+      '<label class="span-2">Tela / captura (URL)<input type="url" name="view_url" value="'+E(view==='app'?shot.url:choice[2])+'" required></label>'+
       '<label class="span-2">O que incomodou ou pode melhorar?<input name="title" required maxlength="200" placeholder="Ex.: botão de baixar pouco visível"></label>'+
       '<label class="span-2">Observação<textarea name="observation" required rows="3" placeholder="Onde aparece, impacto, evidência e ideia de solução"></textarea></label>'+
       '<input type="hidden" name="product_area" value="'+E(choice[1].includes('Editor')?'Editor':view==='app'?'App':'Landing')+'">'+
@@ -244,6 +255,10 @@ export function installWorkbenchHandlers(getCtx) {
     }else {await navigator.clipboard.writeText(a.item_url);state.notice='Link do modelo copiado. Abra uma pauta para vinculá-lo.';rerender()}return;
    }
    if(action==='preview-view'){state.previewView=b.dataset.key;rerender();return}
+   if(action==='app-screen'){
+     if(!APP_SCREENSHOTS.some(x=>x.url===b.dataset.url))return;
+     state.previewScreenshot=b.dataset.url;rerender();return;
+   }
    if(action==='ux-to-proposal'){
      if(readonly())return;
      const m=state.reviewMarks.find(x=>x.id===id);if(!m)return;
