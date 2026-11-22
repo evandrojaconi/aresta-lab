@@ -4,7 +4,7 @@ import {
   escapeHTML as esc, localDay, shortDate, rankTasks, buildAIPrompt
 } from './rules.js';
 import './styles.css';
-import {renderMarketing, renderProduct, renderInsights, installWorkflowHandlers} from './workflows.js';
+import {renderMarketing, renderProduct, renderInsights, renderOpportunities, installWorkflowHandlers} from './workflows.js';
 
 const app = document.getElementById('app');
 const url = import.meta.env.VITE_SUPABASE_URL;
@@ -28,7 +28,7 @@ const previewChannels = ['Instagram/Meta','Facebook','LinkedIn','WhatsApp','Disc
 const state = {
   view:'hoje', track:'Todas', loading:true, busy:false,
   session:null, membership:null, memberships:[], workspaceNames:{}, knowledge:[], extensions:[], knowledgeKind:'all', items:[], contacts:[], touchpoints:[], channels:[], audit:[],
-  contents:[], proposals:[], metricSources:[], metricSnapshots:[], marketingFilter:'Todos',
+  contents:[], proposals:[], opportunities:[], metricSources:[], metricSnapshots:[], marketingFilter:'Todos',
   selectedMetricSource:'', sourceLoading:false, analyticsNotice:'', showLooker:false,
   notice:'', error:'', aiResult:'', aiLoading:false, aiMode:''
 };
@@ -104,6 +104,7 @@ function renderToday() {
     '<div class="section-head slim"><div><h2>Fila recomendada</h2><p>Uma entrega profunda por vez, tarefas curtas em sequência.</p></div>'+
     '<button class="secondary" data-view="pipeline">Ver pipeline</button></div>'+
     '<div class="today-grid">'+(selected.length?selected.map(t=>taskCard(t,true)).join(''):'<div class="empty">Nenhuma demanda aberta.</div>')+'</div>'+
+    '<div class="panel"><h2>Comandos rápidos</h2><div class="actions-block"><button class="primary" data-view="marketing">Criar conteúdo</button><button class="secondary" data-view="produto">Registrar melhoria UX</button><button class="secondary" data-view="dados">Consultar métricas</button><button class="secondary" data-view="oportunidades">Mapear oportunidade</button></div><p class="micro">Tudo começa pelo CRM e mantém histórico no Supabase. Ações externas exigem autorização própria.</p></div>'+
     '<div class="panel"><span class="overline">DEFINIÇÃO DE CONCLUÍDO DA SEMANA</span>'+
     '<div class="milestones"><div><strong>01 · Comunicação</strong><small>Posts Rupestre publicados e links registrados</small></div>'+
     '<div><strong>02 · Produto</strong><small>Landing revisada, testada e entregue</small></div>'+
@@ -239,10 +240,11 @@ function render() {
   if (state.loading) return renderSplash('Carregando o workspace...');
   if (db && !state.session) return renderLogin();
   if (db && !state.membership) return renderNoAccess();
-  const nav=[['hoje','Visão de hoje'],['pipeline','Pipeline'],['marketing','Marketing'],['produto','Produto & UX'],['dados','Dados & Relatórios'],['acervo','Conhecimento'],['extensoes','Extensões'],['pessoas','Relacionamentos'],['canais','Canais'],['ia','IA & Evidências'],['acesso','Configuração']];
+  const nav=[['hoje','Visão de hoje'],['pipeline','Pipeline'],['marketing','Marketing'],['produto','Produto & UX'],['dados','Dados & Relatórios'],['oportunidades','Oportunidades'],['acervo','Conhecimento'],['extensoes','Extensões'],['pessoas','Relacionamentos'],['canais','Canais'],['ia','IA & Evidências'],['acesso','Configuração']];
   const body={hoje:renderToday,pipeline:renderPipeline,acervo:renderKnowledge,extensoes:renderExtensions,pessoas:renderContacts,canais:renderChannels,ia:renderAI,acesso:renderAccess,
     marketing:()=>renderMarketing({state,esc,readonly}),produto:()=>renderProduct({state,esc,readonly}),
-    dados:()=>renderInsights({state,esc,readonly})}[state.view]();
+    dados:()=>renderInsights({state,esc,readonly}),
+    oportunidades:()=>renderOpportunities({state,esc,readonly})}[state.view]();
   const indicators=[...stats(),{label:'Acervo',val:state.knowledge.length}].map(x=>'<div class="kpi"><strong>'+x.val+'</strong><span>'+esc(x.label)+'</span></div>').join('');
   app.innerHTML='<div class="shell"><aside class="sidebar"><div class="brand"><span class="brand-mark">A</span><span>ARESTA <em>INTELLIGENCE</em></span></div>'+
     '<div class="sidebar-label">CENTRO DE OPERAÇÕES</div><nav>'+nav.map(([id,label])=>'<button data-view="'+id+'" class="'+(state.view===id?'active':'')+'">'+esc(label)+'</button>').join('')+'</nav>'+
@@ -268,12 +270,13 @@ async function loadData() {
     db.from('crm_content_items').select('*').eq('workspace_id',id).order('updated_at',{ascending:false}).limit(300),
     db.from('crm_product_proposals').select('*').eq('workspace_id',id).order('updated_at',{ascending:false}).limit(300),
     db.from('crm_metric_sources').select('*').eq('workspace_id',id).order('provider',{ascending:true}),
-    db.from('crm_metric_snapshots').select('*').eq('workspace_id',id).order('observed_at',{ascending:false}).limit(250)
+    db.from('crm_metric_snapshots').select('*').eq('workspace_id',id).order('observed_at',{ascending:false}).limit(250),
+    db.from('crm_opportunities').select('*').eq('workspace_id',id).order('created_at',{ascending:false}).limit(250)
   ]);
   const issue=queries.find(q=>q.error)?.error;
   if (issue) throw issue;
   [state.items,state.contacts,state.touchpoints,state.channels,state.audit,state.knowledge,state.extensions,
-    state.contents,state.proposals,state.metricSources,state.metricSnapshots]=queries.map(q=>q.data||[]);
+    state.contents,state.proposals,state.metricSources,state.metricSnapshots,state.opportunities]=queries.map(q=>q.data||[]);
 }
 async function hydrate(session) {
   state.loading=true; state.error=''; state.session=session;
