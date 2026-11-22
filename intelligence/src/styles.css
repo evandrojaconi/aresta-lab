@@ -183,3 +183,14 @@ p{line-height:1.55}button:focus-visible,input:focus-visible,select:focus-visible
 .github-approval-row p{font-size:.74rem;color:#776c61;margin:5px 0 0}
 button:disabled{opacity:.55;cursor:not-allowed}
 @media(max-width:720px){.github-identity .form-grid{grid-template-columns:1fr}.github-identity .form-grid .span-2{grid-column:auto}}
+
+/* Acesso simples com senha forte gerada somente no navegador do proprietário */
+.auth-card .email-login{display:flex;flex-direction:column;gap:13px;margin:18px 0 14px}
+.auth-card .email-login label{display:flex;flex-direction:column;gap:7px;font-weight:720;font-size:.82rem}
+.auth-card .email-login input{width:100%;min-height:43px;font-size:1rem}
+.auth-card .temporary-login{margin-top:19px}
+.password-once{margin-top:18px;padding:18px;background:#f4efe6;border:1px solid #d0bda9;border-radius:11px;max-width:650px}
+.password-once>strong{font-size:1.02rem;color:#7b321e}
+.password-once label{display:flex;flex-direction:column;gap:7px;font-weight:700}
+.password-once input{width:100%;font:700 .93rem ui-monospace,Consolas,monospace;letter-spacing:.015em;background:white}
+.password-once .actions-block{margin-top:14px}
