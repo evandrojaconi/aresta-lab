@@ -44,7 +44,7 @@ test('estado vazio não simula relatórios ou organizações',()=>{
  const empty={items:[],contents:[],contacts:[],touchpoints:[],metricSnapshots:[],metricSources:[],
    editorSuggestions:{records:[],fetchedAt:null},croquiProcesses:[],proposals:[],opportunities:[],missionFlow:'visao'};
  const html=renderMissionHub({state:empty,readonly:()=>true});
- assert.match(html,/Nenhuma tarefa deste fluxo cadastrada|Nenhuma tarefa/);
+ assert.match(html,/tarefas abertas associadas aos processos/);
  assert.match(html,/Central de processos/);
  assert.doesNotMatch(html,/API conectada/);
 });
