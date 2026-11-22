@@ -6,7 +6,8 @@ import {
 import './styles.css';
 import {generateStrongPassword} from './password.js';
 import {fetchArestaSuggestions} from './editor-collaboration.js';
-import {renderProcessCenter,installProcessHandlers} from './process-center.js';
+import {installProcessHandlers} from './process-center.js';
+import {renderMissionHub,installMissionHandlers} from './process-operations.js';
 import {renderMarketing, renderProduct, renderInsights, renderOpportunities, installWorkflowHandlers} from './workflows.js';
 import {renderCommandHome,renderTaskDrawer,renderKnowledgeLibrary,renderConnectionCenter,installWorkbenchHandlers} from './workbench.js';
 
@@ -40,7 +41,7 @@ const state = {
   knowledgeGroup:'all',kbLimit:9,kbQuery:'',previewView:'landing',
   selectedMetricSource:'', sourceLoading:false, analyticsNotice:'', showLooker:false,
   editorSuggestions:{records:[],fetchedAt:null,loading:false,error:null},
-  croquiProcesses:[],processFilter:'todos',processLimit:12,
+  croquiProcesses:[],processFilter:'todos',processLimit:12,missionFlow:'visao',
   notice:'', error:'', aiResult:'', aiLoading:false, aiMode:''
 };
 const canEdit = () => !!state.membership && ['admin','editor'].includes(state.membership.role);
@@ -229,7 +230,7 @@ function render() {
   if (db && !state.membership) return renderNoAccess();
   const nav=[['hoje','Hoje'],['processos','Processos'],['pipeline','Tarefas'],['marketing','Marketing'],['produto','Produto'],['dados','Dados'],['oportunidades','Oportunidades'],['pessoas','Pessoas'],['acervo','Biblioteca'],['canais','Conexões'],['ia','Assistente'],['acesso','Ajustes']];
   const body={hoje:renderToday,pipeline:renderPipeline,acervo:renderKnowledge,extensoes:renderExtensions,pessoas:renderContacts,canais:renderChannels,ia:renderAI,acesso:renderAccess,
-    processos:()=>renderProcessCenter({state,readonly}),
+    processos:()=>renderMissionHub({state,readonly}),
     marketing:()=>renderMarketing({state,esc,readonly}),produto:()=>renderProduct({state,esc,readonly}),
     dados:()=>renderInsights({state,esc,readonly}),
     oportunidades:()=>renderOpportunities({state,esc,readonly})}[state.view]();
@@ -511,6 +512,7 @@ renderSplash('Preparando interface...');
 installWorkflowHandlers(()=>({db,state,ws,readonly,loadData,render}));
 installWorkbenchHandlers(()=>({db,state,ws,readonly,loadData,render,refreshEditorSuggestions}));
 installProcessHandlers(()=>({db,state,ws,readonly,loadData,render}));
+installMissionHandlers(()=>({state,render}));
 let lastVisibilitySync=0;
 document.addEventListener('visibilitychange',async()=>{
   if(document.hidden||!db||!ws()||state.focusTaskId||state.loading)return;
