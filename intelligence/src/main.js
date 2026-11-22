@@ -34,7 +34,7 @@ const state = {
   view:'hoje', track:'Todas', loading:true, busy:false,
   session:null, membership:null, memberships:[], workspaceNames:{}, knowledge:[], extensions:[], knowledgeKind:'all', items:[], contacts:[], touchpoints:[], channels:[], audit:[],
   contents:[], proposals:[], opportunities:[], metricSources:[], metricSnapshots:[], marketingFilter:'Todos',
-  taskContexts:[],creativeAssets:[],reviewMarks:[],githubApprovals:[],googleReady:false,focusTaskId:null,activeContentId:null,
+  taskContexts:[],creativeAssets:[],reviewMarks:[],githubApprovals:[],focusTaskId:null,activeContentId:null,
   knowledgeGroup:'all',kbLimit:9,kbQuery:'',previewView:'landing',
   selectedMetricSource:'', sourceLoading:false, analyticsNotice:'', showLooker:false,
   notice:'', error:'', aiResult:'', aiLoading:false, aiMode:''
@@ -270,7 +270,7 @@ async function loadData() {
 async function hydrate(session) {
   state.loading=true; state.error=''; state.session=session;
   state.membership=null; state.memberships=[]; render();
-  if (!session) {state.loading=false;render();return;}
+  if (!session) {oneTimePassword='';state.loading=false;render();return;}
   const res=await db.from('crm_memberships').select('workspace_id,role').eq('user_id',session.user.id).limit(30);
   if(res.error) {state.error='Falha ao consultar permissão: '+res.error.message; state.loading=false;render();return;}
   state.memberships=res.data||[];
@@ -320,16 +320,11 @@ async function changeStatus(id,status) {
 document.addEventListener('click',async event=>{
   const btn=event.target.closest('[data-action],[data-view]');
   if(!btn) return;
-  if(btn.dataset.view){state.view=btn.dataset.view;state.notice='';state.error='';render();return;}
+  if(btn.dataset.view){if(state.view==='acesso'&&btn.dataset.view!=='acesso')oneTimePassword='';state.view=btn.dataset.view;state.notice='';state.error='';render();return;}
   state.error='';state.notice='';
   const action=btn.dataset.action;
   try {
-    if(action==='google-login') {
-      if(!state.googleReady){state.error='Google ainda não foi habilitado no Supabase.';render();return;}
-      const {error}=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+window.location.pathname}});
-      if(error)throw error;
-    }
-    else if(action==='generate-password') {
+    if(action==='generate-password') {
       if(!db||!state.session){state.error='Você precisa estar conectado para criar sua senha.';render();return;}
       if(!window.confirm('Criar uma senha nova para esta conta? A senha anterior será substituída.'))return;
       const password=generateStrongPassword();
@@ -459,19 +454,8 @@ document.addEventListener('submit',async event=>{
   }catch(error){state.error=error.message||String(error);}
   finally{state.busy=false;render();}
 });
-async function detectGoogleProvider(){
-  if(!db)return;
-  try{
-    const response=await fetch(url.replace(/\/$/,'')+'/auth/v1/settings',{headers:{apikey:key}});
-    if(!response.ok)return;
-    const settings=await response.json();
-    state.googleReady=settings?.external?.google===true;
-    if(!state.loading)render();
-  }catch(_error){state.googleReady=false;}
-}
 async function init(){
   if(!db){defaultPreview();return;}
-  void detectGoogleProvider();
   db.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>hydrate(session),0);});
   try{
     const {data,error}=await db.auth.getSession();
