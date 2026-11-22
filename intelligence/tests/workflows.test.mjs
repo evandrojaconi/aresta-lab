@@ -10,7 +10,7 @@ test('Marketing permite criação e fluxo sem declarar publicação automática'
  const html=renderMarketing(ctx());
  assert.match(html,/id="content-form"/);
  assert.match(html,/Gerar estrutura/);
- assert.match(html,/não publica automaticamente/);
+ assert.match(html,/Nunca publica automaticamente/);
 });
 test('Uma pauta externa deve ser escapada',()=>{
  const html=renderMarketing(ctx({contents:[{id:'x',title:'<script>alert(1)</script>',brand:'Aresta',channel:'Instagram',stage:'rascunho',caption:'teste',objective:'contexto',updated_at:'2026-11-22T12:00:00Z'}]}));
