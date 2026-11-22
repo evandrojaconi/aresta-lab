@@ -52,6 +52,20 @@ jobs:
         run: node scripts/build-v2.mjs
       - name: Verificar fonte HTML premium e páginas V2
         run: node scripts/verify-premium-v2.mjs
+      - name: Compilar Aresta Intelligence independente
+        working-directory: intelligence
+        run: |
+          npm install --no-audit --no-fund
+          npm run check
+        env:
+          VITE_PUBLIC_BASE: /aresta-lab/intelligence/
+          VITE_SUPABASE_URL: https://fqurgrujuqcogbjrsytt.supabase.co
+          VITE_SUPABASE_PUBLISHABLE_KEY: sb_publishable_LXWxmomBZP-De9ESJzKa8w_uFsLnnMJ
+      - name: Incluir CRM no GitHub Pages sem alterar a landing
+        run: |
+          mkdir -p .output/public/intelligence
+          cp -R intelligence/dist/. .output/public/intelligence/
+          test -s .output/public/intelligence/index.html
       - name: Enviar Lab e espelho oficial
         uses: actions/upload-pages-artifact@v3
         with:
