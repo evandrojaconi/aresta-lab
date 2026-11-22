@@ -415,4 +415,22 @@ async function init(){
 renderSplash('Preparando interface...');
 installWorkflowHandlers(()=>({db,state,ws,readonly,loadData,render}));
 installWorkbenchHandlers(()=>({db,state,ws,readonly,loadData,render}));
+let lastVisibilitySync=0;
+document.addEventListener('visibilitychange',async()=>{
+  if(document.hidden||!db||!ws()||state.focusTaskId||state.loading)return;
+  if(Date.now()-lastVisibilitySync<120000)return;
+  lastVisibilitySync=Date.now();
+  try{await loadData();render();}catch(error){state.error='Falha ao atualizar: '+(error.message||String(error));render();}
+});
+// Caso o painel fique aberto durante a virada do dia, renovar as prioridades.
+// Evita apagar formulários/drawers abertos por um re-render intempestivo.
+let openDay=new Date().toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'});
+setInterval(async()=>{
+  const nowDay=new Date().toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'});
+  if(nowDay===openDay)return;
+  openDay=nowDay;
+  if(!document.hidden&&state.membership&&!state.focusTaskId&&state.view==='hoje'){
+    try{await loadData();render();}catch(error){state.error=error.message||String(error);render();}
+  }
+},60000);
 init();
