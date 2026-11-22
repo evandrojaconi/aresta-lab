@@ -71,6 +71,13 @@ export function renderTaskDrawer({state,STATUS_LABELS,readonly}) {
   (related?'<div class="drawer-block"><b>Peça vinculada</b><p>'+E(related.title)+' · '+E(related.channel)+'</p>'+
     '<span class="badge outline">'+E(related.stage)+'</span></div>':
    '<div class="drawer-block"><b>Área de trabalho</b><p>'+E(t.track)+' · '+E(target)+'</p></div>')+
+  (!readonly()?'<details class="task-edit"><summary>Ajustar tarefa</summary><form id="task-edit-form" class="form-grid" data-id="'+E(t.id)+'">'+
+    '<label class="span-2">Título<input name="title" value="'+E(t.title)+'" maxlength="200" required></label>'+
+    '<label>Prioridade<select name="priority">'+['P0','P1','P2','P3'].map(x=>'<option value="'+x+'"'+(x===t.priority?' selected':'')+'>'+x+'</option>').join('')+'</select></label>'+
+    '<label>Prazo<input name="due_date" type="date" value="'+E(t.due_date||'')+'"></label>'+
+    '<label class="span-2">Próxima ação<textarea name="next_action" rows="3">'+E(t.next_action||'')+'</textarea></label>'+
+    '<label class="span-2">Definição de concluído<textarea name="definition_of_done" rows="3">'+E(t.definition_of_done||'')+'</textarea></label>'+
+    '<button class="primary span-2" type="submit">Salvar tarefa</button></form></details>':'')+
   '<div class="drawer-actions"><button class="primary" data-workbench="task-continue" data-id="'+E(t.id)+'">Abrir trabalho</button>'+
     (!readonly()?'<button class="secondary" data-workbench="task-done" data-id="'+E(t.id)+'">Registrar conclusão</button>':'')+
     '</div>'+ (t.source_url?'<p class="micro">Referência histórica: '+href(t.source_url,'Consultar fonte')+'</p>':'')+
@@ -277,12 +284,24 @@ export function installWorkbenchHandlers(getCtx) {
   }catch(err){state.error=err.message||String(err);rerender()}
  });
  document.addEventListener('submit',async ev=>{
-  if(!['edit-content-form','review-mark-form','kb-search-form'].includes(ev.target.id))return;
+  if(!['edit-content-form','review-mark-form','kb-search-form','task-edit-form'].includes(ev.target.id))return;
   ev.preventDefault();
   const {state,db,ws,readonly,loadData}=getCtx(),f=new FormData(ev.target);
   if(ev.target.id==='kb-search-form'){state.kbQuery=String(f.get('query')||'').trim();state.kbLimit=9;rerender();return}
   if(readonly())return;
   try{
+   if(ev.target.id==='task-edit-form'){
+     const id=ev.target.dataset.id;
+     const title=String(f.get('title')||'').trim();
+     if(title.length<2)throw Error('Título da tarefa inválido.');
+     const {error}=await db.from('crm_work_items').update({
+        title,priority:String(f.get('priority')||'P2'),
+        due_date:String(f.get('due_date')||'')||null,
+        next_action:String(f.get('next_action')||'').trim(),
+        definition_of_done:String(f.get('definition_of_done')||'').trim()
+     }).eq('workspace_id',ws()).eq('id',id);
+     if(error)throw error;await loadData();state.notice='Tarefa atualizada.';rerender();return;
+   }
    if(ev.target.id==='edit-content-form'){
      const itemId=ev.target.dataset.id;
      const {error}=await db.from('crm_content_items').update({
