@@ -258,9 +258,14 @@ export function installWorkbenchHandlers(getCtx) {
    if(action==='task-continue'){
     const t=state.items.find(x=>x.id===id);if(!t)return;
     const c=(state.taskContexts||[]).find(x=>x.work_item_id===id);
-    if(c?.target_type==='content'&&c.target_id){state.activeContentId=c.target_id;state.view='marketing'}
-    else state.view=AREA_VIEW[t.track]||'pipeline';
+    const prMatch=String(t.source_url||'').match(/^https:\/\/github\.com\/aresta-climb\/aresta_db\/pull\/(\d+)(?:[/?#].*)?$/);
+    if(prMatch){
+      state.view='processos';state.focusProcessPr=Number(prMatch[1]);
+    }else if(c?.target_type==='content'&&c.target_id){
+      state.activeContentId=c.target_id;state.view='marketing';
+    }else state.view=AREA_VIEW[t.track]||'pipeline';
     state.focusTaskId=null;rerender();
+    if(prMatch)void getCtx().refreshEditorSuggestions?.();
     document.getElementById('focus-editor')?.scrollIntoView({behavior:'smooth',block:'start'});return;
    }
    if(action==='task-done'){
