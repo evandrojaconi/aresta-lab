@@ -47,15 +47,20 @@ Deno.serve(async (request: Request) => {
       .select("role").eq("workspace_id", workspace).eq("user_id", authData.user.id).maybeSingle();
     if (memberError || !member) return answer({ error: "Sem permissão para esta análise." }, 403);
 
-    // Não incluir contatos, dados pessoais nem documentos completos na chamada de IA.
+    // Minimização básica: não inclui tabelas de contatos e mascara identificadores comuns.
+    // Não substitui revisão humana de textos livres antes de ativar uso em produção.
+    const redact = (v: unknown, max: number) => String(v || "")
+      .replace(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g, "[E-MAIL]")
+      .replace(/\+?\d[\d()\s.\-]{8,}\d/g, "[TELEFONE]")
+      .slice(0, max);
     const safeItems = items.map((item: Record<string, unknown>) => ({
-      title: String(item.title || "").slice(0, 200),
+      title: redact(item.title, 200),
       priority: String(item.priority || "").slice(0, 2),
       status: String(item.status || "").slice(0, 30),
       track: String(item.track || "").slice(0, 40),
       due_date: String(item.due_date || "").slice(0, 10),
-      next_action: String(item.next_action || "").slice(0, 450),
-      definition_of_done: String(item.definition_of_done || "").slice(0, 450)
+      next_action: redact(item.next_action, 450),
+      definition_of_done: redact(item.definition_of_done, 450)
     }));
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
