@@ -160,3 +160,9 @@ p{line-height:1.55}button:focus-visible,input:focus-visible,select:focus-visible
 .task-edit form{margin-top:16px}
 @media(max-width:950px){.partner-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:720px){.partner-strip{grid-template-columns:1fr}}
+
+.app-shot{position:relative;display:table;margin:0 auto;min-height:0;padding:10px;cursor:crosshair}
+.app-shot img{display:block;max-height:430px;height:auto;max-width:100%;width:auto}
+.ux-image-hitbox{position:absolute;inset:10px;border:0;background:transparent;cursor:crosshair;z-index:2}
+.ux-image-hitbox:focus-visible{outline:3px solid #d95635;outline-offset:0}
+.ux-pin{position:absolute;width:24px;height:24px;border-radius:50%;transform:translate(-50%,-50%);background:#d95635;color:#fff;border:2px solid #fff;box-shadow:0 1px 7px #0009;font-size:.75rem;font-weight:900;display:grid;place-items:center;pointer-events:none;z-index:3}
