@@ -1,3 +1,4 @@
+import {renderCreativeShelf,renderFocusedContent,renderUXWorkbench,renderStrategicPulse} from './workbench.js';
 // ARESTA Intelligence — operações editoriais, melhorias de produto e dados.
 // UI e operações internas; publicação externa só após consentimento e API específica.
 const CONTENT_STAGES=['ideia','rascunho','revisao','aprovado','agendado','publicado','medido'];
@@ -20,7 +21,7 @@ export function renderMarketing({state,esc,readonly}) {
  const current=state.marketingFilter||'Todos';
  const selected=current==='Todos'?items:items.filter(x=>x.brand===current);
  const stats=CONTENT_STAGES.map(st=>({name:st,n:items.filter(x=>x.stage===st).length})).filter(x=>x.n);
- return intro('PLANEJAR → CRIAR → REVISAR → PUBLICAR → MEDIR','Marketing & Conteúdo',
+ return renderFocusedContent({state,readonly})+intro('PLANEJAR → CRIAR → REVISAR → PUBLICAR → MEDIR','Marketing & Conteúdo',
    'Crie e revise conteúdo aqui. A publicação externa permanece manual até uma conexão autorizada; os estados e resultados ficam no CRM.',
    '<select id="marketing-filter" aria-label="Filtrar marca">'+['Todos',...BRANDS].map(x=>opt(x,current)).join('')+'</select>')+
   '<div class="knowledge-summary">'+(stats.map(x=>'<div><b>'+x.n+'</b><span>'+x.name+'</span></div>').join('')||'<div><b>0</b><span>Publicações</span></div>')+'</div>'+
@@ -52,16 +53,16 @@ export function renderMarketing({state,esc,readonly}) {
     (x.caption?'<div class="caption-preview">'+esc(x.caption.slice(0,320))+(x.caption.length>320?'…':'')+'</div>':'<p class="micro">Ainda sem legenda.</p>')+
     (x.asset_url&&asUrl(x.asset_url)?'<a class="external" href="'+esc(x.asset_url)+'" target="_blank" rel="noopener noreferrer">Criativo</a> ':'')+
     (x.published_url&&asUrl(x.published_url)?'<a class="external" href="'+esc(x.published_url)+'" target="_blank" rel="noopener noreferrer">Post publicado</a> ':'')+
-    '<div class="actions-block">'+buttonAction(x.id,'copy-caption','Copiar legenda',!x.caption)+
+    '<div class="actions-block">'+'<button class="secondary" data-workbench="content-focus" data-id="'+esc(x.id)+'">Editar pauta</button>'+buttonAction(x.id,'copy-caption','Copiar legenda',!x.caption)+
     buttonAction(x.id,'advance-content',x.stage==='aprovado'?'Programar':x.stage==='agendado'?'Registrar publicação':'Próxima etapa',
        readonly()||x.stage==='medido')+
     buttonAction(x.id,'clone-content','Reaproveitar',readonly())+'</div>'+
-    '<p class="micro">Atualizado em '+date(x.updated_at)+'</p></article>').join(''):blank('Nenhum conteúdo salvo nesta marca. Comece por uma pauta.'))+'</div>';
+    '<p class="micro">Atualizado em '+date(x.updated_at)+'</p></article>').join(''):blank('Nenhum conteúdo salvo nesta marca. Comece por uma pauta.'))+'</div>'+renderCreativeShelf({state});
 }
 
 export function renderProduct({state,esc,readonly}) {
  const items=state.proposals||[];
- return intro('EVIDÊNCIA → PROBLEMA → PROPOSTA → IMPLEMENTAÇÃO','Produto & UX',
+ return renderUXWorkbench({state,readonly})+intro('EVIDÊNCIA → PROBLEMA → PROPOSTA → IMPLEMENTAÇÃO','Produto & UX',
    'Capture melhorias do aplicativo, Editor, landing e Intelligence. O CRM registra a proposta e prepara a especificação para o time; não altera código automaticamente.')+
   '<div class="two-cols"><div class="panel form-panel"><h2>Registrar melhoria ou problema</h2>'+
     (readonly()?'<p>Acesso de edição necessário.</p>':
@@ -125,8 +126,8 @@ export function renderInsights({state,esc,readonly}) {
      '<label class="span-2">Notas de interpretação<input name="source_note" maxlength="500" placeholder="Qual fonte, cobertura e limitação?"></label>'+
      '<button class="primary" type="submit">Registrar medição</button></form>')+
    '<div class="metric-toolbar"><select id="metric-filter" aria-label="Fonte da série">'+sources.map(x=>'<option value="'+esc(x.id)+'"'+(x.id===current?' selected':'')+'>'+esc(x.provider)+'</option>').join('')+'</select></div>'+
-   (snapshots.length?'<div class="table-wrap"><table><thead><tr><th>Métrica</th><th>Valor</th><th>Período</th><th>Tipo</th><th>Coleta</th></tr></thead><tbody>'+
-   snapshots.slice(0,35).map(r=>'<tr><td>'+esc(r.metric_name)+'</td><td><strong>'+esc(r.metric_value)+' '+esc(r.metric_unit)+'</strong></td><td>'+esc(r.period_label)+'</td><td>'+esc(r.provenance)+'</td><td>'+date(r.observed_at)+'</td><td>'+buttonAction(r.id,'metric-to-content','Criar pauta',readonly())+'</td></tr>').join('')+'</tbody></table></div>':blank('Nenhum valor conferido. Abra as fontes ou conecte a API antes de interpretar resultados.'))+'</div>';
+   (snapshots.length?'<div class="table-wrap"><table><thead><tr><th>Métrica</th><th>Valor</th><th>Período</th><th>Tipo</th><th>Coleta</th><th>Ação</th></tr></thead><tbody>'+
+   snapshots.slice(0,35).map(r=>'<tr><td>'+esc(r.metric_name)+'</td><td><strong>'+esc(r.metric_value)+' '+esc(r.metric_unit)+'</strong></td><td>'+esc(r.period_label)+'</td><td>'+esc(r.provenance)+'</td><td>'+date(r.observed_at)+'</td><td>'+buttonAction(r.id,'metric-to-content','Criar pauta',readonly())+'</td></tr>').join('')+'</tbody></table></div>':blank('Nenhum valor conferido. Abra as fontes ou conecte a API antes de interpretar resultados.'))+'</div>'+renderStrategicPulse({state});
 }
 
 // Binding funcional no CRM, usando apenas acesso com membership + RLS.

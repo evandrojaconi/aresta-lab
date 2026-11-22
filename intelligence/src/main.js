@@ -5,6 +5,7 @@ import {
 } from './rules.js';
 import './styles.css';
 import {renderMarketing, renderProduct, renderInsights, renderOpportunities, installWorkflowHandlers} from './workflows.js';
+import {renderCommandHome,renderTaskDrawer,renderKnowledgeLibrary,renderConnectionCenter,installWorkbenchHandlers} from './workbench.js';
 
 const app = document.getElementById('app');
 const url = import.meta.env.VITE_SUPABASE_URL;
@@ -29,6 +30,8 @@ const state = {
   view:'hoje', track:'Todas', loading:true, busy:false,
   session:null, membership:null, memberships:[], workspaceNames:{}, knowledge:[], extensions:[], knowledgeKind:'all', items:[], contacts:[], touchpoints:[], channels:[], audit:[],
   contents:[], proposals:[], opportunities:[], metricSources:[], metricSnapshots:[], marketingFilter:'Todos',
+  taskContexts:[],creativeAssets:[],reviewMarks:[],focusTaskId:null,activeContentId:null,
+  knowledgeGroup:'all',kbLimit:9,kbQuery:'',previewView:'landing',
   selectedMetricSource:'', sourceLoading:false, analyticsNotice:'', showLooker:false,
   notice:'', error:'', aiResult:'', aiLoading:false, aiMode:''
 };
@@ -94,22 +97,7 @@ function taskCard(t,compact=false) {
     '<div class="item-bottom">'+(compact?badge(STATUS_LABELS[t.status]||t.status):controls)+
     (t.source_url?link(t.source_url,'Fonte'):'')+(compact||readonly()?'':'<button class="text-btn" data-action="evidence" data-id="'+esc(t.id)+'">Registrar evidência</button>')+'</div></article>';
 }
-function renderToday() {
-  const active = rankTasks(state.items);
-  const selected = active.slice(0,4);
-  return '<section class="section-head"><div><span class="overline">TRIAGEM OPERACIONAL</span><h1>Hoje, o que realmente move o Aresta?</h1>'+
-    '<p>Prioridade declarada + prazo + estágio. Sugestão baseada em regras, não decisão automática.</p></div></section>'+
-    '<div class="panel focus"><div class="focus-top"><span class="overline">SPRINT 0 · 23–27 NOV</span>'+badge('4–6h/dia disponíveis','outline')+'</div>'+
-    '<h2>Workflow próprio sem parar as entregas.</h2><p>Publicar Rupestre, entregar a landing e executar o CRM com login autorizado. Novas integrações só após o fluxo básico funcionar.</p></div>'+
-    '<div class="section-head slim"><div><h2>Fila recomendada</h2><p>Uma entrega profunda por vez, tarefas curtas em sequência.</p></div>'+
-    '<button class="secondary" data-view="pipeline">Ver pipeline</button></div>'+
-    '<div class="today-grid">'+(selected.length?selected.map(t=>taskCard(t,true)).join(''):'<div class="empty">Nenhuma demanda aberta.</div>')+'</div>'+
-    '<div class="panel"><h2>Comandos rápidos</h2><div class="actions-block"><button class="primary" data-view="marketing">Criar conteúdo</button><button class="secondary" data-view="produto">Registrar melhoria UX</button><button class="secondary" data-view="dados">Consultar métricas</button><button class="secondary" data-view="oportunidades">Mapear oportunidade</button></div><p class="micro">Tudo começa pelo CRM e mantém histórico no Supabase. Ações externas exigem autorização própria.</p></div>'+
-    '<div class="panel"><span class="overline">DEFINIÇÃO DE CONCLUÍDO DA SEMANA</span>'+
-    '<div class="milestones"><div><strong>01 · Comunicação</strong><small>Posts Rupestre publicados e links registrados</small></div>'+
-    '<div><strong>02 · Produto</strong><small>Landing revisada, testada e entregue</small></div>'+
-    '<div><strong>03 · Sistema</strong><small>Login privado por e-mail e uma tarefa sincronizada em dois dispositivos</small></div></div></div>';
-}
+function renderToday() { return renderCommandHome({state,rankTasks,STATUS_LABELS}); }
 function renderPipeline() {
   const filtered=state.track==='Todas'?state.items:state.items.filter(t=>t.track===state.track);
   return '<section class="section-head"><div><span class="overline">ENTRADA → EXECUÇÃO → EVIDÊNCIA</span><h1>Pipeline de trabalho</h1>'+
@@ -128,8 +116,13 @@ function renderPipeline() {
       '<button class="primary" type="submit"'+(state.busy?' disabled':'')+'>Salvar tarefa</button></form></div>');
 }
 function renderContacts() {
+  const partners=(state.knowledge||[]).filter(x=>x.record_kind==='partner');
   return '<section class="section-head"><div><span class="overline">RELACIONAMENTO COM HISTÓRICO</span><h1>Parceiros e comunidade</h1>'+
     '<p>Cadastro privado, estágio do relacionamento e próxima conversa. Sem importação automática de contatos.</p></div></section>'+
+    '<div class="panel"><div class="panel-title"><h2>Instituições já mapeadas</h2>'+badge(String(partners.length)+' referências','outline')+'</div>'+
+    '<p class="micro">Histórico institucional importado com origem. Não equivale a um contato pessoal ou parceria formal.</p>'+
+    '<div class="partner-strip">'+partners.map(p=>'<article class="partner-mini"><h3>'+esc(p.title)+'</h3><p>'+esc(p.summary||'Sem contexto registrado')+'</p>'+
+      '<button class="secondary" data-workbench="partner-prefill" data-name="'+esc(p.title)+'">Preparar acompanhamento</button></article>').join('')+'</div></div>'+
     '<div class="panel"><div class="panel-title"><h2>Relacionamentos</h2>'+badge(String(state.contacts.length)+' registros','outline')+'</div>'+
     (state.contacts.length?'<div class="table-wrap"><table><thead><tr><th>Pessoa</th><th>Organização</th><th>Tipo</th><th>Etapa</th><th>Próximo contato</th></tr></thead><tbody>'+
       state.contacts.map(c=>'<tr><td><strong>'+esc(c.name)+'</strong>'+(c.role_label?'<small>'+esc(c.role_label)+'</small>':'')+'</td>'+
@@ -137,7 +130,7 @@ function renderContacts() {
       :'<div class="empty">Ainda não há contatos. O CRM não importa dados pessoais sem permissão.</div>')+'</div>'+
     (readonly()?'':'<div class="two-cols"><div class="panel form-panel"><h2>Novo relacionamento</h2><form id="contact-form" class="form-grid">'+
       '<label class="span-2">Nome<input required maxlength="200" name="name" placeholder="Nome da pessoa ou contato responsável"/></label>'+
-      '<label>Organização<input name="organization" maxlength="200"/></label>'+
+      '<label>Organização<input name="organization" maxlength="200" value="'+esc(state.partnerPrefill||'')+'"/></label>'+
       '<label>Tipo<select name="contact_type">'+['Parceiro','Comunidade','Instituição','Mantenedor','Cliente','Outro'].map(x=>option(x,x,'Parceiro')).join('')+'</select></label>'+
       '<label>Etapa<select name="stage">'+['mapeado','contatado','conversa','proposta','ativo','pausado'].map(x=>option(x,x,'mapeado')).join('')+'</select></label>'+
       '<label>Retomar em<input name="next_follow_up" type="date"/></label>'+
@@ -153,41 +146,12 @@ function renderContacts() {
     (state.touchpoints.length?state.touchpoints.map(t=>{const c=state.contacts.find(c=>c.id===t.contact_id);return '<div class="timeline-entry"><strong>'+esc(c?.name||'Contato')+'</strong> · '+esc(t.channel)+' <small>'+esc(new Date(t.happened_at).toLocaleDateString('pt-BR'))+'</small><p>'+esc(t.summary)+'</p></div>';}).join('')
       :'<p class="empty-small">Sem interações registradas.</p>')+'</div>';
 }
-function renderChannels() {
-  return '<section class="section-head"><div><span class="overline">INTEGRAÇÕES COM PERMISSÃO</span><h1>Canais e fontes</h1>'+
-    '<p>Um painel único não significa acesso automático. Cada integração precisa de permissão e teste.</p></div></section>'+
-    '<div class="channel-grid">'+state.channels.map(c=>'<article class="panel channel"><div class="channel-top"><span class="channel-dot"></span>'+
-      '<h2>'+esc(c.provider)+'</h2></div>'+badge(c.status==='verificado'?'Verificado':'Não conectado',c.status==='verificado'?'success':'outline')+
-      '<p>'+esc(c.notes||'Aguardando validação da API.')+'</p><small>Última verificação: '+esc(c.last_verified_at?new Date(c.last_verified_at).toLocaleString('pt-BR'):'não realizada')+'</small></article>').join('')+'</div>'+
-    '<div class="panel"><h2>Política de integração</h2><p>Instagram/Facebook, WhatsApp Business e LinkedIn exigem aprovação de acesso e API oficial aplicável. Publicações são rascunhos até aprovação humana. Drive, Gmail, Calendar e Notion requerem permissões próprias; o login Google não libera seus arquivos.</p></div>';
-}
-
+function renderChannels() { return renderConnectionCenter({state}); }
 const KNOWLEDGE_TYPES = [
   ['all','Tudo'],['task','Ações'],['project','Projetos'],['editorial','Editorial'],
   ['territory','Territórios'],['evidence','Inteligência'],['partner','Parcerias']
 ];
-function renderKnowledge() {
-  const list=state.knowledgeKind==='all'?state.knowledge:
-    state.knowledge.filter(r=>r.record_kind===state.knowledgeKind);
-  const grouped=KNOWLEDGE_TYPES.slice(1).map(([id,label])=>({
-    id,label,count:state.knowledge.filter(r=>r.record_kind===id).length
-  }));
-  const cards=list.map(r=>'<article class="knowledge-card"><div class="item-top">'+
-    badge((KNOWLEDGE_TYPES.find(t=>t[0]===r.record_kind)||[])[1]||r.record_kind,'outline')+
-    '<span class="track-tag">'+esc(r.area||'Aresta')+'</span>'+
-    (r.source_status?badge(r.source_status):'')+'</div>'+
-    '<h3>'+esc(r.title)+'</h3>'+
-    (r.summary?'<p>'+esc(r.summary)+'</p>':'')+
-    '<div class="knowledge-meta"><span>'+esc(r.source_collection)+' · origem: '+esc(r.source_system)+'</span>'+
-    link(r.source_url,'Abrir original')+'</div></article>').join('');
-  return '<section class="section-head"><div><span class="overline">ACERVO CENTRALIZADO · FONTE IDENTIFICADA</span>'+
-    '<h1>Conhecimento do Aresta</h1><p>Tarefas, projetos, editorial, territórios e parceiros migrados com rastreabilidade. O Notion permanece como histórico; esta é a visualização do CRM.</p></div>'+
-    '<div class="actions"><select id="knowledge-filter" aria-label="Filtrar por segmento">'+
-    KNOWLEDGE_TYPES.map(([id,label])=>option(id,label,state.knowledgeKind)).join('')+'</select></div></section>'+
-    '<div class="knowledge-summary">'+grouped.map(c=>'<div><b>'+c.count+'</b><span>'+esc(c.label)+'</span></div>').join('')+'</div>'+
-    '<div class="knowledge-grid">'+(cards||'<div class="empty">Nenhum registro importado neste workspace.</div>')+'</div>'+
-    '<div class="panel"><p class="micro">Registros importados são snapshots com link e data de sincronização. O sistema não altera dados no Notion. Cópias não provam estado de implementação de funcionalidades.</p></div>';
-}
+function renderKnowledge() { return renderKnowledgeLibrary({state}); }
 function renderExtensions() {
   const cards=state.extensions.map(e=>'<article class="panel extension-card">'+
     '<div class="item-top">'+badge(e.category,'outline')+
@@ -240,7 +204,7 @@ function render() {
   if (state.loading) return renderSplash('Carregando o workspace...');
   if (db && !state.session) return renderLogin();
   if (db && !state.membership) return renderNoAccess();
-  const nav=[['hoje','Visão de hoje'],['pipeline','Pipeline'],['marketing','Marketing'],['produto','Produto & UX'],['dados','Dados & Relatórios'],['oportunidades','Oportunidades'],['acervo','Conhecimento'],['extensoes','Extensões'],['pessoas','Relacionamentos'],['canais','Canais'],['ia','IA & Evidências'],['acesso','Configuração']];
+  const nav=[['hoje','Hoje'],['pipeline','Tarefas'],['marketing','Marketing'],['produto','Produto'],['dados','Dados'],['oportunidades','Oportunidades'],['pessoas','Pessoas'],['acervo','Biblioteca'],['canais','Conexões'],['ia','Assistente'],['acesso','Ajustes']];
   const body={hoje:renderToday,pipeline:renderPipeline,acervo:renderKnowledge,extensoes:renderExtensions,pessoas:renderContacts,canais:renderChannels,ia:renderAI,acesso:renderAccess,
     marketing:()=>renderMarketing({state,esc,readonly}),produto:()=>renderProduct({state,esc,readonly}),
     dados:()=>renderInsights({state,esc,readonly}),
@@ -250,11 +214,11 @@ function render() {
     '<div class="sidebar-label">CENTRO DE OPERAÇÕES</div><nav>'+nav.map(([id,label])=>'<button data-view="'+id+'" class="'+(state.view===id?'active':'')+'">'+esc(label)+'</button>').join('')+'</nav>'+
     '<div class="side-bottom"><span class="online-dot"></span>'+(db?'Supabase · acesso autenticado':'Modo demonstração')+
     '<p>'+(db?'Aresta · '+esc(state.membership?.role):'Dados ilustrativos. Nenhum registro será salvo.')+'</p></div></aside>'+
-    '<main class="main"><header class="topbar"><div><span class="overline">ARESTA CLIMB / INTELLIGENCE</span><p>'+esc(new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'2-digit'}))+' · Sprint 0 · 23–27/11</p></div>'+
+    '<main class="main"><header class="topbar"><div><span class="overline">ARESTA CLIMB / INTELLIGENCE</span><p>'+esc(new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'2-digit'}))+' · Atualização por workspace</p></div>'+
     '<div class="top-right">'+(state.memberships.length>1?'<select aria-label="Organização" id="workspace-select">'+state.memberships.map(m=>option(m.workspace_id,state.workspaceNames[m.workspace_id]||m.workspace_id,m.workspace_id===ws()?m.workspace_id:null)).join('')+'</select>':'')+badge(db?'Workspace autorizado':'Prévia sem conexão',db?'success':'outline')+
     (db?'<button class="ghost" data-action="logout">Sair</button>':'')+'</div></header>'+
     (!db?'<div class="demo-banner"><strong>Prévia técnica:</strong> conecte o Supabase para trabalhar com dados persistentes. Botões de escrita desabilitados.</div>':'')+
-    notice()+'<div class="statbar">'+indicators+'</div><div class="page">'+body+'</div></main></div>';
+    notice()+'<div class="statbar">'+indicators+'</div><div class="page">'+body+'</div></main></div>'+renderTaskDrawer({state,STATUS_LABELS,readonly});
 }
 async function loadData() {
   if (!db || !ws()) return;
@@ -271,12 +235,17 @@ async function loadData() {
     db.from('crm_product_proposals').select('*').eq('workspace_id',id).order('updated_at',{ascending:false}).limit(300),
     db.from('crm_metric_sources').select('*').eq('workspace_id',id).order('provider',{ascending:true}),
     db.from('crm_metric_snapshots').select('*').eq('workspace_id',id).order('observed_at',{ascending:false}).limit(250),
-    db.from('crm_opportunities').select('*').eq('workspace_id',id).order('created_at',{ascending:false}).limit(250)
+    db.from('crm_opportunities').select('*').eq('workspace_id',id).order('created_at',{ascending:false}).limit(250),
+    db.from('crm_task_contexts').select('*').eq('workspace_id',id),
+    db.from('crm_creative_assets').select('*').eq('workspace_id',id).order('category',{ascending:true}),
+    db.from('crm_review_marks').select('*').eq('workspace_id',id).order('created_at',{ascending:false}).limit(250)
   ]);
   const issue=queries.find(q=>q.error)?.error;
   if (issue) throw issue;
   [state.items,state.contacts,state.touchpoints,state.channels,state.audit,state.knowledge,state.extensions,
-    state.contents,state.proposals,state.metricSources,state.metricSnapshots,state.opportunities]=queries.map(q=>q.data||[]);
+    state.contents,state.proposals,state.metricSources,state.metricSnapshots,state.opportunities,
+    state.taskContexts,state.creativeAssets,state.reviewMarks]=queries.map(q=>q.data||[]);
+  state.focusTaskId=state.items.some(t=>t.id===state.focusTaskId)?state.focusTaskId:null;
 }
 async function hydrate(session) {
   state.loading=true; state.error=''; state.session=session;
@@ -309,7 +278,8 @@ async function hydrate(session) {
   state.loading=false;render();
 }
 function defaultPreview() {
-  state.items=preview;state.contacts=[];state.channels=previewChannels;state.knowledge=[];state.extensions=[];state.loading=false;render();
+  state.items=preview;state.contacts=[];state.channels=previewChannels;state.knowledge=[];state.extensions=[];
+  state.taskContexts=[];state.creativeAssets=[];state.reviewMarks=[];state.loading=false;render();
 }
 async function writeRow(table, payload) {
   if (readonly()) throw new Error('Apenas membros editores podem registrar alterações.');
@@ -444,4 +414,23 @@ async function init(){
 }
 renderSplash('Preparando interface...');
 installWorkflowHandlers(()=>({db,state,ws,readonly,loadData,render}));
+installWorkbenchHandlers(()=>({db,state,ws,readonly,loadData,render}));
+let lastVisibilitySync=0;
+document.addEventListener('visibilitychange',async()=>{
+  if(document.hidden||!db||!ws()||state.focusTaskId||state.loading)return;
+  if(Date.now()-lastVisibilitySync<120000)return;
+  lastVisibilitySync=Date.now();
+  try{await loadData();render();}catch(error){state.error='Falha ao atualizar: '+(error.message||String(error));render();}
+});
+// Caso o painel fique aberto durante a virada do dia, renovar as prioridades.
+// Evita apagar formulários/drawers abertos por um re-render intempestivo.
+let openDay=new Date().toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'});
+setInterval(async()=>{
+  const nowDay=new Date().toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'});
+  if(nowDay===openDay)return;
+  openDay=nowDay;
+  if(!document.hidden&&state.membership&&!state.focusTaskId&&state.view==='hoje'){
+    try{await loadData();render();}catch(error){state.error=error.message||String(error);render();}
+  }
+},60000);
 init();
