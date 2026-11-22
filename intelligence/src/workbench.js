@@ -143,9 +143,12 @@ export function renderUXWorkbench({state,readonly}) {
     '<p class="micro">Revisão funcional de telas reais; não edita automaticamente o app ou código do Editor.</p></div>'+
     '<div class="actions">'+VIEWS.map(v=>'<button type="button" class="secondary '+(v[0]===view?'selected':'')+'" data-workbench="preview-view" data-key="'+v[0]+'">'+v[1]+'</button>').join('')+'</div></div>'+
     '<div class="ux-lab-grid"><div class="ux-frame">'+
-    (view==='app'?'<div class="app-shot"><img src="'+E(shot.url)+'" alt="Captura histórica '+E(shot.name)+' do aplicativo Aresta, arquivo do repositório técnico" loading="lazy"></div>'+
+    (view==='app'?'<div class="app-shot"><img src="'+E(shot.url)+'" alt="Captura histórica '+E(shot.name)+' do aplicativo Aresta, arquivo do repositório técnico" loading="lazy">'+
+       '<button class="ux-image-hitbox" data-workbench="mark-screen" data-url="'+E(shot.url)+'" aria-label="Adicionar anotação nesta tela"></button>'+
+       marks.filter(m=>m.view_url===shot.url&&m.mark_x!==null&&m.mark_y!==null).map((m,i)=>
+       '<span class="ux-pin" style="left:'+Number(m.mark_x)+'%;top:'+Number(m.mark_y)+'%" title="'+E(m.title)+'">'+(i+1)+'</span>').join('')+'</div>'+
     '<div class="app-screen-thumbs">'+APP_SCREENSHOTS.map((s,i)=>'<button class="'+(shot.url===s.url?'selected':'')+'" type="button" data-workbench="app-screen" data-url="'+E(s.url)+'">Tela '+(i+1)+'</button>').join('')+'</div>'+
-    '<p class="micro">Capturas técnicas de junho/2026. Podem não representar a versão atual do App Store / Google Play.</p>':
+    '<p class="micro">Toque em um ponto da imagem para criar uma anotação de UX. Capturas de junho/2026, não necessariamente da versão atual.</p>':
       '<iframe title="Prévia do '+E(choice[1])+'" src="'+E(choice[2])+'" loading="lazy" sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer"></iframe>')+
     '<div class="lab-meta"><span>Origem: '+E(choice[2])+'</span>'+href(choice[2],'Abrir original ↗')+'</div>'+
     '<p class="micro">A incorporação pode ser bloqueada pelo site original. Não equivale a um ambiente Figma nem permite editar a aplicação externa.</p></div>'+
@@ -265,6 +268,24 @@ export function installWorkbenchHandlers(getCtx) {
    if(action==='app-screen'){
      if(!APP_SCREENSHOTS.some(x=>x.url===b.dataset.url))return;
      state.previewScreenshot=b.dataset.url;rerender();return;
+   }
+   if(action==='mark-screen'){
+     if(readonly())return;
+     const shotUrl=b.dataset.url;
+     if(!APP_SCREENSHOTS.some(x=>x.url===shotUrl))return;
+     const bounds=b.getBoundingClientRect();
+     const x=Math.max(0,Math.min(100,((ev.clientX-bounds.left)/bounds.width)*100));
+     const y=Math.max(0,Math.min(100,((ev.clientY-bounds.top)/bounds.height)*100));
+     const title=window.prompt('Qual problema ou melhoria neste ponto?','');
+     if(!title||title.trim().length<3)return;
+     const observation=window.prompt('Descreva a melhoria com contexto e evidência:','');
+     if(!observation||observation.trim().length<5)return;
+     const {error}=await db.from('crm_review_marks').insert({
+        workspace_id:ws(),product_area:'App',view_url:shotUrl,
+        mark_x:Number(x.toFixed(2)),mark_y:Number(y.toFixed(2)),
+        title:title.trim(),observation:observation.trim(),created_by:state.session.user.id
+     });
+     if(error)throw error;await loadData();state.notice='Anotação de tela registrada no CRM.';rerender();return;
    }
    if(action==='ux-to-proposal'){
      if(readonly())return;
