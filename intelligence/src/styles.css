@@ -22,3 +22,19 @@ p{line-height:1.55}button:focus-visible,input:focus-visible,select:focus-visible
 
 .text-btn{background:transparent;border:0;padding:7px 3px;font-size:.72rem;font-weight:800;color:#b53e29;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .evidence{border-top:1px solid #e8e1d9;padding-top:10px;color:#416a4e!important}
+
+/* Knowledge explorer and modular plugin catalog */
+.knowledge-summary{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.knowledge-summary>div{min-width:110px;flex:1;background:#faf8f3;border:1px solid #ded8cc;border-radius:9px;padding:13px}
+.knowledge-summary b{display:block;font:800 1.4rem Epilogue, sans-serif;margin-bottom:5px}
+.knowledge-summary span{font-size:.7rem;color:#706b65}
+.knowledge-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.knowledge-card{background:#fffefb;border:1px solid #e4dfd5;border-radius:10px;padding:19px}
+.knowledge-card h3{font-size:.92rem;margin:12px 0 8px}
+.knowledge-card p{font-size:.8rem;color:#726c66;line-height:1.55;margin:0 0 14px}
+.knowledge-meta{border-top:1px solid #eee8df;padding-top:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.72rem;color:#8c847b}
+.extension-card{min-height:180px}.extension-card .item-top{margin-bottom:16px}
+.extension-card h2{font-size:1rem}
+.extension-card .external{display:inline-block;margin-top:8px}
+#workspace-select{width:min(240px,38vw);margin:0;height:36px;min-height:36px;font-size:.74rem}
+@media(max-width:720px){.knowledge-grid{grid-template-columns:1fr}.knowledge-summary>div{min-width:92px}.topbar .top-right{max-width:55vw}.extension-card{min-height:145px}}
