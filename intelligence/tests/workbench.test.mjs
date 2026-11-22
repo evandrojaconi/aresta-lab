@@ -29,7 +29,7 @@ test('Catálogo organiza design validado sem alegar integração publicadora',()
 });
 test('Produto usa screenshot histórica e não declara edição real do app',()=>{
  const html=renderUXWorkbench({state:base(),readonly:()=>false});
- assert.match(html,/Screenshot_20260601_073945/);assert.match(html,/Junho|junho/);assert.match(html,/id="review-mark-form"/);
+ assert.match(html,/Screenshot_20260601_073945/);assert.match(html,/Junho|junho/);assert.match(html,/data-workbench="mark-screen"/);assert.match(html,/id="review-mark-form"/);
 });
 test('Indicadores sem fonte não viram conversões inventadas',()=>{
  const html=renderStrategicPulse({state:base()});
