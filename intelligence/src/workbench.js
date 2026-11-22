@@ -8,11 +8,11 @@ const displayDate=(d)=>d?new Intl.DateTimeFormat('pt-BR',{timeZone:tz,day:'2-dig
 const href=(url,label)=>safeLink(url)?'<a href="'+E(safeLink(url))+'" target="_blank" rel="noopener noreferrer">'+E(label)+'</a>':'';
 const row=(name,value)=>'<div class="small-metric"><b>'+E(value)+'</b><span>'+E(name)+'</span></div>';
 const FRAMEWORK=[
- ['Assimilar','Awareness','Atração / descoberta',null,'Sessões e origens de acesso do site, quando integradas'],
- ['Atrair','Appeal','Interesse pelo território','Croquis Abertos','Croquis consultados são sinal de interesse, não preferência validada'],
- ['Arguir','Ask','Pesquisa e comparação','Setores Visualizados','Consultas de setores aproximam a etapa de busca de informação'],
- ['Agir','Act','Uso efetivo do produto','Escaladas Consultadas','Consultas de vias NÃO comprovam escalada física nem retenção'],
- ['Advogar','Advocate','Colaboração e indicação',null,'Falta medir contribuições, indicação e retorno comunitário']
+ ['Assimilação','Aware','Atração / descoberta',null,'Sessões e origens de acesso do site, quando integradas'],
+ ['Atração','Appeal','Interesse pelo território','Croquis Abertos','Croquis consultados são sinal de interesse, não preferência validada'],
+ ['Arguição','Ask','Pesquisa e comparação','Setores Visualizados','Consultas de setores aproximam a etapa de busca de informação'],
+ ['Ação','Act','Uso efetivo do produto','Escaladas Consultadas','Consultas de vias NÃO comprovam escalada física nem retenção'],
+ ['Apologia','Advocate','Colaboração e indicação',null,'Falta medir contribuições, indicação e retorno comunitário']
 ];
 const AREA_VIEW={Marketing:'marketing',Produto:'produto',Dados:'dados',Growth:'oportunidades',Parcerias:'oportunidades',Comunidade:'marketing',Território:'produto',Operação:'pipeline'};
 
