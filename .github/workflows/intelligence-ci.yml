@@ -1,0 +1,21 @@
+name: Aresta Intelligence - CRM checks
+on:
+  pull_request:
+    paths:
+      - "intelligence/**"
+      - ".github/workflows/intelligence-ci.yml"
+  workflow_dispatch:
+jobs:
+  crm:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: intelligence
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install --no-audit --no-fund
+      - run: npm run test
+      - run: npm run build
