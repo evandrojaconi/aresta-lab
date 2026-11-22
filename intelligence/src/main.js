@@ -86,8 +86,9 @@ function taskCard(t,compact=false) {
     '<h3>'+esc(t.title)+'</h3>'+
     (t.next_action?'<p class="next"><b>Próximo passo</b> '+esc(t.next_action)+'</p>':'')+
     (t.definition_of_done?'<p class="dod"><b>Concluído quando</b> '+esc(t.definition_of_done)+'</p>':'')+
+    (t.result_evidence?'<p class="evidence"><b>Evidência registrada</b> '+esc(t.result_evidence)+'</p>':'')+
     '<div class="item-bottom">'+(compact?badge(STATUS_LABELS[t.status]||t.status):controls)+
-    (t.source_url?link(t.source_url,'Fonte'):'')+'</div></article>';
+    (t.source_url?link(t.source_url,'Fonte'):'')+(compact||readonly()?'':'<button class="text-btn" data-action="evidence" data-id="'+esc(t.id)+'">Registrar evidência</button>')+'</div></article>';
 }
 function renderToday() {
   const active = rankTasks(state.items);
@@ -127,7 +128,7 @@ function renderContacts() {
     '<div class="panel"><div class="panel-title"><h2>Relacionamentos</h2>'+badge(String(state.contacts.length)+' registros','outline')+'</div>'+
     (state.contacts.length?'<div class="table-wrap"><table><thead><tr><th>Pessoa</th><th>Organização</th><th>Tipo</th><th>Etapa</th><th>Próximo contato</th></tr></thead><tbody>'+
       state.contacts.map(c=>'<tr><td><strong>'+esc(c.name)+'</strong>'+(c.role_label?'<small>'+esc(c.role_label)+'</small>':'')+'</td>'+
-      '<td>'+esc(c.organization||'—')+'</td><td>'+esc(c.contact_type)+'</td><td>'+badge(c.stage,'outline')+'</td><td>'+esc(shortDate(c.next_follow_up))+'</td></tr>').join('')+'</tbody></table></div>'
+      '<td>'+esc(c.organization||'—')+'</td><td>'+esc(c.contact_type)+'</td><td><select data-change="contact-stage" data-id="'+esc(c.id)+'"'+(readonly()?' disabled':'')+'>'+['mapeado','contatado','conversa','proposta','ativo','pausado'].map(x=>option(x,x,c.stage)).join('')+'</select></td><td>'+esc(shortDate(c.next_follow_up))+'</td></tr>').join('')+'</tbody></table></div>'
       :'<div class="empty">Ainda não há contatos. O CRM não importa dados pessoais sem permissão.</div>')+'</div>'+
     (readonly()?'':'<div class="two-cols"><div class="panel form-panel"><h2>Novo relacionamento</h2><form id="contact-form" class="form-grid">'+
       '<label class="span-2">Nome<input required maxlength="200" name="name" placeholder="Nome da pessoa ou contato responsável"/></label>'+
@@ -236,6 +237,8 @@ async function changeStatus(id,status) {
   if (readonly()) return;
   state.error='';state.notice='';
   if(!STATUS.includes(status)) return;
+  const current=state.items.find(t=>t.id===id);
+  if(status==='medido' && !(current?.result_evidence||'').trim()) {state.error='Registre evidência verificável antes de marcar como Medido.';render();return;}
   const {error}=await db.from('crm_work_items').update({status}).eq('id',id).eq('workspace_id',ws());
   if(error) {state.error=error.message;render();return;}
   await loadData();state.notice='Estado atualizado e registrado no histórico.';render();
@@ -256,6 +259,14 @@ document.addEventListener('click',async event=>{
     else if(action==='refresh') {await loadData();state.notice='Dados atualizados.';render();}
     else if(action==='copy-uid') {await navigator.clipboard.writeText(state.session?.user?.id||'');state.notice='ID copiado.';render();}
     else if(action==='copy-prompt') {await navigator.clipboard.writeText(buildAIPrompt(state.items));state.notice='Contexto copiado. Revise os dados antes de enviá-los à IA.';render();}
+    else if(action==='evidence') {
+      const item=state.items.find(x=>x.id===btn.dataset.id);if(!item||readonly())return;
+      const result=window.prompt('Registre o link ou descrição da evidência real (não uma previsão):',item.result_evidence||'');
+      if(result===null)return;
+      const {error}=await db.from('crm_work_items').update({result_evidence:result.trim()}).eq('id',item.id).eq('workspace_id',ws());
+      if(error)throw error;
+      await loadData();state.notice='Evidência registrada e auditada.';render();
+    }
     else if(action==='run-ai') {
       if(!db||!ws())return;
       state.aiLoading=true;render();
@@ -273,6 +284,12 @@ document.addEventListener('click',async event=>{
 document.addEventListener('change',async event=>{
   const el=event.target;
   if(el.id==='track-filter'){state.track=el.value;render();return;}
+  if(el.dataset.change==='contact-stage') {
+    if(readonly())return;
+    const {error}=await db.from('crm_contacts').update({stage:el.value}).eq('id',el.dataset.id).eq('workspace_id',ws());
+    if(error)state.error=error.message;else{await loadData();state.notice='Relacionamento atualizado.';}
+    render();return;
+  }
   if(el.dataset.change==='task-status') {
     try{await changeStatus(el.dataset.id,el.value);}
     catch(error){state.error=error.message;render();}
