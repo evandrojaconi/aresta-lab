@@ -44,3 +44,23 @@ test('Conexões deixam claro limites de permissão',()=>{
  const html=renderConnectionCenter({state:base()});
  assert.match(html,/OAuth no servidor/);assert.match(html,/CRM: autorização pendente/);
 });
+
+
+test('GitHub usa liberação explícita de email Google, conta e repositório por admin',()=>{
+  const state={...base(),membership:{role:'admin'},session:{user:{email:'owner@example.com',app_metadata:{providers:['email']}}},
+    githubApprovals:[]};
+  const html=renderConnectionCenter({state});
+  assert.match(html,/id="github-approval-form"/);
+  assert.match(html,/name="google_email"/);
+  assert.match(html,/name="github_login"/);
+  assert.match(html,/name="repository"/);
+  assert.match(html,/Nenhuma conta ou repositório liberado/);
+  assert.match(html,/API do GitHub automaticamente/);
+});
+test('Um membro não administrador não consegue gerenciar autorizações GitHub na UI',()=>{
+  const state={...base(),membership:{role:'viewer'},session:{user:{email:'member@example.com',app_metadata:{providers:['google']}}},
+    githubApprovals:[]};
+  const html=renderConnectionCenter({state});
+  assert.doesNotMatch(html,/id="github-approval-form"/);
+  assert.match(html,/Somente administradores/);
+});
