@@ -1,0 +1,10 @@
+# Documentação: build da aplicação CRM ocorre em github-pages.yml no mesmo repositório.
+# Arquivo reservado para verificações futuras exclusivas do CRM.
+name: Aresta Intelligence - trace
+on:
+  workflow_dispatch:
+jobs:
+  info:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 'Aresta Intelligence integra o Pages do Aresta Lab via github-pages.yml.'
