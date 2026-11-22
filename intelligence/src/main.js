@@ -55,14 +55,15 @@ function renderLogin() {
     '<span class="overline">CRM PRIVADO · SPRINT 0</span><h1>Menos abas.<br>Mais execução.</h1>'+
     '<p>Demandas, parceiros, canais e evidências do Aresta em um único fluxo. Acesso somente para membros autorizados.</p>'+
     notice()+
-    '<button class="primary wide" data-action="login">Entrar com Google</button>'+
-    '<p class="micro">O login autentica sua conta. O acesso aos dados exige liberação explícita no Supabase.</p>'+
+    '<form id="email-login-form" class="email-login"><label for="email-login">Seu e-mail</label><input id="email-login" name="email" type="email" placeholder="voce@exemplo.com" autocomplete="email" required />'+
+    '<button class="primary wide" type="submit">Receber link de acesso</button></form>'+
+    '<p class="micro">Sem aplicativo Google, sem senha. Abra o link enviado para seu e-mail. Só pessoas liberadas têm acesso aos dados.</p>'+
     '</div></div>';
 }
 function renderNoAccess() {
   app.innerHTML='<div class="auth-bg"><div class="auth-card"><div class="brand"><span class="brand-mark">A</span><span>ARESTA <em>INTELLIGENCE</em></span></div>'+
     '<span class="overline">AUTENTICADO · ACESSO PENDENTE</span><h1>Solicitação de acesso</h1>'+
-    '<p>Seu Google entrou com sucesso, mas este usuário ainda não está cadastrado como membro do workspace. Nenhum dado interno foi carregado.</p>'+
+    '<p>Seu e-mail foi autenticado, mas você ainda não recebeu acesso ao workspace. Nenhum dado interno foi carregado.</p>'+
     '<div class="code-line"><small>Seu ID do Supabase Auth</small><code>'+esc(state.session?.user?.id)+'</code></div>'+
     '<button class="secondary" data-action="copy-uid">Copiar ID para liberar acesso</button> '+
     '<button class="ghost" data-action="logout">Sair</button>'+notice()+'</div></div>';
@@ -236,7 +237,7 @@ function render() {
     '<main class="main"><header class="topbar"><div><span class="overline">ARESTA CLIMB / INTELLIGENCE</span><p>'+esc(new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'2-digit'}))+' · Sprint 0 · 23–27/11</p></div>'+
     '<div class="top-right">'+(state.memberships.length>1?'<select aria-label="Organização" id="workspace-select">'+state.memberships.map(m=>option(m.workspace_id,state.workspaceNames[m.workspace_id]||m.workspace_id,m.workspace_id===ws()?m.workspace_id:null)).join('')+'</select>':'')+badge(db?'Workspace autorizado':'Prévia sem conexão',db?'success':'outline')+
     (db?'<button class="ghost" data-action="logout">Sair</button>':'')+'</div></header>'+
-    (!db?'<div class="demo-banner"><strong>Prévia técnica:</strong> conecte o Supabase e habilite login Google para trabalhar com dados persistentes. Botões de escrita desabilitados.</div>':'')+
+    (!db?'<div class="demo-banner"><strong>Prévia técnica:</strong> conecte o Supabase para trabalhar com dados persistentes. Botões de escrita desabilitados.</div>':'')+
     notice()+'<div class="statbar">'+indicators+'</div><div class="page">'+body+'</div></main></div>';
 }
 async function loadData() {
@@ -299,12 +300,7 @@ document.addEventListener('click',async event=>{
   state.error='';state.notice='';
   const action=btn.dataset.action;
   try {
-    if(action==='login'){
-      const {error}=await db.auth.signInWithOAuth({provider:'google',options:{
-        redirectTo:window.location.origin+window.location.pathname
-      }});
-      if(error)throw error;
-    } else if(action==='logout') {await db.auth.signOut();await hydrate(null);}
+    if(action==='logout') {await db.auth.signOut();await hydrate(null);}
     else if(action==='refresh') {await loadData();state.notice='Dados atualizados.';render();}
     else if(action==='copy-uid') {await navigator.clipboard.writeText(state.session?.user?.id||'');state.notice='ID copiado.';render();}
     else if(action==='copy-prompt') {await navigator.clipboard.writeText(buildAIPrompt(state.items));state.notice='Contexto copiado. Revise os dados antes de enviá-los à IA.';render();}
@@ -353,6 +349,20 @@ document.addEventListener('change',async event=>{
 });
 document.addEventListener('submit',async event=>{
   const form=event.target;
+  if(form.id==='email-login-form'){
+    event.preventDefault();
+    if(!db)return;
+    const email=String(new FormData(form).get('email')||'').trim();
+    if(!email)return;
+    state.error=''; state.notice='';
+    const {error}=await db.auth.signInWithOtp({ email, options: {
+      emailRedirectTo:window.location.origin+window.location.pathname,
+      shouldCreateUser:true
+    }});
+    if(error)state.error='Falha ao enviar link: '+error.message;
+    else state.notice='Link enviado. Confira a caixa de entrada e abra no mesmo navegador local.';
+    render();return;
+  }
   if(!['task-form','contact-form','touchpoint-form'].includes(form.id))return;
   event.preventDefault();if(state.busy)return;
   state.busy=true;state.notice='';state.error='';
