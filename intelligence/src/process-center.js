@@ -102,13 +102,23 @@ export function renderProcessCenter({state,readonly=()=>true}){
   (info.fetchedAt?'<p class="micro">Consulta à API GitHub em '+E(new Date(info.fetchedAt).toLocaleString('pt-BR'))+
     (info.truncated?' · apenas as últimas 100 PRs consultadas':'')+'. Nenhum status abaixo é atualizado automaticamente no banco do CRM.</p>':
    '<div class="empty">Ainda não consultamos o GitHub nesta sessão. Clique em “Sincronizar PRs” para listar as contribuições reais.</div>')+
-  '<div class="process-grid">'+(displayed.length?displayed.slice(0,state.processLimit||12).map(pr=>{
-    const c=processFor(state,pr.number);
-    const item=(state.contents||[]).find(x=>x.id===c?.communication_content_id);
-    const task=(state.items||[]).find(x=>x.id===c?.followup_task_id);
-    return renderProcessCard(pr,c,item,task,readonly());
-  }).join(''):info.fetchedAt?'<div class="empty">Nenhuma PR correspondente neste lote. Filtros e acesso podem limitar a lista.</div>':'')+'</div>'+
-  (displayed.length>(state.processLimit||12)?'<button class="secondary" data-process="more">Mostrar mais ('+(displayed.length-(state.processLimit||12))+')</button>':'')+
+  '<div class="process-layout"><div class="process-list" aria-label="Contribuições">'+
+   (displayed.length?displayed.slice(0,state.processLimit||12).map(x=>{
+     const tracked=processFor(state,x.number),focused=Number(state.focusProcessPr||displayed[0]?.number)===x.number;
+     return '<button type="button" class="process-list-item '+(focused?'selected':'')+'" data-process="focus" data-number="'+x.number+'">'+
+       '<strong>PR #'+x.number+' · '+E(x.title)+'</strong>'+
+       '<span>'+E(displayStatus[x.status]||'Estado não verificado')+(tracked?' · acompanhado':'')+'</span></button>';
+   }).join(''):info.fetchedAt?'<p class="micro">Nenhuma contribuição neste filtro.</p>':'')+
+   (displayed.length>(state.processLimit||12)?'<button class="secondary" data-process="more">Mostrar mais ('+(displayed.length-(state.processLimit||12))+')</button>':'')+
+   '</div><div class="process-active">'+
+   (displayed.length?(()=>{
+     const pr=displayed.find(x=>x.number===Number(state.focusProcessPr))||displayed[0];
+     const c=processFor(state,pr.number);
+     const item=(state.contents||[]).find(x=>x.id===c?.communication_content_id);
+     const task=(state.items||[]).find(x=>x.id===c?.followup_task_id);
+     return renderProcessCard(pr,c,item,task,readonly());
+   })():'<div class="empty">Selecione um filtro ou sincronize o GitHub.</div>')+
+   '</div></div>'+
   '<p class="micro">Casos acompanhados cujas PRs saíram da janela de consulta permanecem no banco. A ausência na lista não significa exclusão do GitHub.</p>';
 }
 export function renderProcessToday({state}){
@@ -131,6 +141,7 @@ export function installProcessHandlers(getCtx){
   const info=state.editorSuggestions||{},pr=(info.records||[]).find(x=>x.number===n);
   const row=processFor(state,n);
   try{
+   if(action==='focus'){state.focusProcessPr=n;render();return}
    if(action==='filter'){state.processFilter=key;state.processLimit=12;render();return}
    if(action==='more'){state.processLimit=(state.processLimit||12)+12;render();return}
    if(!db||!pr)return;
