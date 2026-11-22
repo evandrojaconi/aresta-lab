@@ -245,7 +245,7 @@ cross join (values
  ('Instagram/Meta','Publicação exige Meta Business, ativos e permissões da conta.'),
  ('Facebook','Aproveitar peça aprovada; verificar API e vínculo de página.'),
  ('LinkedIn','Adaptação para canal institucional, aprovação antes do envio.'),
- ('WhatsApp','Grupos pessoais não oferecem API oficial de publicação automatizada.'),
+ ('WhatsApp','WhatsApp Business tem Groups API; verificar elegibilidade, sem presumir acesso a grupos pessoais existentes.'),
  ('Discord','Webhook/bot com escopo e consentimento.'),
  ('Notion','Fonte operacional existente; conexão ainda sem sincronização.'),
  ('Google Drive','Fonte documental; OAuth adicional e permissão explícita.'),
