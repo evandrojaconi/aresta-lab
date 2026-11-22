@@ -62,7 +62,7 @@ export function buildMissionStreams(state){
    route:'marketing'
   },
   territorios:{
-   tasks:tasks.filter(t=>t.track==='Território'||titleHas(t,/lapinha|rupestre|gravatá|igarap[eé]|goi[aá]s|rio de janeiro|expans[aã]o|fememg|acec/i)),
+   tasks:tasks.filter(t=>t.track==='Território'||titleHas(t,/lapinha|rupestre|gravatá|igarap[eé]|goi[aá]s|rio de janeiro|expans[aã]o|fememg|acec/i)).sort((a,b)=>Number(titleHas(b,/lapinha/i))-Number(titleHas(a,/lapinha/i))||Number(b.track==='Território')-Number(a.track==='Território')),
    contents:contents.filter(c=>titleHas(c,/lapinha|rupestre|gravatá|igarap[eé]/i)),
    notes:[
     {value:tasks.filter(t=>titleHas(t,/lapinha|rupestre/i)).length,label:'tarefas ligadas à Lapinha por texto'},
@@ -202,8 +202,7 @@ export function installMissionHandlers(getCtx){
   if(op==='go'){
    const route=id==='croquis'?'processos':id;
    if(!['processos','marketing','produto','dados','oportunidades','hoje'].includes(route))return;
-   if(id==='croquis')state.missionFlow='colaboracao';
-   if(route==='processos')state.missionFlow='visao';
+   if(route==='processos')state.missionFlow=id==='croquis'?'colaboracao':'visao';
    state.view=route;render();
   }
  });
