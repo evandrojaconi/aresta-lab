@@ -4,6 +4,7 @@ import {
   escapeHTML as esc, localDay, shortDate, rankTasks, buildAIPrompt
 } from './rules.js';
 import './styles.css';
+import {renderMarketing, renderProduct, renderInsights, renderOpportunities, installWorkflowHandlers} from './workflows.js';
 
 const app = document.getElementById('app');
 const url = import.meta.env.VITE_SUPABASE_URL;
@@ -27,7 +28,9 @@ const previewChannels = ['Instagram/Meta','Facebook','LinkedIn','WhatsApp','Disc
 const state = {
   view:'hoje', track:'Todas', loading:true, busy:false,
   session:null, membership:null, memberships:[], workspaceNames:{}, knowledge:[], extensions:[], knowledgeKind:'all', items:[], contacts:[], touchpoints:[], channels:[], audit:[],
-  notice:'', error:'', aiResult:'', aiLoading:false
+  contents:[], proposals:[], opportunities:[], metricSources:[], metricSnapshots:[], marketingFilter:'Todos',
+  selectedMetricSource:'', sourceLoading:false, analyticsNotice:'', showLooker:false,
+  notice:'', error:'', aiResult:'', aiLoading:false, aiMode:''
 };
 const canEdit = () => !!state.membership && ['admin','editor'].includes(state.membership.role);
 const ws = () => state.membership?.workspace_id;
@@ -97,14 +100,15 @@ function renderToday() {
   return '<section class="section-head"><div><span class="overline">TRIAGEM OPERACIONAL</span><h1>Hoje, o que realmente move o Aresta?</h1>'+
     '<p>Prioridade declarada + prazo + estágio. Sugestão baseada em regras, não decisão automática.</p></div></section>'+
     '<div class="panel focus"><div class="focus-top"><span class="overline">SPRINT 0 · 23–27 NOV</span>'+badge('4–6h/dia disponíveis','outline')+'</div>'+
-    '<h2>Workflow próprio sem parar as entregas.</h2><p>Publicar Rupestre, entregar a landing e ligar CRM + Google Auth. Novas integrações só após o fluxo básico funcionar.</p></div>'+
+    '<h2>Workflow próprio sem parar as entregas.</h2><p>Publicar Rupestre, entregar a landing e executar o CRM com login autorizado. Novas integrações só após o fluxo básico funcionar.</p></div>'+
     '<div class="section-head slim"><div><h2>Fila recomendada</h2><p>Uma entrega profunda por vez, tarefas curtas em sequência.</p></div>'+
     '<button class="secondary" data-view="pipeline">Ver pipeline</button></div>'+
     '<div class="today-grid">'+(selected.length?selected.map(t=>taskCard(t,true)).join(''):'<div class="empty">Nenhuma demanda aberta.</div>')+'</div>'+
+    '<div class="panel"><h2>Comandos rápidos</h2><div class="actions-block"><button class="primary" data-view="marketing">Criar conteúdo</button><button class="secondary" data-view="produto">Registrar melhoria UX</button><button class="secondary" data-view="dados">Consultar métricas</button><button class="secondary" data-view="oportunidades">Mapear oportunidade</button></div><p class="micro">Tudo começa pelo CRM e mantém histórico no Supabase. Ações externas exigem autorização própria.</p></div>'+
     '<div class="panel"><span class="overline">DEFINIÇÃO DE CONCLUÍDO DA SEMANA</span>'+
     '<div class="milestones"><div><strong>01 · Comunicação</strong><small>Posts Rupestre publicados e links registrados</small></div>'+
     '<div><strong>02 · Produto</strong><small>Landing revisada, testada e entregue</small></div>'+
-    '<div><strong>03 · Sistema</strong><small>Login Google e uma tarefa sincronizada em dois dispositivos</small></div></div></div>';
+    '<div><strong>03 · Sistema</strong><small>Login privado por e-mail e uma tarefa sincronizada em dois dispositivos</small></div></div></div>';
 }
 function renderPipeline() {
   const filtered=state.track==='Todas'?state.items:state.items.filter(t=>t.track===state.track);
@@ -199,19 +203,28 @@ function renderExtensions() {
 }
 
 function renderAI() {
-  const top=rankTasks(state.items).slice(0,3);
-  return '<section class="section-head"><div><span class="overline">EVIDÊNCIA → HIPÓTESE → AÇÃO</span><h1>Assistente de priorização</h1>'+
-    '<p>A triagem por regras funciona sem chave de IA. A análise por modelo exige Edge Function autorizada.</p></div></section>'+
-    '<div class="two-cols"><div class="panel"><h2>Regras de triagem</h2><p>A prioridade declarada vem antes de ideias novas; prazos próximos elevam a urgência. Concluídos ficam fora da fila.</p>'+
-    top.map((t,i)=>'<div class="recommend"><span>0'+(i+1)+'</span><div><strong>'+esc(t.title)+'</strong><small>'+esc(t.next_action||'Definir próxima ação')+'</small></div></div>').join('')+
-    '<div class="actions-block"><button class="secondary" data-action="copy-prompt">Copiar contexto para IA</button>'+
-    '<button class="primary" data-action="run-ai"'+(!db||!ws()||state.aiLoading?' disabled':'')+'>'+ (state.aiLoading?'Analisando...':'Analisar com IA')+'</button></div>'+
-    '<p class="micro">Ao clicar em “Analisar com IA”, até 10 tarefas (sem contatos) serão enviadas para a função protegida do projeto, se ela estiver configurada.</p></div>'+
-    '<div class="panel"><h2>Resultado e limites</h2>'+(state.aiResult?'<pre class="ai-result">'+esc(state.aiResult)+'</pre>':'<div class="empty">Nenhuma análise generativa executada. A triagem automática do lado esquerdo não é uma resposta de modelo.</div>')+
-    '<h3>O que precisa ser medido</h3><p>Links publicados, landing entregue, tempo efetivamente gasto, tarefas que retornaram do estado de revisão e ações recebidas da comunidade.</p></div></div>'+
-    '<div class="panel"><h2>Histórico verificável</h2>'+
-    (state.audit.length?state.audit.slice(0,12).map(a=>'<div class="timeline-entry"><strong>'+esc(a.action)+' · '+esc(a.entity_name)+'</strong><small>'+esc(new Date(a.created_at).toLocaleString('pt-BR'))+'</small></div>').join('')
-      :'<p class="empty-small">Nenhum evento auditado nesta visualização.</p>')+'</div>';
+  const top=rankTasks(state.items).slice(0,4);
+  const tasks=top.map((t,i)=>'<article class="recommend"><span>0'+(i+1)+'</span><div><strong>'+esc(t.title)+'</strong>'+
+      '<small>Por quê: '+(t.priority==='P0'?'entrega crítica declarada':'benefício e dependências a confirmar')+
+      ' · Próximo passo: '+esc(t.next_action||'definir primeira ação')+'</small></div></article>').join('');
+  return '<section class="section-head"><div><span class="overline">DECISÃO → AÇÃO → EVIDÊNCIA</span>'+
+    '<h1>Assistente & execução</h1><p>Ajuda a transformar o trabalho em próximas ações. Sem credencial de modelo, a triagem usa regras; o contexto pode ser levado ao ChatGPT.</p></div></section>'+
+    '<div class="two-cols"><div class="panel"><h2>Prioridades desta organização</h2>'+
+      (tasks||'<p>Nenhuma tarefa aberta no momento.</p>')+
+      '<div class="actions-block"><button class="primary" data-action="run-ai"'+(state.aiLoading?' disabled':'')+'>'+
+       (state.aiLoading?'Analisando…':'Gerar plano de execução')+'</button>'+
+      '<button class="secondary" data-action="copy-prompt">Copiar briefing para ChatGPT</button>'+
+      '<button class="secondary" data-action="open-chatgpt">Abrir ChatGPT</button></div>'+
+      '<p class="micro">IA generativa exige OPENAI_API_KEY configurada no Supabase. Sem ela, o plano usa regras explícitas e não inventa execução.</p></div>'+
+      '<div class="panel"><h2>Seu plano</h2>'+
+      (state.aiResult?'<div class="assistant-result">'+(state.aiMode==='model'?
+       '<span class="badge success">Modelo de IA</span>':'<span class="badge outline">Triagem operacional, sem modelo</span>')+
+       '<pre class="ai-result">'+esc(state.aiResult)+'</pre></div>':
+       '<div class="empty">Clique em “Gerar plano de execução” ou copie o briefing para continuar no ChatGPT.</div>')+
+      '<p class="micro">O assistente não publica posts, acessa dados privados externos ou altera código automaticamente.</p></div></div>'+
+      '<div class="panel"><h2>Decisões e evidências</h2>'+
+       (state.audit.length?state.audit.slice(0,10).map(a=>'<div class="timeline-entry"><strong>'+esc(a.action)+' · '+esc(a.entity_name)+'</strong><small>'+esc(new Date(a.created_at).toLocaleString('pt-BR'))+'</small></div>').join(''):
+       '<p>Sem eventos auditados nesta visualização.</p>')+'</div>';
 }
 function renderAccess() {
   return '<section class="section-head"><div><span class="overline">SEGURANÇA E IMPLANTAÇÃO</span><h1>Configuração</h1></div></section>'+
@@ -227,8 +240,11 @@ function render() {
   if (state.loading) return renderSplash('Carregando o workspace...');
   if (db && !state.session) return renderLogin();
   if (db && !state.membership) return renderNoAccess();
-  const nav=[['hoje','Visão de hoje'],['pipeline','Pipeline'],['acervo','Conhecimento'],['extensoes','Extensões'],['pessoas','Relacionamentos'],['canais','Canais'],['ia','IA & Evidências'],['acesso','Configuração']];
-  const body={hoje:renderToday,pipeline:renderPipeline,acervo:renderKnowledge,extensoes:renderExtensions,pessoas:renderContacts,canais:renderChannels,ia:renderAI,acesso:renderAccess}[state.view]();
+  const nav=[['hoje','Visão de hoje'],['pipeline','Pipeline'],['marketing','Marketing'],['produto','Produto & UX'],['dados','Dados & Relatórios'],['oportunidades','Oportunidades'],['acervo','Conhecimento'],['extensoes','Extensões'],['pessoas','Relacionamentos'],['canais','Canais'],['ia','IA & Evidências'],['acesso','Configuração']];
+  const body={hoje:renderToday,pipeline:renderPipeline,acervo:renderKnowledge,extensoes:renderExtensions,pessoas:renderContacts,canais:renderChannels,ia:renderAI,acesso:renderAccess,
+    marketing:()=>renderMarketing({state,esc,readonly}),produto:()=>renderProduct({state,esc,readonly}),
+    dados:()=>renderInsights({state,esc,readonly}),
+    oportunidades:()=>renderOpportunities({state,esc,readonly})}[state.view]();
   const indicators=[...stats(),{label:'Acervo',val:state.knowledge.length}].map(x=>'<div class="kpi"><strong>'+x.val+'</strong><span>'+esc(x.label)+'</span></div>').join('');
   app.innerHTML='<div class="shell"><aside class="sidebar"><div class="brand"><span class="brand-mark">A</span><span>ARESTA <em>INTELLIGENCE</em></span></div>'+
     '<div class="sidebar-label">CENTRO DE OPERAÇÕES</div><nav>'+nav.map(([id,label])=>'<button data-view="'+id+'" class="'+(state.view===id?'active':'')+'">'+esc(label)+'</button>').join('')+'</nav>'+
@@ -250,11 +266,17 @@ async function loadData() {
     db.from('crm_channels').select('*').eq('workspace_id',id).order('provider',{ascending:true}),
     db.from('crm_audit_events').select('*').eq('workspace_id',id).order('created_at',{ascending:false}).limit(30),
     db.from('crm_knowledge_records').select('*').eq('workspace_id',id).order('last_synced_at',{ascending:false}).limit(500),
-    db.from('crm_extensions').select('*').eq('workspace_id',id).order('display_name',{ascending:true})
+    db.from('crm_extensions').select('*').eq('workspace_id',id).order('display_name',{ascending:true}),
+    db.from('crm_content_items').select('*').eq('workspace_id',id).order('updated_at',{ascending:false}).limit(300),
+    db.from('crm_product_proposals').select('*').eq('workspace_id',id).order('updated_at',{ascending:false}).limit(300),
+    db.from('crm_metric_sources').select('*').eq('workspace_id',id).order('provider',{ascending:true}),
+    db.from('crm_metric_snapshots').select('*').eq('workspace_id',id).order('observed_at',{ascending:false}).limit(250),
+    db.from('crm_opportunities').select('*').eq('workspace_id',id).order('created_at',{ascending:false}).limit(250)
   ]);
   const issue=queries.find(q=>q.error)?.error;
   if (issue) throw issue;
-  [state.items,state.contacts,state.touchpoints,state.channels,state.audit,state.knowledge,state.extensions]=queries.map(q=>q.data||[]);
+  [state.items,state.contacts,state.touchpoints,state.channels,state.audit,state.knowledge,state.extensions,
+    state.contents,state.proposals,state.metricSources,state.metricSnapshots,state.opportunities]=queries.map(q=>q.data||[]);
 }
 async function hydrate(session) {
   state.loading=true; state.error=''; state.session=session;
@@ -315,7 +337,8 @@ document.addEventListener('click',async event=>{
     if(action==='logout') {await db.auth.signOut();await hydrate(null);}
     else if(action==='refresh') {await loadData();state.notice='Dados atualizados.';render();}
     else if(action==='copy-uid') {await navigator.clipboard.writeText(state.session?.user?.id||'');state.notice='ID copiado.';render();}
-    else if(action==='copy-prompt') {await navigator.clipboard.writeText(buildAIPrompt(state.items));state.notice='Contexto copiado. Revise os dados antes de enviá-los à IA.';render();}
+    else if(action==='copy-prompt') {await navigator.clipboard.writeText(buildAIPrompt(state.items));state.notice='Briefing copiado. Abra o ChatGPT e cole para aprofundar a análise.';render();}
+    else if(action==='open-chatgpt') {await navigator.clipboard.writeText(buildAIPrompt(state.items));window.open('https://chatgpt.com/','_blank','noopener,noreferrer');state.notice='Briefing copiado; cole na conversa do ChatGPT aberta.';render();}
     else if(action==='evidence') {
       const item=state.items.find(x=>x.id===btn.dataset.id);if(!item||readonly())return;
       const result=window.prompt('Registre o link ou descrição da evidência real (não uma previsão):',item.result_evidence||'');
@@ -332,7 +355,8 @@ document.addEventListener('click',async event=>{
         due_date:t.due_date,next_action:t.next_action,definition_of_done:t.definition_of_done
       }));
       const {data,error}=await db.functions.invoke('ai-triage',{body:{workspace_id:ws(),items}});
-      if(error)throw new Error('Função de IA não disponível: '+error.message);
+      if(error)throw new Error('Serviço de análise indisponível: '+error.message);
+      state.aiMode=data?.mode==='model'?'model':'rules';
       state.aiResult=String(data?.recommendation||'Nenhuma recomendação retornada.');
       state.aiLoading=false;render();
     }
@@ -419,4 +443,5 @@ async function init(){
   }catch(error){state.error='Não foi possível autenticar: '+error.message;state.loading=false;render();}
 }
 renderSplash('Preparando interface...');
+installWorkflowHandlers(()=>({db,state,ws,readonly,loadData,render}));
 init();
