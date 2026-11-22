@@ -150,3 +150,13 @@ p{line-height:1.55}button:focus-visible,input:focus-visible,select:focus-visible
 .app-screen-thumbs{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin:12px 0}
 .app-screen-thumbs button{background:#faf6ee;border:1px solid #ded5c7;border-radius:8px;padding:7px 10px;font-size:.74rem}
 .app-screen-thumbs button.selected{background:#edcebc;border-color:#b53e29}
+
+.partner-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.partner-mini{border:1px solid #e4d8cb;padding:15px;border-radius:9px;background:#fffaf3}
+.partner-mini h3{margin:0 0 8px}.partner-mini p{font-size:.76rem;color:#6c625a;min-height:48px}
+.partner-mini button{font-size:.75rem}
+.task-edit{border:1px solid #e1d7c9;padding:12px;border-radius:9px;margin:18px 0;background:#fffaf4}
+.task-edit>summary{font-weight:800;cursor:pointer;color:#98412e}
+.task-edit form{margin-top:16px}
+@media(max-width:950px){.partner-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.partner-strip{grid-template-columns:1fr}}
