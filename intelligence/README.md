@@ -60,7 +60,7 @@ Para ativar, usar Supabase CLI na pasta `intelligence/`, vincular o projeto e ex
 | Gmail | Sem sync no CRM | OAuth separado e seleção de conversas |
 | Instagram/Meta e Facebook | Sem API no CRM | Conta profissional/página, Meta app, permissões e revisão |
 | LinkedIn | Sem API no CRM | Permissões de publicação da organização e app autorizado |
-| WhatsApp | Sem API no CRM | WhatsApp Business Platform quando aplicável; grupos pessoais não são destino de publicação oficial por API |
+| WhatsApp | Sem API no CRM | WhatsApp Business Platform (incluindo Groups API quando elegível); não assumir acesso automático aos grupos pessoais já existentes |
 | Discord | Sem API no CRM | Bot/webhook limitado a canal aprovado |
 
 O login Google não concede acesso automático a Drive, Calendar ou Gmail. Publicação é sempre aprovada por humano e verificada na plataforma de destino. Tokens permanecem em secrets do servidor. Nenhuma integração deve trocar dados sem consentimento, escopo definido, idempotência, auditoria e tratamento de erros.
