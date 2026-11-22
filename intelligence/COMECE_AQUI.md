@@ -1,27 +1,35 @@
-# Aresta Intelligence — comece aqui (somente uso pessoal)
+# ARESTA Intelligence — abrir o CRM na nuvem
 
-**Não publicar site. Não configurar Google Cloud. Não integrar redes sociais agora.**
+**Link:** https://evandrojaconi.github.io/aresta-lab/intelligence/
 
-Já está pronto no repositório: interface, acervo migrado, dados no Supabase `aresta-lab`, banco com RLS e login por link de e-mail. A infraestrutura do Google não é necessária.
+O painel é um produto próprio na identidade do Aresta, diferente do sistema Alura. O frontend foi publicado pelo GitHub Pages do laboratório; o banco de dados está no Supabase `aresta-lab`. O domínio oficial `arestaclimb.com` não foi modificado.
 
-## Abrir localmente no seu Windows
+## Primeiro acesso (uma vez)
 
-1. Clone/abra no GitHub Desktop a branch `feat/aresta-intelligence-crm-sprint0` do repositório `evandrojaconi/aresta-lab`.
-2. Abra um terminal PowerShell na pasta `intelligence` e rode:
+1. Abra o endereço acima.
+2. Digite o **mesmo e-mail da sua conta pessoal conectada** e clique em **Receber link de acesso**.
+3. Abra o e-mail e confirme o link. O acesso à base foi previamente autorizado para esse e-mail verificado, em configuração privada no Supabase.
+4. **Se o link redirecionar para endereço errado:** abra [Supabase Authentication → URL Configuration](https://supabase.com/dashboard/project/fqurgrujuqcogbjrsytt/auth/url-configuration) e acrescente em **Additional Redirect URLs** exatamente: `https://evandrojaconi.github.io/aresta-lab/intelligence/**`. Salve e solicite outro link.
 
-```powershell
-Copy-Item .env.example .env.local
-npm install
-npm run dev
-```
+Não é necessário Google Cloud, senha, OAuth, configurar domínio ou executar terminal.
 
-3. No navegador, abra **http://localhost:5173**.
-4. Digite seu e-mail e abra o link recebido. O Supabase pode exigir que **http://localhost:5173/** esteja cadastrado em [Authentication → URL Configuration](https://supabase.com/dashboard/project/fqurgrujuqcogbjrsytt/auth/url-configuration) como redirect permitido.
-5. No primeiro login, a tela mostrará um ID de usuário. Como o CRM contém dados privados, ele não concede permissão automaticamente: um administrador precisa aprovar esse ID na tabela `crm_memberships`. Essa é uma única liberação por pessoa; não tem nada a ver com publicar um aplicativo.
-6. Depois disso, o CRM abre os cinco espaços, respeitando o acesso individual, e mostra as tarefas e o conhecimento migrado.
+## Funcionalidades já implementadas
 
-**O que NÃO está ativo:** publicação direta no Instagram/LinkedIn/WhatsApp, edição de croquis pelo MCP, sincronização contínua com Notion/Canva/Drive e IA remota. Essas extensões estão catalogadas com seus contratos, mas requerem autenticação específica antes de executar.
+- Painel Hoje, Pipeline de demandas, Conhecimento migrado, Extensões, Relacionamentos, Canais e recomendações determinísticas.
+- Banco Supabase com RLS em todas as tabelas `crm_*`; 44 registros históricos importados do Notion e tarefas operacionais já cadastradas.
+- Cinco workspaces por escopo: Aresta, Pessoal, FEMEMG, ACEC, Igarameca.
+- Login privado por Magic Link; o e-mail verificado pré-aprovado recebe membership automaticamente após autenticação. Contatos e evidências ficam privados na base, não no GitHub.
 
-**Segurança:** a chave no `.env.example` é apenas a *publishable key*, destinada a clientes. Não colocar `service_role`, client secrets, senhas ou tokens em arquivos versionados. O projeto continua privado quanto aos dados graças às políticas RLS; entretanto, o código está numa **branch de um repositório público existente**, acessível a quem visita o GitHub.
+## Ainda NÃO executa automaticamente
 
-**Quando terminar o teste:** pressione Ctrl+C no terminal. Nada foi publicado ou implantado em hospedagem.
+- Publicação no Instagram/LinkedIn/WhatsApp, integração do Canva Content Planner, sincronização contínua do Notion/Drive/Calendar, alteração de croquis pelo Editor MCP e IA remota não estão conectadas/implantadas. O painel indica os estados reais.
+- A publicação bem-sucedida do GitHub Pages não substitui a confirmação de primeiro login e de gravação em dois dispositivos.
+
+## Código e auditoria
+
+- Frontend: `intelligence/src/`.
+- Migrations aplicadas no banco: `intelligence/sql/001_*.sql` até `006_*.sql`.
+- Pipeline de Pages: `.github/workflows/github-pages.yml`, etapa que monta `.output/public/intelligence/` sem alterar a landing.
+- Todos os dados estão protegidos por membership; código e assets estáticos são públicos no GitHub Pages, como normalmente acontece em aplicações SPA.
+
+Se o primeiro login falhar, o erro exato da tela do CRM é suficiente para corrigirmos o fluxo.
