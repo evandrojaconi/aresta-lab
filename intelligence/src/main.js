@@ -302,6 +302,7 @@ async function hydrate(session) {
     try {await loadData();} catch(error){state.error='Falha ao carregar o CRM: '+error.message;}
   }
   state.loading=false;render();
+  if(state.membership && (state.view==='hoje'||state.view==='processos'))void refreshEditorSuggestions();
 }
 function defaultPreview() {
   state.items=preview;state.contacts=[];state.channels=previewChannels;state.knowledge=[];state.extensions=[];
