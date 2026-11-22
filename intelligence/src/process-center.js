@@ -15,7 +15,9 @@ export function deriveCroquiSteps(pr,process,content){
  const hasEvidence=process?.distribution_status==='confirmado'&&Boolean(process?.distribution_evidence_url);
  const contentPublished=content&&['publicado','medido'].includes(content.stage)&&Boolean(content.published_url);
  const out=[
-  {title:'1. Contribuição',status:pr?'registrada':'sem fonte',detail:pr?'PR #'+pr.number+' identificada no GitHub':'O registro não foi encontrado na consulta atual; confira a fonte'},
+  {title:'1. Contribuição',status:pr?.status==='não verificado'?'referência no CRM':pr?'registrada':'sem fonte',
+    detail:pr?.status==='não verificado'?'PR #'+pr.number+' tem acompanhamento no CRM; não foi localizada na janela atual do GitHub':
+      pr?'PR #'+pr.number+' identificada no GitHub':'O registro não foi encontrado na consulta atual; confira a fonte'},
   {title:'2. Revisão e decisão',status:merged?'merge registrado':opened?'PR aberta':closed?'fechada sem merge':'não verificado',
     detail:merged?'Merge no GitHub é evidência técnica. Não demonstra sozinho o processo de avaliação humana.':
       opened?'Verificar responsável e discussão no Editor/GitHub.':closed?'Não tratar encerramento como rejeição justificada.':'Não inferir revisão.'},
@@ -79,7 +81,7 @@ export function renderProcessCenter({state,readonly=()=>true}){
    selected==='abertos'?prs.filter(p=>p.status==='aberta'):prs;
  const cases=state.croquiProcesses||[], tracked=cases.length;
  const content=state.contents||[], reported=state.metricSnapshots||[];
- const editorCount=info.fetchedAt?prs.length:'—';
+ const editorCount=info.fetchedAt?known.length:'—';
  return '<section class="section-head process-heading"><div><span class="overline">CONHECIMENTO → REVISÃO → DISTRIBUIÇÃO → APRENDIZADO</span>'+
   '<h1>Processos do Aresta</h1>'+
   '<p>Execute uma jornada inteira usando Editor, ArestaDB, App e Comunicação — sem recriar os sistemas existentes.</p></div>'+
@@ -128,7 +130,7 @@ export function renderProcessToday({state}){
  return '<section class="process-today"><div><div><span class="overline">PROCESSOS VIVOS</span><h2>O que precisa avançar</h2>'+
   '<p>O Intelligence acompanha o ciclo dos croquis, não apenas tarefas isoladas.</p></div>'+
   '<button class="primary" data-view="processos">Abrir processos</button></div>'+
-  '<div class="process-today-stats"><span><b>'+E(open)+'</b> PRs abertas no GitHub'+(prs.fetchedAt?' · última consulta '+E(new Date(prs.fetchedAt).toLocaleDateString('pt-BR')):' · ainda não consultado')+'</span>'+
+  '<div class="process-today-stats"><span><b>'+E(open)+'</b> PRs abertas na consulta GitHub'+(prs.fetchedAt?' · última consulta '+E(new Date(prs.fetchedAt).toLocaleDateString('pt-BR')):' · ainda não consultado')+'</span>'+
   '<span><b>'+tracked.length+'</b> acompanhamentos</span>'+
   '<span><b>'+tasks.length+'</b> sem próxima ação registrada</span></div></section>';
 }
