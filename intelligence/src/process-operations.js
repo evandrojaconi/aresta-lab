@@ -36,7 +36,7 @@ export function buildMissionStreams(state){
  const byTrack=regex=>tasks.filter(t=>regex.test(t.track||''));
  const areas={
   colaboracao:{
-   tasks:byTrack(/Comunidade/),contents:contents.filter(c=>titleHas(c,/comunidade|contribui|editor|croqui/i)),
+   tasks:byTrack(/Comunidade/),contents:contents.filter(c=>/comunidade|contribui|editor|croqui/i.test([c.title,c.source_url].filter(Boolean).join(' '))),
    notes:[
     {value:touchpoints.length,label:'interações registradas no CRM'},
     {value:prs.fetchedAt?prs.open:'—',label:'PRs abertas na última consulta pública'},
