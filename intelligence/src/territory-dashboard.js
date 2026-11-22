@@ -49,7 +49,7 @@ export function parseCroquiStatus(raw){
   lapinha:{
     published:cells[1]?.includes('✅')||false,ready:cells[2]?.includes('✅')||false,
     routes:count(cells[12]),sectorMaps:count(cells[11]),coordinates:count(cells[15]),
-    trails:count(cells[16]),access:count(cells[9]),credits:count(cells[24])
+    trails:count(cells[16]),access:count(cells[9]),credits:count(cells[23])
   },origin:'arquivo público do ArestaDB consultado sob demanda'};
  // As colunas de totais no cabeçalho vêm depois de "1.6 ..."; separar por nome,
  // para evitar assumir que qualquer número representa visitantes.
