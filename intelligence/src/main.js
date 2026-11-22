@@ -372,7 +372,7 @@ document.addEventListener('submit',async event=>{
       shouldCreateUser:true
     }});
     if(error)state.error='Falha ao enviar link: '+error.message;
-    else state.notice='Link enviado. Confira a caixa de entrada e abra no mesmo navegador local.';
+    else state.notice='Novo link enviado. Ele deve voltar ao endereço do CRM na nuvem. Se abrir localhost, ajuste Site URL e Redirect URLs em Supabase Authentication → URL Configuration e solicite outro link.';
     render();return;
   }
   if(!['task-form','contact-form','touchpoint-form'].includes(form.id))return;
