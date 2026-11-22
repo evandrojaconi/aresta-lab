@@ -21,7 +21,7 @@ create table if not exists public.crm_memberships (
 -- Evita recursão de políticas de membership. O owner da função deve ser o
 -- role de migração do Supabase; não conceder CREATE no schema public a anônimos.
 create or replace function public.crm_is_member(p_workspace uuid)
-returns boolean language sql stable security definer set search_path = ''
+returns boolean language sql stable security invoker set search_path = ''
 as $$
   select exists (
     select 1 from public.crm_memberships m
@@ -30,7 +30,7 @@ as $$
 $$;
 
 create or replace function public.crm_can_edit(p_workspace uuid)
-returns boolean language sql stable security definer set search_path = ''
+returns boolean language sql stable security invoker set search_path = ''
 as $$
   select exists (
     select 1 from public.crm_memberships m
@@ -51,7 +51,7 @@ create table if not exists public.crm_work_items (
   priority text not null default 'P2' check (priority in ('P0','P1','P2','P3')),
   status text not null default 'entrada' check (status in
     ('entrada','pronto','fazendo','aguardando','revisao','concluido','medido')),
-  owner_label text not null default 'Evandro',
+  owner_label text not null default '',
   next_action text not null default '',
   definition_of_done text not null default '',
   due_date date,
@@ -152,7 +152,8 @@ begin
       to_jsonb(new) - array['name','title','email','phone','notes','details','next_action','definition_of_done','result_evidence','source_url','external_key','owner_label','created_by']
     else null end
   );
-  return coalesce(new,old);
+  if tg_op = 'DELETE' then return old; end if;
+  return new;
 end;
 $$;
 
@@ -281,3 +282,11 @@ on conflict (workspace_id,external_key) do nothing;
 -- from public.crm_workspaces where slug='aresta'
 -- on conflict (workspace_id,user_id) do update set role='admin';
 -- Não liberar por domínio ou e-mail sem aprovação; OAuth autentica, RLS autoriza.
+
+-- A autorização é determinada por RLS; conceder privilegio SQL não torna dados públicos.
+grant usage on schema public to authenticated;
+grant select on public.crm_workspaces,public.crm_memberships,public.crm_work_items,public.crm_contacts,public.crm_touchpoints,public.crm_channels,public.crm_audit_events to authenticated;
+grant insert, update, delete on public.crm_work_items,public.crm_contacts to authenticated;
+grant insert on public.crm_touchpoints to authenticated;
+revoke execute on function public.crm_is_member(uuid), public.crm_can_edit(uuid) from anon;
+grant execute on function public.crm_is_member(uuid), public.crm_can_edit(uuid) to authenticated;
