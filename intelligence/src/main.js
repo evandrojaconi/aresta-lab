@@ -12,7 +12,7 @@ const configured = Boolean(url && /^https:\/\//.test(url) && key && !String(key)
 const db = configured ? createClient(url, key, { auth: {
   autoRefreshToken: true, persistSession: true, detectSessionInUrl: true
 }}) : null;
-const today = localDay();
+const today = () => localDay();
 
 const preview = [
   {id:'demo-1',title:'Publicar parceria Rupestre no Instagram',track:'Marketing',priority:'P0',status:'pronto',due_date:'2026-11-23',next_action:'Publicar peças aprovadas e registrar link.',definition_of_done:'Publicação e link registrados.'},
@@ -77,7 +77,7 @@ function stats() {
   ];
 }
 function taskCard(t,compact=false) {
-  const due = t.due_date && t.due_date < today && !CLOSED.has(t.status);
+  const due = t.due_date && t.due_date < today() && !CLOSED.has(t.status);
   const dueTag = t.due_date ? '<span class="due '+(due?'overdue':'')+'">'+(due?'Atraso · ':'')+esc(shortDate(t.due_date))+'</span>' : '';
   const controls = !compact ? '<div class="item-controls"><label>Estado<select data-change="task-status" data-id="'+esc(t.id)+'"'+(readonly()?' disabled':'')+'>'+
     STATUS.map(s=>option(s,STATUS_LABELS[s],t.status)).join('')+'</select></label></div>' : '';
@@ -192,7 +192,7 @@ function render() {
     '<div class="sidebar-label">CENTRO DE OPERAÇÕES</div><nav>'+nav.map(([id,label])=>'<button data-view="'+id+'" class="'+(state.view===id?'active':'')+'">'+esc(label)+'</button>').join('')+'</nav>'+
     '<div class="side-bottom"><span class="online-dot"></span>'+(db?'Supabase · acesso autenticado':'Modo demonstração')+
     '<p>'+(db?'Aresta · '+esc(state.membership?.role):'Dados ilustrativos. Nenhum registro será salvo.')+'</p></div></aside>'+
-    '<main class="main"><header class="topbar"><div><span class="overline">ARESTA CLIMB / INTELLIGENCE</span><p>Domingo 22/11 → Sprint 0 · 23–27/11</p></div>'+
+    '<main class="main"><header class="topbar"><div><span class="overline">ARESTA CLIMB / INTELLIGENCE</span><p>'+esc(new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'2-digit'}))+' · Sprint 0 · 23–27/11</p></div>'+
     '<div class="top-right">'+badge(db?'Workspace autorizado':'Prévia sem conexão',db?'success':'outline')+
     (db?'<button class="ghost" data-action="logout">Sair</button>':'')+'</div></header>'+
     (!db?'<div class="demo-banner"><strong>Prévia técnica:</strong> conecte o Supabase e habilite login Google para trabalhar com dados persistentes. Botões de escrita desabilitados.</div>':'')+
