@@ -4,6 +4,7 @@ import {
   escapeHTML as esc, localDay, shortDate, rankTasks, buildAIPrompt
 } from './rules.js';
 import './styles.css';
+import {generateStrongPassword} from './password.js';
 import {renderMarketing, renderProduct, renderInsights, renderOpportunities, installWorkflowHandlers} from './workflows.js';
 import {renderCommandHome,renderTaskDrawer,renderKnowledgeLibrary,renderConnectionCenter,installWorkbenchHandlers} from './workbench.js';
 
@@ -15,6 +16,9 @@ const db = configured ? createClient(url, key, { auth: {
   autoRefreshToken: true, persistSession: true, detectSessionInUrl: true
 }}) : null;
 const today = () => localDay();
+// Senha só permanece na memória durante a exibição de primeiro uso.
+// Nunca usar localStorage, Supabase tables ou GitHub para armazená-la.
+let oneTimePassword = '';
 
 const preview = [
   {id:'demo-1',title:'Publicar parceria Rupestre no Instagram',track:'Marketing',priority:'P0',status:'pronto',due_date:'2026-11-23',next_action:'Publicar peças aprovadas e registrar link.',definition_of_done:'Publicação e link registrados.'},
@@ -58,15 +62,18 @@ function renderSplash(message) {
 }
 function renderLogin() {
   app.innerHTML='<div class="auth-bg"><div class="auth-card"><div class="brand"><span class="brand-mark">A</span><span>ARESTA <em>INTELLIGENCE</em></span></div>'+
-    '<span class="overline">ACESSO PRIVADO</span><h1>Menos abas.<br>Mais execução.</h1>'+
-    '<p>Entre com sua conta Google cadastrada. Só usuários aprovados podem acessar os dados da organização.</p>'+
+    '<span class="overline">ACESSO PRIVADO</span><h1>Seu trabalho.<br>Em um só lugar.</h1>'+
+    '<p>Entre com seu e-mail cadastrado e senha. O acesso aos dados depende da sua permissão no Aresta.</p>'+
     notice()+
-    '<button class="primary wide" data-action="google-login"'+(state.googleReady?'':' disabled')+'>Entrar com Google</button>'+
-    (!state.googleReady?'<p class="micro">Google ainda não está habilitado no Supabase. O acesso por e-mail permanece disponível temporariamente para não bloquear a conta existente.</p>':'')+
-    '<details class="temporary-login"><summary>Acesso por e-mail (transição)</summary>'+
-    '<form id="email-login-form" class="email-login"><label for="email-login">E-mail já cadastrado<input id="email-login" name="email" type="email" placeholder="voce@exemplo.com" autocomplete="email" required></label>'+
-    '<button class="secondary wide" type="submit">Enviar link provisório</button></form></details>'+
-    '<p class="micro">A conta Google identifica a pessoa; os repositórios GitHub são liberados individualmente.</p>'+
+    '<form id="password-login-form" class="email-login">'+
+    '<label for="password-email">E-mail<input id="password-email" name="email" type="email" autocomplete="username" placeholder="seuemail@gmail.com" required></label>'+
+    '<label for="password-value">Senha<input id="password-value" name="password" type="password" autocomplete="current-password" minlength="8" required></label>'+
+    '<button class="primary wide" type="submit">Entrar no CRM</button></form>'+
+    '<details class="temporary-login"><summary>Primeiro acesso ou ainda não tenho senha</summary>'+
+    '<p class="micro">Se já estiver conectado em outro dispositivo, abra Ajustes e gere sua senha. Caso contrário, receba um link de acesso somente desta vez.</p>'+
+    '<form id="email-login-form" class="email-login"><label for="email-login">E-mail já cadastrado<input id="email-login" name="email" type="email" placeholder="seuemail@gmail.com" autocomplete="username" required></label>'+
+    '<button class="secondary wide" type="submit">Acessar uma vez por e-mail</button></form></details>'+
+    '<p class="micro">Sua senha fica protegida pelo Supabase Auth. O navegador poderá oferecer salvá-la no gerenciador de senhas.</p>'+
     '</div></div>';
 }
 function renderNoAccess() {
@@ -194,15 +201,23 @@ function renderAI() {
        '<p>Sem eventos auditados nesta visualização.</p>')+'</div>';
 }
 function renderAccess() {
-  return '<section class="section-head"><div><span class="overline">SEGURANÇA E IMPLANTAÇÃO</span><h1>Configuração</h1></div></section>'+
-    '<div class="panel"><h2>Estado</h2><p>Ambiente: <b>'+(db?'Supabase configurado':'Prévia sem backend')+'</b></p>'+
-    '<p>Permissão: <b>'+esc(state.membership?.role||'somente demonstração')+'</b></p>'+
-    (state.session?'<div class="code-line"><small>Identificador do usuário autenticado</small><code>'+esc(state.session.user.id)+'</code></div>':'')+
-    '<p>Dados privados armazenados apenas no Supabase, sob RLS. Chaves privilegiadas nunca entram no frontend ou no GitHub.</p>'+
+  const account=esc(state.session?.user?.email||'conta não identificada');
+  return '<section class="section-head"><div><span class="overline">SEGURANÇA DA CONTA</span><h1>Ajustes</h1></div></section>'+
+    '<div class="panel"><h2>Sua conta</h2><p>E-mail cadastrado: <b>'+account+'</b></p>'+
+    '<p>Permissão neste espaço: <b>'+esc(state.membership?.role||'visualização')+'</b></p>'+
+    '<p>Seus projetos e tarefas permanecem vinculados à mesma conta do Supabase.</p>'+
     '<div class="actions-block"><button class="secondary" data-action="refresh"'+(!db?' disabled':'')+'>Atualizar dados</button>'+
     (db?'<button class="ghost" data-action="logout">Encerrar sessão</button>':'')+'</div></div>'+
-    '<div class="panel"><h2>Login Google</h2><p>Estado do provedor: <b>'+(state.googleReady?'configurado':'pendente de configuração no Supabase')+'</b>. O e-mail autenticado não substitui a permissão da conta GitHub.</p>'+ 
-    '<p>Depois de ativar o OAuth Google, o usuário aprovado entra com Google; o acesso provisório por link de e-mail será descontinuado após o teste de migração.</p></div>';
+    '<div class="panel"><h2>Entrar com e-mail e senha</h2>'+
+    '<p>Clique uma vez para criar uma senha aleatória forte para a conta acima. Ela substitui sua senha anterior, caso exista.</p>'+
+    (db && state.session ? '<button class="primary" data-action="generate-password">Gerar e ativar minha senha</button>' :
+       '<p class="micro">Entre primeiro para configurar a senha desta conta.</p>')+
+    (oneTimePassword?'<div class="password-once" role="status"><strong>Senha ativada — salve agora</strong>'+
+      '<p>Esta senha aparece somente agora e não será armazenada no CRM. Use o gerenciador de senhas do Google/Chrome ou outro gerenciador.</p>'+
+      '<label for="new-password-once">Sua nova senha<input id="new-password-once" type="text" autocomplete="new-password" readonly value="'+esc(oneTimePassword)+'"></label>'+
+      '<div class="actions-block"><button class="secondary" data-action="copy-generated-password">Copiar senha</button>'+
+      '<button class="ghost" data-action="dismiss-generated-password">Já salvei · Ocultar</button></div></div>':'')+
+    '<p class="micro">O Supabase recebe a senha por HTTPS e armazena apenas o hash. Nenhuma credencial será publicada no GitHub ou gravada em tabela de tarefas.</p></div>';
 }
 function render() {
   if (state.loading) return renderSplash('Carregando o workspace...');
@@ -314,7 +329,24 @@ document.addEventListener('click',async event=>{
       const {error}=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+window.location.pathname}});
       if(error)throw error;
     }
-    else if(action==='logout') {await db.auth.signOut();await hydrate(null);}
+    else if(action==='generate-password') {
+      if(!db||!state.session){state.error='Você precisa estar conectado para criar sua senha.';render();return;}
+      if(!window.confirm('Criar uma senha nova para esta conta? A senha anterior será substituída.'))return;
+      const password=generateStrongPassword();
+      const {error}=await db.auth.updateUser({password});
+      if(error)throw new Error('Não foi possível ativar a senha: '+error.message);
+      oneTimePassword=password;
+      state.notice='Sua senha foi ativada. Copie e salve no gerenciador de senhas antes de sair desta tela.';
+      render();
+    }
+    else if(action==='copy-generated-password') {
+      if(!oneTimePassword)return;
+      await navigator.clipboard.writeText(oneTimePassword);
+      state.notice='Senha copiada. Salve no gerenciador de senhas do seu navegador.';
+      render();
+    }
+    else if(action==='dismiss-generated-password') {oneTimePassword='';state.notice='Senha ocultada. Para entrar novamente, use e-mail e senha.';render();}
+    else if(action==='logout') {oneTimePassword='';await db.auth.signOut();await hydrate(null);}
     else if(action==='refresh') {await loadData();state.notice='Dados atualizados.';render();}
     else if(action==='copy-uid') {await navigator.clipboard.writeText(state.session?.user?.id||'');state.notice='ID copiado.';render();}
     else if(action==='copy-prompt') {await navigator.clipboard.writeText(buildAIPrompt(state.items));state.notice='Briefing copiado. Abra o ChatGPT e cole para aprofundar a análise.';render();}
@@ -365,6 +397,20 @@ document.addEventListener('change',async event=>{
 });
 document.addEventListener('submit',async event=>{
   const form=event.target;
+  if(form.id==='password-login-form'){
+    event.preventDefault();
+    if(!db)return;
+    const values=new FormData(form);
+    const email=String(values.get('email')||'').trim();
+    const password=String(values.get('password')||'');
+    if(!email||!password)return;
+    const {error}=await db.auth.signInWithPassword({email,password});
+    if(error){
+      state.error='Não foi possível entrar. Confira e-mail e senha. Se ainda não tiver senha, use "Primeiro acesso".';
+      render();
+    }
+    return;
+  }
   if(form.id==='email-login-form'){
     event.preventDefault();
     if(!db)return;
@@ -373,10 +419,10 @@ document.addEventListener('submit',async event=>{
     state.error=''; state.notice='';
     const {error}=await db.auth.signInWithOtp({ email, options: {
       emailRedirectTo:window.location.origin+window.location.pathname,
-      shouldCreateUser:true
+      shouldCreateUser:false
     }});
     if(error)state.error='Falha ao enviar link: '+error.message;
-    else state.notice='Novo link enviado. Ele deve voltar ao endereço do CRM na nuvem. Se abrir localhost, ajuste Site URL e Redirect URLs em Supabase Authentication → URL Configuration e solicite outro link.';
+    else state.notice='Link de primeiro acesso enviado ao e-mail cadastrado. Depois de entrar, abra Ajustes para criar sua senha permanente.';
     render();return;
   }
   if(!['task-form','contact-form','touchpoint-form'].includes(form.id))return;
