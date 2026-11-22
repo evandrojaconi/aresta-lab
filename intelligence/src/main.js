@@ -263,6 +263,18 @@ async function hydrate(session) {
   const res=await db.from('crm_memberships').select('workspace_id,role').eq('user_id',session.user.id).limit(30);
   if(res.error) {state.error='Falha ao consultar permissão: '+res.error.message; state.loading=false;render();return;}
   state.memberships=res.data||[];
+  // O proprietário, com e-mail confirmado e previamente autorizado no
+  // banco privado, recebe seus workspaces na primeira entrada. Outros usuários
+  // permanecem sem acesso. O cliente não contém e-mails ou credenciais.
+  if (!state.memberships.length) {
+    const claim=await db.rpc('crm_claim_owner_access');
+    if (claim.error) { state.error='Acesso ainda não autorizado: '+claim.error.message; }
+    if (!claim.error && Number(claim.data)>0) {
+      const refreshed=await db.from('crm_memberships')
+        .select('workspace_id,role').eq('user_id',session.user.id).limit(30);
+      if(!refreshed.error) state.memberships=refreshed.data||[];
+    }
+  }
   if(state.memberships.length) {
     const chosen=window.sessionStorage.getItem('aresta_intelligence_workspace');
     state.membership=state.memberships.find(m=>m.workspace_id===chosen)||state.memberships[0];
