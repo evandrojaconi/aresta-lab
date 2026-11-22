@@ -5,7 +5,8 @@ import {
 } from './rules.js';
 import './styles.css';
 import {generateStrongPassword} from './password.js';
-import {fetchArestaSuggestions,renderEditorCollaboration} from './editor-collaboration.js';
+import {fetchArestaSuggestions} from './editor-collaboration.js';
+import {renderProcessCenter,installProcessHandlers} from './process-center.js';
 import {renderMarketing, renderProduct, renderInsights, renderOpportunities, installWorkflowHandlers} from './workflows.js';
 import {renderCommandHome,renderTaskDrawer,renderKnowledgeLibrary,renderConnectionCenter,installWorkbenchHandlers} from './workbench.js';
 
@@ -39,6 +40,7 @@ const state = {
   knowledgeGroup:'all',kbLimit:9,kbQuery:'',previewView:'landing',
   selectedMetricSource:'', sourceLoading:false, analyticsNotice:'', showLooker:false,
   editorSuggestions:{records:[],fetchedAt:null,loading:false,error:null},
+  croquiProcesses:[],processFilter:'todos',processLimit:12,
   notice:'', error:'', aiResult:'', aiLoading:false, aiMode:''
 };
 const canEdit = () => !!state.membership && ['admin','editor'].includes(state.membership.role);
@@ -225,9 +227,10 @@ function render() {
   if (state.loading) return renderSplash('Carregando o workspace...');
   if (db && !state.session) return renderLogin();
   if (db && !state.membership) return renderNoAccess();
-  const nav=[['hoje','Hoje'],['pipeline','Tarefas'],['marketing','Marketing'],['produto','Produto'],['dados','Dados'],['oportunidades','Oportunidades'],['pessoas','Pessoas'],['acervo','Biblioteca'],['canais','Conexões'],['ia','Assistente'],['acesso','Ajustes']];
+  const nav=[['hoje','Hoje'],['processos','Processos'],['pipeline','Tarefas'],['marketing','Marketing'],['produto','Produto'],['dados','Dados'],['oportunidades','Oportunidades'],['pessoas','Pessoas'],['acervo','Biblioteca'],['canais','Conexões'],['ia','Assistente'],['acesso','Ajustes']];
   const body={hoje:renderToday,pipeline:renderPipeline,acervo:renderKnowledge,extensoes:renderExtensions,pessoas:renderContacts,canais:renderChannels,ia:renderAI,acesso:renderAccess,
-    marketing:()=>renderMarketing({state,esc,readonly}),produto:()=>renderEditorCollaboration({state,readonly})+renderProduct({state,esc,readonly}),
+    processos:()=>renderProcessCenter({state,readonly}),
+    marketing:()=>renderMarketing({state,esc,readonly}),produto:()=>renderProduct({state,esc,readonly}),
     dados:()=>renderInsights({state,esc,readonly}),
     oportunidades:()=>renderOpportunities({state,esc,readonly})}[state.view]();
   const indicators=[...stats(),{label:'Acervo',val:state.knowledge.length}].map(x=>'<div class="kpi"><strong>'+x.val+'</strong><span>'+esc(x.label)+'</span></div>').join('');
@@ -260,13 +263,14 @@ async function loadData() {
     db.from('crm_task_contexts').select('*').eq('workspace_id',id),
     db.from('crm_creative_assets').select('*').eq('workspace_id',id).order('category',{ascending:true}),
     db.from('crm_review_marks').select('*').eq('workspace_id',id).order('created_at',{ascending:false}).limit(250),
-    db.from('crm_github_approvals').select('*').eq('workspace_id',id).order('updated_at',{ascending:false}).limit(100)
+    db.from('crm_github_approvals').select('*').eq('workspace_id',id).order('updated_at',{ascending:false}).limit(100),
+    db.from('crm_croqui_processes').select('*').eq('workspace_id',id).order('updated_at',{ascending:false}).limit(200)
   ]);
   const issue=queries.find(q=>q.error)?.error;
   if (issue) throw issue;
   [state.items,state.contacts,state.touchpoints,state.channels,state.audit,state.knowledge,state.extensions,
     state.contents,state.proposals,state.metricSources,state.metricSnapshots,state.opportunities,
-    state.taskContexts,state.creativeAssets,state.reviewMarks,state.githubApprovals]=queries.map(q=>q.data||[]);
+    state.taskContexts,state.creativeAssets,state.reviewMarks,state.githubApprovals,state.croquiProcesses]=queries.map(q=>q.data||[]);
   state.focusTaskId=state.items.some(t=>t.id===state.focusTaskId)?state.focusTaskId:null;
 }
 async function hydrate(session) {
@@ -298,10 +302,11 @@ async function hydrate(session) {
     try {await loadData();} catch(error){state.error='Falha ao carregar o CRM: '+error.message;}
   }
   state.loading=false;render();
+  if(state.membership && (state.view==='hoje'||state.view==='processos'))void refreshEditorSuggestions();
 }
 function defaultPreview() {
   state.items=preview;state.contacts=[];state.channels=previewChannels;state.knowledge=[];state.extensions=[];
-  state.taskContexts=[];state.creativeAssets=[];state.reviewMarks=[];state.githubApprovals=[];state.loading=false;render();
+  state.taskContexts=[];state.creativeAssets=[];state.reviewMarks=[];state.githubApprovals=[];state.croquiProcesses=[];state.loading=false;render();
 }
 async function writeRow(table, payload) {
   if (readonly()) throw new Error('Apenas membros editores podem registrar alterações.');
@@ -335,7 +340,7 @@ async function refreshEditorSuggestions(force=false) {
 document.addEventListener('click',async event=>{
   const btn=event.target.closest('[data-action],[data-view]');
   if(!btn) return;
-  if(btn.dataset.view){if(state.view==='acesso'&&btn.dataset.view!=='acesso')oneTimePassword='';state.view=btn.dataset.view;state.notice='';state.error='';render();if(state.view==='produto')void refreshEditorSuggestions();return;}
+  if(btn.dataset.view){if(state.view==='acesso'&&btn.dataset.view!=='acesso')oneTimePassword='';state.view=btn.dataset.view;state.notice='';state.error='';render();if(state.view==='processos'||state.view==='hoje')void refreshEditorSuggestions();return;}
   state.error='';state.notice='';
   const action=btn.dataset.action;
   try {
@@ -504,7 +509,8 @@ async function init(){
 }
 renderSplash('Preparando interface...');
 installWorkflowHandlers(()=>({db,state,ws,readonly,loadData,render}));
-installWorkbenchHandlers(()=>({db,state,ws,readonly,loadData,render}));
+installWorkbenchHandlers(()=>({db,state,ws,readonly,loadData,render,refreshEditorSuggestions}));
+installProcessHandlers(()=>({db,state,ws,readonly,loadData,render}));
 let lastVisibilitySync=0;
 document.addEventListener('visibilitychange',async()=>{
   if(document.hidden||!db||!ws()||state.focusTaskId||state.loading)return;

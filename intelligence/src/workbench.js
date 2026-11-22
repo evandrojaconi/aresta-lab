@@ -1,3 +1,4 @@
+import {renderProcessToday} from './process-center.js';
 // ARESTA Intelligence: central de execução, design e base operacional.
 // Os dados são servidos pelo Supabase com RLS; integrações externas não são presumidas.
 const E=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -44,6 +45,7 @@ export function renderCommandHome({state,rankTasks,STATUS_LABELS}) {
      '<span class="queue-meta">'+(due?'<em>'+due+'</em>':'')+'<small>'+E(t.track)+' · '+E(STATUS_LABELS[t.status]||t.status)+'</small></span>'+
      '<span aria-hidden="true" class="queue-arrow">›</span></button>';
   }).join(''):'<div class="empty">Nenhuma tarefa aberta. Aproveite para revisar os resultados e preparar a próxima ação.</div>')+'</div>'+
+  renderProcessToday({state})+
   '<section class="section-head slim"><div><h2>Pulso do produto</h2>'+
      '<p>Dados do relatório Aresta, registrados com fonte. Não são dados em tempo real.</p></div>'+
      '<button class="secondary" data-view="dados">Analisar dados</button></section>'+
@@ -256,9 +258,14 @@ export function installWorkbenchHandlers(getCtx) {
    if(action==='task-continue'){
     const t=state.items.find(x=>x.id===id);if(!t)return;
     const c=(state.taskContexts||[]).find(x=>x.work_item_id===id);
-    if(c?.target_type==='content'&&c.target_id){state.activeContentId=c.target_id;state.view='marketing'}
-    else state.view=AREA_VIEW[t.track]||'pipeline';
+    const prMatch=String(t.source_url||'').match(/^https:\/\/github\.com\/aresta-climb\/aresta_db\/pull\/(\d+)(?:[/?#].*)?$/);
+    if(prMatch){
+      state.view='processos';state.focusProcessPr=Number(prMatch[1]);
+    }else if(c?.target_type==='content'&&c.target_id){
+      state.activeContentId=c.target_id;state.view='marketing';
+    }else state.view=AREA_VIEW[t.track]||'pipeline';
     state.focusTaskId=null;rerender();
+    if(prMatch)void getCtx().refreshEditorSuggestions?.();
     document.getElementById('focus-editor')?.scrollIntoView({behavior:'smooth',block:'start'});return;
    }
    if(action==='task-done'){
