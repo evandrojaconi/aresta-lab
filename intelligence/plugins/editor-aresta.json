@@ -1,0 +1,43 @@
+{
+  "schema_version": "1",
+  "key": "editor_aresta",
+  "name": "Editor Aresta",
+  "category": "editor",
+  "vendor": "Aresta Climb",
+  "auth": {
+    "type": "mcp_external",
+    "scopes": [
+      "croquis:read",
+      "sugestoes:read"
+    ]
+  },
+  "capabilities": [
+    {
+      "action": "listar_croquis",
+      "kind": "read",
+      "requires_approval": false
+    },
+    {
+      "action": "consultar_sugestoes",
+      "kind": "read",
+      "requires_approval": false
+    },
+    {
+      "action": "criar_sugestao",
+      "kind": "mutate",
+      "requires_approval": true
+    },
+    {
+      "action": "aprovar_croqui",
+      "kind": "mutate",
+      "requires_approval": true
+    }
+  ],
+  "data_policy": {
+    "level": "restricted",
+    "notes": "Contribuições e autorias exigem acesso delegado por mantenedor. Nunca abrir merge sem autoridade."
+  },
+  "review_required": true,
+  "source_contract": "https://github.com/aresta-climb/aresta_api/blob/main/openapi/colaboracao.yaml",
+  "status": "catalogued"
+}
