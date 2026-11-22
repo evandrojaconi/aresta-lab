@@ -38,3 +38,26 @@ p{line-height:1.55}button:focus-visible,input:focus-visible,select:focus-visible
 .extension-card .external{display:inline-block;margin-top:8px}
 #workspace-select{width:min(240px,38vw);margin:0;height:36px;min-height:36px;font-size:.74rem}
 @media(max-width:720px){.knowledge-grid{grid-template-columns:1fr}.knowledge-summary>div{min-width:92px}.topbar .top-right{max-width:55vw}.extension-card{min-height:145px}}
+
+
+/* Aresta Intelligence — operational modules */
+.vertical-flow{display:flex;flex-direction:column;gap:15px}
+.vertical-flow>div{min-height:42px}
+.caption-preview{background:#f2ede5;padding:13px;border-radius:7px;white-space:pre-line;font-size:.79rem;line-height:1.55;margin:10px 0 13px;color:#443e37;border-left:2px solid #d95635}
+.quick-links{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}
+.quick-links a{padding:10px 13px;background:#e6ded3;color:#933f2b;font-weight:750;text-decoration:none;border-radius:7px;font-size:.77rem}
+.source-status{border:1px solid #e4dbd0;border-radius:9px;padding:14px;margin:12px 0}
+.source-status strong{display:block;margin-bottom:10px;font-family:Epilogue,sans-serif;font-size:.91rem}
+.source-status .badge{margin:3px 0}
+.source-status p{margin:12px 0 5px}
+.inline-notice{margin:15px 0!important;padding:14px!important}
+.looker-frame{width:100%;height:440px;border:1px solid #ded8cc;border-radius:8px;margin-top:16px;background:#f1ede4}
+.metric-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:end;padding:12px 0 17px;border-bottom:1px solid #ded8cc;margin-bottom:17px}
+.metric-form .span-2{grid-column:span 2}
+.metric-toolbar{display:flex;justify-content:flex-end;margin:12px 0}
+.metric-toolbar select{max-width:260px}
+.assistant-result{padding:5px}
+.assistant-result .ai-result{margin-top:15px}
+.sidebar nav{overflow-y:auto;padding-bottom:16px}
+@media(max-width:1050px){.metric-form{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.metric-form{grid-template-columns:1fr}.metric-form .span-2{grid-column:span 1}.quick-links a{flex:1;text-align:center}.looker-frame{height:360px}}
