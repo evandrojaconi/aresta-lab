@@ -71,7 +71,7 @@ export function buildMissionStreams(state){
    source:'Tarefas e conteúdos existentes. Vínculo territorial ainda é heurístico, não georreferenciado.',
    caution:'Informações de concessão, autorização de uso e condições das vias exigem documento e data da autoridade responsável.',
    next:'Priorizar Lapinha, sem interromper o preparo de expansão para RJ e Goiás.',
-   route:'oportunidades'
+   route:'territorio'
   },
   produto:{
    tasks:tasks.filter(t=>t.track==='Produto'||t.track==='Operação'),
@@ -201,7 +201,7 @@ export function installMissionHandlers(getCtx){
   }
   if(op==='go'){
    const route=id==='croquis'?'processos':id;
-   if(!['processos','marketing','produto','dados','oportunidades','hoje'].includes(route))return;
+   if(!['processos','marketing','produto','dados','oportunidades','territorio','hoje'].includes(route))return;
    if(route==='processos')state.missionFlow=id==='croquis'?'colaboracao':'visao';
    state.view=route;render();
   }
