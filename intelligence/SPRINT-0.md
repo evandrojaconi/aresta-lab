@@ -11,7 +11,7 @@
 | Publicar conteúdo Rupestre no Instagram | Segunda 23/11 cedo | Evandro | Link e comprovante reais |
 | Adaptar a publicação para LinkedIn | Segunda 23/11 | Evandro | Texto institucional aprovado e URL publicada |
 | Entregar landing page V2 | Durante a sprint, sem prazo exato informado | Evandro; revisão técnica | Link de versão, QA, aceite ou pendências |
-| Habilitar CRM com login Google | Até sexta 27/11 | Evandro e responsável pelo Supabase | Google Auth, membership e tarefa sincronizada em dois dispositivos |
+| Habilitar CRM com login por e-mail | Até sexta 27/11 | Evandro e responsável pelo Supabase | Magic Link por e-mail, membership e tarefa sincronizada em dois dispositivos |
 | Conciliar fontes da Lapinha | Fila P1; não compete com P0 | Evandro + revisores | Divergências, fontes e estado de revisão registrados |
 
 ## Sequência
@@ -20,7 +20,7 @@
 
 **Terça:** preparar/entregar revisão da landing e confirmar responsável pelo aceite. Conferir banco escolhido e escopo do CRM antes de configurar.
 
-**Quarta:** migrar SQL em projeto isolado; configurar Google OAuth; aprovar membership; criar e mover uma demanda real com evidência. Prioridade não é criar formulários novos.
+**Quarta:** migrar SQL em projeto isolado; configurar autenticação por e-mail; aprovar membership; criar e mover uma demanda real com evidência. Prioridade não é criar formulários novos.
 
 **Quinta:** listar integrações por benefício/risco/esforço. Selecionar UMA leitura de baixo risco para a próxima etapa (candidata: Notion com IDs e revisão humana). Não tentar conectar todas as APIs no mesmo dia.
 
