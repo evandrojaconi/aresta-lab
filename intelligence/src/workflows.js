@@ -81,7 +81,7 @@ export function renderProduct({state,esc,readonly}) {
    '<div><strong>Editor</strong><small>Criação de croquis, contribuições e revisão por curadores</small></div>'+
    '<div><strong>Intelligence</strong><small>Dados, relatórios, pesquisa, fomento e comunidade</small></div>'+
    '<div><strong>Landing e API</strong><small>Distribuição, integração e infraestrutura</small></div></div>'+
-   '<p class="micro">Aprovação e implementação no GitHub permanecem com os responsáveis técnicos. O botão exporta uma proposta legível; não cria PR ou merge por conta própria.</p></div></div>'+
+   '<div class="quick-links"><a href="https://arestaclimb.com/editor" target="_blank" rel="noopener noreferrer">Abrir Aresta Editor</a><a href="https://github.com/aresta-climb/aresta_app" target="_blank" rel="noopener noreferrer">Código do App</a><a href="https://github.com/aresta-climb/aresta_db" target="_blank" rel="noopener noreferrer">Base e Editor</a></div><p class="micro">A implementação e aprovação seguem com mantenedores autorizados. O CRM organiza propostas; não faz merge automaticamente.</p></div></div>'+
   '<div class="section-head slim"><div><h2>Backlog de melhorias</h2><p>Revisável com Renato e os responsáveis por cada repositório.</p></div></div>'+
   '<div class="knowledge-grid">'+(items.length?items.map(x=>'<article class="knowledge-card"><div class="item-top">'+
    statusTag(esc(x.stage))+'<span class="track-tag">'+esc(x.product_area)+' · '+esc(x.kind)+'</span></div>'+
@@ -126,7 +126,7 @@ export function renderInsights({state,esc,readonly}) {
      '<button class="primary" type="submit">Registrar medição</button></form>')+
    '<div class="metric-toolbar"><select id="metric-filter" aria-label="Fonte da série">'+sources.map(x=>'<option value="'+esc(x.id)+'"'+(x.id===current?' selected':'')+'>'+esc(x.provider)+'</option>').join('')+'</select></div>'+
    (snapshots.length?'<div class="table-wrap"><table><thead><tr><th>Métrica</th><th>Valor</th><th>Período</th><th>Tipo</th><th>Coleta</th></tr></thead><tbody>'+
-   snapshots.slice(0,35).map(r=>'<tr><td>'+esc(r.metric_name)+'</td><td><strong>'+esc(r.metric_value)+' '+esc(r.metric_unit)+'</strong></td><td>'+esc(r.period_label)+'</td><td>'+esc(r.provenance)+'</td><td>'+date(r.observed_at)+'</td></tr>').join('')+'</tbody></table></div>':blank('Nenhum valor conferido. Abra as fontes ou conecte a API antes de interpretar resultados.'))+'</div>';
+   snapshots.slice(0,35).map(r=>'<tr><td>'+esc(r.metric_name)+'</td><td><strong>'+esc(r.metric_value)+' '+esc(r.metric_unit)+'</strong></td><td>'+esc(r.period_label)+'</td><td>'+esc(r.provenance)+'</td><td>'+date(r.observed_at)+'</td><td>'+buttonAction(r.id,'metric-to-content','Criar pauta',readonly())+'</td></tr>').join('')+'</tbody></table></div>':blank('Nenhum valor conferido. Abra as fontes ou conecte a API antes de interpretar resultados.'))+'</div>';
 }
 
 // Binding funcional no CRM, usando apenas acesso com membership + RLS.
@@ -294,6 +294,23 @@ export function installWorkflowHandlers(getCtx) {
          source_kind:'manual',source_url:x.evidence_url||null,created_by:state.session.user.id
        });
        if(error)throw error;await loadData();state.notice='Tarefa vinculada ao backlog operacional.';render();return;
+     }
+     if(action==='metric-to-content'){
+       if(readonly())return;
+       const record=state.metricSnapshots.find(x=>x.id===id);if(!record)return;
+       const source=state.metricSources.find(x=>x.id===record.source_id);
+       const title='Indicador: '+record.metric_name+' · '+(record.period_label||'período a conferir');
+       const body='Dado observado: '+record.metric_value+' '+(record.metric_unit||'')+
+         '\nPeríodo: '+(record.period_label||'não definido')+
+         '\nFonte: '+(source?.display_name||'fonte a identificar')+
+         '\nNota metodológica: '+(record.source_note||'Conferir cobertura e interpretação')+
+         '\n\nContexto para a comunidade:\n\nCréditos e autorização de divulgação:';
+       const {error}=await db.from('crm_content_items').insert({
+         workspace_id:ws(),title,brand:'Aresta',channel:'Site',stage:'rascunho',
+         objective:'Transformar um indicador rastreável em informação útil, após revisão.',
+         caption:body,source_url:source?.source_url||null,created_by:state.session.user.id
+       });
+       if(error)throw error;await loadData();state.view='marketing';state.notice='Rascunho criado a partir de medição. Revise antes de divulgar.';render();return;
      }
      if(action==='opportunity-next'){
        if(readonly())return;const x=state.opportunities.find(i=>i.id===id);if(!x)return;
