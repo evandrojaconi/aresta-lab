@@ -212,9 +212,28 @@ export function renderConnectionCenter({state}) {
  ['Google Calendar','Sem OAuth do CRM','Escopo de leitura e escrita por evento mediante consentimento','https://calendar.google.com'],
  ['Looker Studio','Relatório consultável, sem sync via API','Conectar origem de dados autorizada e evitar métricas sem fonte','https://datastudio.google.com']
  ];
+ const approvals=state.githubApprovals||[];
+ const isAdmin=state.membership?.role==='admin';
+ const userEmail=state.session?.user?.email||'';
+ const identities=state.session?.user?.app_metadata?.providers||[];
+ const googleIdentity=identities.includes('google')||state.session?.user?.app_metadata?.provider==='google';
  return '<section class="section-head"><div><span class="overline">PERMISSÕES · FONTE · AUTOMAÇÃO</span><h1>Conexões seguras</h1>'+
  '<p>O CRM utiliza Supabase Auth e RLS. Acesso pelo ChatGPT a uma ferramenta não significa que essa ferramenta autorizou o CRM.</p></div></section>'+
- '<div class="connections-safety"><strong>Regra para novos conectores</strong><p>OAuth no servidor, tokens fora do GitHub e do navegador, escopos mínimos por organização, revogação e logs. Nunca marcar “conectado” sem teste real.</p></div>'+
+ '<div class="connections-safety"><strong>Regra para novos conectores</strong><p>OAuth no servidor, tokens fora do GitHub e do navegador, escopos mínimos por organização, revogação e logs. Nunca marcar “conectado” sem teste real.</p></div>'+ '<section class="panel github-identity"><div class="panel-title"><div><span class="overline">GOOGLE → PERMISSÃO → GITHUB</span><h2>Conta GitHub autorizada</h2></div>'+
+ '<span class="badge outline">'+(googleIdentity?'Identidade Google vinculada':'Google ainda não vinculado')+'</span></div>'+
+ '<p>O e-mail Google identifica quem entra no Intelligence. Você define qual usuário GitHub e qual repositório essa pessoa poderá utilizar. Isso não fornece token nem autoriza a API do GitHub automaticamente.</p>'+
+ (isAdmin?'<form id="github-approval-form" class="form-grid">'+
+  '<label class="span-2">E-mail cadastrado no Google<input name="google_email" type="email" required value="'+E(userEmail)+'" placeholder="conta@gmail.com"></label>'+
+  '<label>Usuário GitHub<input name="github_login" required maxlength="39" placeholder="usuario-github"></label>'+
+  '<label>Repositório permitido<input name="repository" required placeholder="organizacao/repositorio"></label>'+
+  '<label>Permissão<select name="access_level"><option value="read">Somente leitura</option><option value="propose">Propor alterações, sem merge</option></select></label>'+
+  '<button type="submit" class="primary">Autorizar nesta organização</button></form>':
+  '<p class="micro">Somente administradores podem definir e revogar permissões de repositórios.</p>')+
+ '<div class="github-approval-list">'+(approvals.length?approvals.map(x=>'<div class="github-approval-row"><div><strong>'+E(x.github_login)+' · '+E(x.repository)+'</strong>'+
+   '<p>'+E(x.google_email)+' · '+E(x.access_level)+' · '+E(x.status)+'</p></div>'+
+   (isAdmin&&x.status==='approved'?'<button class="secondary" data-workbench="revoke-github" data-id="'+E(x.id)+'">Revogar</button>':'')+
+   '</div>').join(''):'<p class="micro">Nenhuma conta ou repositório liberado por enquanto.</p>')+'</div>'+
+ '<p class="micro">Estado: lista de autorização no CRM. Para acessar repositórios privados, a conta GitHub ainda precisa autorizar o GitHub App ou OAuth correspondente, uma única vez. Apenas o login Google não permite ler código privado.</p></section>'+
  '<div class="knowledge-grid">'+providers.map(([title,known,next,url])=>
    '<article class="knowledge-card"><div class="item-top"><span class="badge outline">CRM: autorização pendente</span></div>'+
    '<h3>'+E(title)+'</h3><p><strong>O que existe:</strong> '+E(known)+'</p>'+
@@ -300,6 +319,16 @@ export function installWorkbenchHandlers(getCtx) {
      if(update.error)throw update.error;
      await loadData();state.view='produto';state.notice='Nota convertida em proposta de Produto.';rerender();return;
    }
+   if(action==='revoke-github'){
+     if(state.membership?.role!=='admin')return;
+     const target=state.githubApprovals.find(x=>x.id===id);
+     if(!target)return;
+     if(!window.confirm('Revogar a autorização para '+target.repository+'?'))return;
+     const {error}=await db.from('crm_github_approvals').update({status:'revoked'})
+       .eq('id',id).eq('workspace_id',ws());
+     if(error)throw error;
+     await loadData();state.notice='Permissão de repositório revogada no CRM.';rerender();return;
+   }
    if(action==='partner-prefill'){
      state.partnerPrefill=b.dataset.name||'';state.view='pessoas';rerender();
      document.getElementById('contact-form')?.scrollIntoView({behavior:'smooth',block:'center'});return;
@@ -309,12 +338,26 @@ export function installWorkbenchHandlers(getCtx) {
   }catch(err){state.error=err.message||String(err);rerender()}
  });
  document.addEventListener('submit',async ev=>{
-  if(!['edit-content-form','review-mark-form','kb-search-form','task-edit-form'].includes(ev.target.id))return;
+  if(!['edit-content-form','review-mark-form','kb-search-form','task-edit-form','github-approval-form'].includes(ev.target.id))return;
   ev.preventDefault();
   const {state,db,ws,readonly,loadData}=getCtx(),f=new FormData(ev.target);
   if(ev.target.id==='kb-search-form'){state.kbQuery=String(f.get('query')||'').trim();state.kbLimit=9;rerender();return}
   if(readonly())return;
   try{
+   if(ev.target.id==='github-approval-form'){
+     if(state.membership?.role!=='admin'||!state.session?.user?.id)throw Error('Somente administradores podem liberar repositórios.');
+     const google_email=String(f.get('google_email')||'').trim().toLowerCase();
+     const github_login=String(f.get('github_login')||'').trim();
+     const repository=String(f.get('repository')||'').trim();
+     const access_level=String(f.get('access_level')||'read');
+     if(!/^\S+@\S+\.\S+$/.test(google_email)||!github_login||!repository.includes('/'))throw Error('Informe e-mail Google, usuário e repositório.');
+     const {error}=await db.from('crm_github_approvals').upsert({
+       workspace_id:ws(),google_email,github_login,repository,access_level,
+       created_by:state.session.user.id,status:'approved'
+     },{onConflict:'workspace_id,google_email,repository'});
+     if(error)throw error;
+     await loadData();state.notice='Regra de acesso salva. A conexão real com a API GitHub ainda exige autorização da conta GitHub.';rerender();return;
+   }
    if(ev.target.id==='task-edit-form'){
      const id=ev.target.dataset.id;
      const title=String(f.get('title')||'').trim();
