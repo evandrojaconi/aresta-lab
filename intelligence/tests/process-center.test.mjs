@@ -7,7 +7,7 @@ const process={id:'c1',pr_number:88,source_repo:'aresta-climb/aresta_db',owner_l
   next_action:'Confirmar distribuição',distribution_status:'nao_verificado',
   communication_content_id:null,followup_task_id:null,learning_note:'',review_note:''};
 const base=()=>({editorSuggestions:{records:[pr],fetchedAt:'2026-11-22T16:30:00Z',open:0},
-  croquiProcesses:[process],contents:[],items:[],metricSnapshots:[],processFilter:'todos',processLimit:12});
+  croquiProcesses:[{...process}],contents:[],items:[],metricSnapshots:[],processFilter:'todos',processLimit:12});
 
 test('Merge em GitHub não prova distribuição no App nem comunicação',()=>{
  const steps=deriveCroquiSteps(pr,process,null);
@@ -31,7 +31,7 @@ test('PR fechada sem merge não vira rejeição comprovada',()=>{
 });
 test('CRM só vincula um processo ao workspace e repositório certo',()=>{
  const state=base();
- assert.equal(processFor(state,88),process);
+ assert.equal(processFor(state,88)?.id,'c1');
  assert.equal(processFor(state,57),undefined);
  state.croquiProcesses[0].source_repo='other/repo';
  assert.equal(processFor(state,88),undefined);
