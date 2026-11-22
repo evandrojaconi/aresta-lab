@@ -5,6 +5,7 @@ import {
 } from './rules.js';
 import './styles.css';
 import {generateStrongPassword} from './password.js';
+import {fetchArestaSuggestions,renderEditorCollaboration} from './editor-collaboration.js';
 import {renderMarketing, renderProduct, renderInsights, renderOpportunities, installWorkflowHandlers} from './workflows.js';
 import {renderCommandHome,renderTaskDrawer,renderKnowledgeLibrary,renderConnectionCenter,installWorkbenchHandlers} from './workbench.js';
 
@@ -37,6 +38,7 @@ const state = {
   taskContexts:[],creativeAssets:[],reviewMarks:[],githubApprovals:[],focusTaskId:null,activeContentId:null,
   knowledgeGroup:'all',kbLimit:9,kbQuery:'',previewView:'landing',
   selectedMetricSource:'', sourceLoading:false, analyticsNotice:'', showLooker:false,
+  editorSuggestions:{records:[],fetchedAt:null,loading:false,error:null},
   notice:'', error:'', aiResult:'', aiLoading:false, aiMode:''
 };
 const canEdit = () => !!state.membership && ['admin','editor'].includes(state.membership.role);
@@ -225,7 +227,7 @@ function render() {
   if (db && !state.membership) return renderNoAccess();
   const nav=[['hoje','Hoje'],['pipeline','Tarefas'],['marketing','Marketing'],['produto','Produto'],['dados','Dados'],['oportunidades','Oportunidades'],['pessoas','Pessoas'],['acervo','Biblioteca'],['canais','Conexões'],['ia','Assistente'],['acesso','Ajustes']];
   const body={hoje:renderToday,pipeline:renderPipeline,acervo:renderKnowledge,extensoes:renderExtensions,pessoas:renderContacts,canais:renderChannels,ia:renderAI,acesso:renderAccess,
-    marketing:()=>renderMarketing({state,esc,readonly}),produto:()=>renderProduct({state,esc,readonly}),
+    marketing:()=>renderMarketing({state,esc,readonly}),produto:()=>renderEditorCollaboration({state,readonly})+renderProduct({state,esc,readonly}),
     dados:()=>renderInsights({state,esc,readonly}),
     oportunidades:()=>renderOpportunities({state,esc,readonly})}[state.view]();
   const indicators=[...stats(),{label:'Acervo',val:state.knowledge.length}].map(x=>'<div class="kpi"><strong>'+x.val+'</strong><span>'+esc(x.label)+'</span></div>').join('');
@@ -317,14 +319,51 @@ async function changeStatus(id,status) {
   if(error) {state.error=error.message;render();return;}
   await loadData();state.notice='Estado atualizado e registrado no histórico.';render();
 }
+async function refreshEditorSuggestions(force=false) {
+  const info=state.editorSuggestions;
+  if(info.loading)return;
+  if(!force&&info.fetchedAt&&Date.now()-Date.parse(info.fetchedAt)<10*60*1000)return;
+  info.loading=true;info.error=null;render();
+  try{
+    const data=await fetchArestaSuggestions();
+    state.editorSuggestions={...data,loading:false,error:null};
+  }catch(error){
+    state.editorSuggestions={...info,loading:false,error:error?.message||'Não foi possível consultar o GitHub. Última leitura preservada.'};
+  }
+  render();
+}
 document.addEventListener('click',async event=>{
   const btn=event.target.closest('[data-action],[data-view]');
   if(!btn) return;
-  if(btn.dataset.view){if(state.view==='acesso'&&btn.dataset.view!=='acesso')oneTimePassword='';state.view=btn.dataset.view;state.notice='';state.error='';render();return;}
+  if(btn.dataset.view){if(state.view==='acesso'&&btn.dataset.view!=='acesso')oneTimePassword='';state.view=btn.dataset.view;state.notice='';state.error='';render();if(state.view==='produto')void refreshEditorSuggestions();return;}
   state.error='';state.notice='';
   const action=btn.dataset.action;
   try {
-    if(action==='generate-password') {
+    if(action==='refresh-editor-prs') {
+      if(!db||!state.session||!state.membership)return;
+      await refreshEditorSuggestions(true);return;
+    }
+    else if(action==='create-editor-followup') {
+      if(!db||readonly())return;
+      const number=Number(btn.dataset.number);
+      const proposal=state.editorSuggestions.records.find(x=>x.number===number&&x.status==='aberta');
+      if(!proposal)return;
+      const existing=await db.from('crm_work_items').select('id').eq('workspace_id',ws()).eq('source_url',proposal.url).limit(1);
+      if(existing.error)throw existing.error;
+      if(existing.data?.length){state.notice='Essa Pull Request já possui acompanhamento nesta organização.';render();return;}
+      const {error}=await db.from('crm_work_items').insert({
+        workspace_id:ws(), title:'Revisar contribuição: '+proposal.title.slice(0,180),
+        track:'Produto',priority:'P2',status:'entrada',
+        next_action:'Consultar PR #'+number+' e alinhar com mantenedor do croqui no Editor.',
+        definition_of_done:'Revisão do mantenedor registrada na fonte; decisão e atualização no app verificadas separadamente.',
+        source_url:proposal.url,source_kind:'manual',created_by:state.session.user.id
+      });
+      if(error)throw error;
+      await loadData();
+      state.notice='Acompanhamento da Pull Request criado. A aprovação continua no Editor/GitHub.';
+      render();return;
+    }
+    else if(action==='generate-password') {
       if(!db||!state.session){state.error='Você precisa estar conectado para criar sua senha.';render();return;}
       if(!window.confirm('Criar uma senha nova para esta conta? A senha anterior será substituída.'))return;
       const password=generateStrongPassword();
