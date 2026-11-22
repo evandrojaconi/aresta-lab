@@ -96,7 +96,7 @@ function renderEvidenceList(records,selected){
  }).join(''):'<p class="territory-empty">Nenhuma evidência nesta categoria. Não significa ausência de ocorrências ou impactos.</p>')+'</section>';
 }
 function renderEntryForm(readonly,selected){
- if(readonly)return '<p class="territory-empty">Seu perfil tem acesso de leitura. Registros são feitos por operadores autorizados.</p>';
+ if(readonly())return '<p class="territory-empty">Seu perfil tem acesso de leitura. Registros são feitos por operadores autorizados.</p>';
  return '<details class="territory-capture" id="territory-capture"><summary>Registrar observação ou documento</summary>'+
   '<form id="territory-evidence-form" class="form-grid">'+
   '<label>Produto relacionado<select name="evidence_kind" required>'+
