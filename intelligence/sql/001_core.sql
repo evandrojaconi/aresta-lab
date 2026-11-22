@@ -145,8 +145,12 @@ begin
     (workspace_id,entity_name,entity_id,action,actor_id,before_state,after_state)
   values (
     r.workspace_id, tg_table_name, r.id, tg_op, auth.uid(),
-    case when tg_op in ('UPDATE','DELETE') then to_jsonb(old) else null end,
-    case when tg_op in ('UPDATE','INSERT') then to_jsonb(new) else null end
+    case when tg_op in ('UPDATE','DELETE') then
+      to_jsonb(old) - array['name','title','email','phone','notes','details','next_action','definition_of_done','result_evidence','source_url','external_key','owner_label','created_by']
+    else null end,
+    case when tg_op in ('UPDATE','INSERT') then
+      to_jsonb(new) - array['name','title','email','phone','notes','details','next_action','definition_of_done','result_evidence','source_url','external_key','owner_label','created_by']
+    else null end
   );
   return coalesce(new,old);
 end;
