@@ -215,15 +215,14 @@ export function renderConnectionCenter({state}) {
  const approvals=state.githubApprovals||[];
  const isAdmin=state.membership?.role==='admin';
  const userEmail=state.session?.user?.email||'';
- const identities=state.session?.user?.app_metadata?.providers||[];
- const googleIdentity=identities.includes('google')||state.session?.user?.app_metadata?.provider==='google';
+ const verifiedEmail=Boolean(state.session?.user?.email_confirmed_at);
  return '<section class="section-head"><div><span class="overline">PERMISSÕES · FONTE · AUTOMAÇÃO</span><h1>Conexões seguras</h1>'+
  '<p>O CRM utiliza Supabase Auth e RLS. Acesso pelo ChatGPT a uma ferramenta não significa que essa ferramenta autorizou o CRM.</p></div></section>'+
- '<div class="connections-safety"><strong>Regra para novos conectores</strong><p>OAuth no servidor, tokens fora do GitHub e do navegador, escopos mínimos por organização, revogação e logs. Nunca marcar “conectado” sem teste real.</p></div>'+ '<section class="panel github-identity"><div class="panel-title"><div><span class="overline">GOOGLE → PERMISSÃO → GITHUB</span><h2>Conta GitHub autorizada</h2></div>'+
- '<span class="badge outline">'+(googleIdentity?'Identidade Google vinculada':'Google ainda não vinculado')+'</span></div>'+
- '<p>O e-mail Google identifica quem entra no Intelligence. Você define qual usuário GitHub e qual repositório essa pessoa poderá utilizar. Isso não fornece token nem autoriza a API do GitHub automaticamente.</p>'+
+ '<div class="connections-safety"><strong>Regra para novos conectores</strong><p>OAuth no servidor, tokens fora do GitHub e do navegador, escopos mínimos por organização, revogação e logs. Nunca marcar “conectado” sem teste real.</p></div>'+ '<section class="panel github-identity"><div class="panel-title"><div><span class="overline">CONTA → PERMISSÃO → GITHUB</span><h2>Conta GitHub autorizada</h2></div>'+
+ '<span class="badge outline">'+(verifiedEmail?'E-mail confirmado':'E-mail não confirmado')+'</span></div>'+
+ '<p>O e-mail autenticado identifica quem entra no Intelligence. Você define qual usuário GitHub e qual repositório essa pessoa poderá utilizar. Isso não fornece token nem autoriza a API do GitHub automaticamente.</p>'+
  (isAdmin?'<form id="github-approval-form" class="form-grid">'+
-  '<label class="span-2">E-mail cadastrado no Google<input name="google_email" type="email" required value="'+E(userEmail)+'" placeholder="conta@gmail.com"></label>'+
+  '<label class="span-2">E-mail cadastrado no CRM<input name="google_email" type="email" required value="'+E(userEmail)+'" placeholder="conta@gmail.com"></label>'+
   '<label>Usuário GitHub<input name="github_login" required maxlength="39" placeholder="usuario-github"></label>'+
   '<label>Repositório permitido<input name="repository" required placeholder="organizacao/repositorio"></label>'+
   '<label>Permissão<select name="access_level"><option value="read">Somente leitura</option><option value="propose">Propor alterações, sem merge</option></select></label>'+
@@ -233,7 +232,7 @@ export function renderConnectionCenter({state}) {
    '<p>'+E(x.google_email)+' · '+E(x.access_level)+' · '+E(x.status)+'</p></div>'+
    (isAdmin&&x.status==='approved'?'<button class="secondary" data-workbench="revoke-github" data-id="'+E(x.id)+'">Revogar</button>':'')+
    '</div>').join(''):'<p class="micro">Nenhuma conta ou repositório liberado por enquanto.</p>')+'</div>'+
- '<p class="micro">Estado: lista de autorização no CRM. Para acessar repositórios privados, a conta GitHub ainda precisa autorizar o GitHub App ou OAuth correspondente, uma única vez. Apenas o login Google não permite ler código privado.</p></section>'+
+ '<p class="micro">Estado: lista de autorização no CRM. Para acessar repositórios privados, a conta GitHub ainda precisa autorizar o GitHub App ou OAuth correspondente, uma única vez. O login por senha no CRM não permite, sozinho, ler código privado.</p></section>'+
  '<div class="knowledge-grid">'+providers.map(([title,known,next,url])=>
    '<article class="knowledge-card"><div class="item-top"><span class="badge outline">CRM: autorização pendente</span></div>'+
    '<h3>'+E(title)+'</h3><p><strong>O que existe:</strong> '+E(known)+'</p>'+
