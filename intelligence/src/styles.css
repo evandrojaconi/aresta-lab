@@ -168,3 +168,18 @@ p{line-height:1.55}button:focus-visible,input:focus-visible,select:focus-visible
 .ux-pin{position:absolute;width:24px;height:24px;border-radius:50%;transform:translate(-50%,-50%);background:#d95635;color:#fff;border:2px solid #fff;box-shadow:0 1px 7px #0009;font-size:.75rem;font-weight:900;display:grid;place-items:center;pointer-events:none;z-index:3}
 
 .app-shot{padding:0}.ux-image-hitbox{inset:0}
+
+/* Autenticação Google e política de repositórios, sem exposição de tokens */
+.temporary-login{margin-top:16px;padding:13px 16px;border:1px solid #dfd6cb;border-radius:9px;background:#f9f6f0}
+.temporary-login summary{font-size:.8rem;cursor:pointer;color:#746a5e;font-weight:650}
+.temporary-login .email-login{margin-top:14px}
+.github-identity{margin:18px 0 22px}
+.github-identity .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:15px 0 20px}
+.github-identity .form-grid .span-2{grid-column:span 2}
+.github-identity .form-grid label{display:flex;flex-direction:column;gap:7px}
+.github-approval-list{border-top:1px solid #ddd7cd}
+.github-approval-row{padding:14px 4px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid #e7ded3}
+.github-approval-row strong{font-weight:750;font-size:.87rem}
+.github-approval-row p{font-size:.74rem;color:#776c61;margin:5px 0 0}
+button:disabled{opacity:.55;cursor:not-allowed}
+@media(max-width:720px){.github-identity .form-grid{grid-template-columns:1fr}.github-identity .form-grid .span-2{grid-column:auto}}

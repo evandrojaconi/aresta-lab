@@ -30,7 +30,7 @@ const state = {
   view:'hoje', track:'Todas', loading:true, busy:false,
   session:null, membership:null, memberships:[], workspaceNames:{}, knowledge:[], extensions:[], knowledgeKind:'all', items:[], contacts:[], touchpoints:[], channels:[], audit:[],
   contents:[], proposals:[], opportunities:[], metricSources:[], metricSnapshots:[], marketingFilter:'Todos',
-  taskContexts:[],creativeAssets:[],reviewMarks:[],focusTaskId:null,activeContentId:null,
+  taskContexts:[],creativeAssets:[],reviewMarks:[],githubApprovals:[],googleReady:false,focusTaskId:null,activeContentId:null,
   knowledgeGroup:'all',kbLimit:9,kbQuery:'',previewView:'landing',
   selectedMetricSource:'', sourceLoading:false, analyticsNotice:'', showLooker:false,
   notice:'', error:'', aiResult:'', aiLoading:false, aiMode:''
@@ -58,12 +58,15 @@ function renderSplash(message) {
 }
 function renderLogin() {
   app.innerHTML='<div class="auth-bg"><div class="auth-card"><div class="brand"><span class="brand-mark">A</span><span>ARESTA <em>INTELLIGENCE</em></span></div>'+
-    '<span class="overline">CRM PRIVADO · SPRINT 0</span><h1>Menos abas.<br>Mais execução.</h1>'+
-    '<p>Demandas, parceiros, canais e evidências do Aresta em um único fluxo. Acesso somente para membros autorizados.</p>'+
+    '<span class="overline">ACESSO PRIVADO</span><h1>Menos abas.<br>Mais execução.</h1>'+
+    '<p>Entre com sua conta Google cadastrada. Só usuários aprovados podem acessar os dados da organização.</p>'+
     notice()+
-    '<form id="email-login-form" class="email-login"><label for="email-login">Seu e-mail</label><input id="email-login" name="email" type="email" placeholder="voce@exemplo.com" autocomplete="email" required />'+
-    '<button class="primary wide" type="submit">Receber link de acesso</button></form>'+
-    '<p class="micro">Sem aplicativo Google, sem senha. Abra o link enviado para seu e-mail. Só pessoas liberadas têm acesso aos dados.</p>'+
+    '<button class="primary wide" data-action="google-login"'+(state.googleReady?'':' disabled')+'>Entrar com Google</button>'+
+    (!state.googleReady?'<p class="micro">Google ainda não está habilitado no Supabase. O acesso por e-mail permanece disponível temporariamente para não bloquear a conta existente.</p>':'')+
+    '<details class="temporary-login"><summary>Acesso por e-mail (transição)</summary>'+
+    '<form id="email-login-form" class="email-login"><label for="email-login">E-mail já cadastrado<input id="email-login" name="email" type="email" placeholder="voce@exemplo.com" autocomplete="email" required></label>'+
+    '<button class="secondary wide" type="submit">Enviar link provisório</button></form></details>'+
+    '<p class="micro">A conta Google identifica a pessoa; os repositórios GitHub são liberados individualmente.</p>'+
     '</div></div>';
 }
 function renderNoAccess() {
@@ -198,7 +201,8 @@ function renderAccess() {
     '<p>Dados privados armazenados apenas no Supabase, sob RLS. Chaves privilegiadas nunca entram no frontend ou no GitHub.</p>'+
     '<div class="actions-block"><button class="secondary" data-action="refresh"'+(!db?' disabled':'')+'>Atualizar dados</button>'+
     (db?'<button class="ghost" data-action="logout">Encerrar sessão</button>':'')+'</div></div>'+
-    '<div class="panel"><h2>Antes de abrir para a equipe</h2><p>Aplicar a migração SQL, ativar Google OAuth, definir URLs permitidas e conceder acesso individual no banco. Testar acesso negado a usuário externo antes da primeira publicação de dados reais.</p></div>';
+    '<div class="panel"><h2>Login Google</h2><p>Estado do provedor: <b>'+(state.googleReady?'configurado':'pendente de configuração no Supabase')+'</b>. O e-mail autenticado não substitui a permissão da conta GitHub.</p>'+ 
+    '<p>Depois de ativar o OAuth Google, o usuário aprovado entra com Google; o acesso provisório por link de e-mail será descontinuado após o teste de migração.</p></div>';
 }
 function render() {
   if (state.loading) return renderSplash('Carregando o workspace...');
@@ -238,13 +242,14 @@ async function loadData() {
     db.from('crm_opportunities').select('*').eq('workspace_id',id).order('created_at',{ascending:false}).limit(250),
     db.from('crm_task_contexts').select('*').eq('workspace_id',id),
     db.from('crm_creative_assets').select('*').eq('workspace_id',id).order('category',{ascending:true}),
-    db.from('crm_review_marks').select('*').eq('workspace_id',id).order('created_at',{ascending:false}).limit(250)
+    db.from('crm_review_marks').select('*').eq('workspace_id',id).order('created_at',{ascending:false}).limit(250),
+    db.from('crm_github_approvals').select('*').eq('workspace_id',id).order('updated_at',{ascending:false}).limit(100)
   ]);
   const issue=queries.find(q=>q.error)?.error;
   if (issue) throw issue;
   [state.items,state.contacts,state.touchpoints,state.channels,state.audit,state.knowledge,state.extensions,
     state.contents,state.proposals,state.metricSources,state.metricSnapshots,state.opportunities,
-    state.taskContexts,state.creativeAssets,state.reviewMarks]=queries.map(q=>q.data||[]);
+    state.taskContexts,state.creativeAssets,state.reviewMarks,state.githubApprovals]=queries.map(q=>q.data||[]);
   state.focusTaskId=state.items.some(t=>t.id===state.focusTaskId)?state.focusTaskId:null;
 }
 async function hydrate(session) {
@@ -279,7 +284,7 @@ async function hydrate(session) {
 }
 function defaultPreview() {
   state.items=preview;state.contacts=[];state.channels=previewChannels;state.knowledge=[];state.extensions=[];
-  state.taskContexts=[];state.creativeAssets=[];state.reviewMarks=[];state.loading=false;render();
+  state.taskContexts=[];state.creativeAssets=[];state.reviewMarks=[];state.githubApprovals=[];state.loading=false;render();
 }
 async function writeRow(table, payload) {
   if (readonly()) throw new Error('Apenas membros editores podem registrar alterações.');
@@ -304,7 +309,12 @@ document.addEventListener('click',async event=>{
   state.error='';state.notice='';
   const action=btn.dataset.action;
   try {
-    if(action==='logout') {await db.auth.signOut();await hydrate(null);}
+    if(action==='google-login') {
+      if(!state.googleReady){state.error='Google ainda não foi habilitado no Supabase.';render();return;}
+      const {error}=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+window.location.pathname}});
+      if(error)throw error;
+    }
+    else if(action==='logout') {await db.auth.signOut();await hydrate(null);}
     else if(action==='refresh') {await loadData();state.notice='Dados atualizados.';render();}
     else if(action==='copy-uid') {await navigator.clipboard.writeText(state.session?.user?.id||'');state.notice='ID copiado.';render();}
     else if(action==='copy-prompt') {await navigator.clipboard.writeText(buildAIPrompt(state.items));state.notice='Briefing copiado. Abra o ChatGPT e cole para aprofundar a análise.';render();}
@@ -403,8 +413,19 @@ document.addEventListener('submit',async event=>{
   }catch(error){state.error=error.message||String(error);}
   finally{state.busy=false;render();}
 });
+async function detectGoogleProvider(){
+  if(!db)return;
+  try{
+    const response=await fetch(url.replace(/\/$/,'')+'/auth/v1/settings',{headers:{apikey:key}});
+    if(!response.ok)return;
+    const settings=await response.json();
+    state.googleReady=settings?.external?.google===true;
+    if(!state.loading)render();
+  }catch(_error){state.googleReady=false;}
+}
 async function init(){
   if(!db){defaultPreview();return;}
+  void detectGoogleProvider();
   db.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>hydrate(session),0);});
   try{
     const {data,error}=await db.auth.getSession();
