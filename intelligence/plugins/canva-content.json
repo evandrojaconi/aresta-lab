@@ -1,0 +1,37 @@
+{
+  "schema_version": "1",
+  "key": "canva_content",
+  "name": "Canva — criação e agendamento",
+  "category": "content",
+  "vendor": "Canva",
+  "auth": {
+    "type": "oauth2",
+    "scopes": [
+      "design:read",
+      "design:write"
+    ]
+  },
+  "capabilities": [
+    {
+      "action": "listar_designs",
+      "kind": "read",
+      "requires_approval": false
+    },
+    {
+      "action": "preparar_variacoes",
+      "kind": "draft",
+      "requires_approval": true
+    },
+    {
+      "action": "agendar_publicacao",
+      "kind": "publish",
+      "requires_approval": true
+    }
+  ],
+  "data_policy": {
+    "level": "internal",
+    "notes": "Autorização do Canva não garante vínculo com redes sociais; validar separadamente no Content Planner."
+  },
+  "review_required": true,
+  "status": "needs_auth"
+}
