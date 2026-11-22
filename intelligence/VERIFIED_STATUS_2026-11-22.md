@@ -9,7 +9,7 @@
 - Dados separados: Aresta 30, Pessoal 6, FEMEMG 3, ACEC 2, Igarameca 3.
 - O catálogo contém 10 integrações/extensões; **0 estão autenticadas pelo CRM**.
 - Código: frontend Vite com páginas Hoje, Pipeline, Conhecimento, Extensões, Relacionamentos, Canais e IA.
-- [PR #19](https://github.com/evandrojaconi/aresta-lab/pull/19) está em Draft. O job `crm` passou no GitHub Actions, mas login Google, autorização e browser E2E não foram testados.
+- [PR #19](https://github.com/evandrojaconi/aresta-lab/pull/19) está em Draft. O job `crm` passou no GitHub Actions, mas login por e-mail, autorização e browser E2E não foram testados.
 
 ## O que falta para login real
 
@@ -32,4 +32,4 @@ Cada instituição usa workspace e memberships próprios; dados pessoais e crede
 
 ## Estado de produção
 
-**Não publicado.** A GitHub Pages atual do Aresta Lab, landing pública, Aresta App e Editor permanecem sem modificações em `main`. Não afirmar Google Auth, Instagram, LinkedIn, WhatsApp ou Canva vinculados ao CRM antes de testes concluídos.
+**Não publicado.** A GitHub Pages atual do Aresta Lab, landing pública, Aresta App e Editor permanecem sem modificações em `main`. Não afirmar login por e-mail, Instagram, LinkedIn, WhatsApp ou Canva vinculados ao CRM antes de testes concluídos.
