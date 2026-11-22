@@ -509,7 +509,7 @@ async function init(){
 }
 renderSplash('Preparando interface...');
 installWorkflowHandlers(()=>({db,state,ws,readonly,loadData,render}));
-installWorkbenchHandlers(()=>({db,state,ws,readonly,loadData,render}));
+installWorkbenchHandlers(()=>({db,state,ws,readonly,loadData,render,refreshEditorSuggestions}));
 installProcessHandlers(()=>({db,state,ws,readonly,loadData,render}));
 let lastVisibilitySync=0;
 document.addEventListener('visibilitychange',async()=>{
