@@ -2,13 +2,16 @@
 (() => {
   const bar=document.getElementById("site-header");
   const menu=document.getElementById("nav-mobile");
+  const deeper=document.getElementById("nav-deeper");
+  const menus=[menu,deeper].filter(Boolean);
   const faq=Array.from(document.querySelectorAll(".faq-list details"));
   if(!bar)return;
-  menu?.querySelectorAll("a").forEach(link=>link.addEventListener("click",()=>{menu.open=false;}));
-  document.addEventListener("click",event=>{if(menu?.open&&!menu.contains(event.target))menu.open=false;});
+  menus.forEach(m=>m.querySelectorAll("a").forEach(link=>link.addEventListener("click",()=>{m.open=false;})));
+  menus.forEach(m=>m.addEventListener("toggle",()=>{if(m.open){menus.filter(other=>other!==m).forEach(other=>{other.open=false;});bar.classList.remove("is-hidden");}}));
+  document.addEventListener("click",event=>{menus.forEach(m=>{if(m.open&&!m.contains(event.target))m.open=false;});});
   document.addEventListener("keydown",event=>{
     if(event.key!=="Escape")return;
-    if(menu?.open){menu.open=false;menu.querySelector("summary")?.focus();}
+    for(const m of menus){if(m.open){m.open=false;m.querySelector("summary")?.focus();break;}}
   });
   faq.forEach(item=>item.addEventListener("toggle",()=>{
     if(item.open)faq.filter(other=>other!==item).forEach(other=>{other.open=false;});
@@ -19,7 +22,7 @@
   const update=()=>{
     pending=false;
     const y=Math.max(0,window.scrollY),delta=y-previous;previous=y;
-    if(y<90||menu?.open||focusViaKeyboard()){visible();travel=0;return;}
+    if(y<90||menus.some(m=>m.open)||focusViaKeyboard()){visible();travel=0;return;}
     if(Math.abs(delta)<1)return;
     const nextDir=Math.sign(delta);
     if(nextDir!==direction){direction=nextDir;travel=0;}
