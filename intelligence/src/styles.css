@@ -391,3 +391,86 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .territory-method p{font-size:.8rem;line-height:1.6}
 @media(max-width:1050px){.territory-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:720px){.territory-hero{flex-direction:column;align-items:stretch;padding:20px}.territory-hero>div:last-child{border-left:0;border-top:1px solid #46504b;padding:12px 0 0}.territory-outcomes,.territory-actors,.territory-capture .form-grid{grid-template-columns:1fr}.territory-capture .span-2{grid-column:span 1}.territory-kpis{grid-template-columns:1fr}.territory-title{flex-direction:column}.territory-evidence-row{flex-direction:column}}
+
+/* ARESTA Intelligence OS — UX do Editor aplicada ao centro Croquis.
+   Design com base no protótipo fornecido, sem replicar dados simulados. */
+.sidebar{padding-top:21px;padding-bottom:12px}
+.sidebar-label{margin:21px 12px 9px}
+.sidebar nav{gap:2px}
+.sidebar nav button{padding:8px 12px;min-height:34px;font-size:.82rem;border-radius:8px}
+.side-bottom{padding:11px 12px 0;font-size:.75rem}
+.brand{gap:9px}
+.croqui-heading{align-items:center}
+.croqui-heading h1{letter-spacing:-.055em}
+.croqui-editor-link{margin-left:auto}
+.croqui-link{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-size:.76rem;font-weight:800;border:1px solid #d9ded2;background:#fbfaf6;color:#344139;padding:9px 12px;border-radius:8px;min-height:35px}
+.croqui-link:hover{border-color:#c88668;color:#ad492f}
+.croqui-btn,.croqui-tabbar button,.croqui-sector-list button{min-height:35px;padding:7px 11px!important;border-radius:8px!important;font-size:.75rem!important;font-weight:750!important}
+.croqui-btn.secondary,.croqui-tabbar button.secondary,.croqui-sector-list button.secondary{background:transparent;border-color:#d2d8cb!important;color:#44534a}
+.croqui-btn.primary,.croqui-tabbar button.primary,.croqui-sector-list button.primary{background:#d95635;border-color:#d95635!important;color:#fff}
+.croqui-hero{background:#18221e;color:#f9f6ed;border-radius:14px;padding:24px 26px;display:flex;justify-content:space-between;align-items:center;gap:23px;border:1px solid #26392e;position:relative;overflow:hidden;margin:9px 0 14px}
+.croqui-hero:after{content:"";position:absolute;right:-60px;bottom:-210px;width:330px;height:330px;border:1px solid #819e8040;border-radius:43%;box-shadow:0 0 0 25px #819e8012,0 0 0 55px #819e8010,0 0 0 85px #819e8008;pointer-events:none;transform:rotate(28deg)}
+.croqui-hero .overline{color:#f4a587}
+.croqui-hero h2{font:800 clamp(1.35rem,2.5vw,1.85rem)/1.15 Epilogue,Inter,sans-serif;letter-spacing:-.05em;margin:8px 0 10px}
+.croqui-hero p{font-size:.83rem;color:#bbc9bc;line-height:1.5;max-width:720px;margin:0}
+.croqui-hero-actions{display:flex;flex-wrap:wrap;gap:8px;z-index:1;position:relative;min-width:220px}
+.croqui-hero-actions .secondary{color:#f7efea!important;border-color:#566c5e!important}
+.croqui-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:17px 0}
+.croqui-metric{border:1px solid #e0e2d8;border-radius:10px;background:#fbfaf7;padding:16px;display:flex;flex-direction:column;gap:6px}
+.croqui-metric strong{font:800 1.46rem Epilogue,Inter,sans-serif;letter-spacing:-.045em;color:#222c27}
+.croqui-metric span{font-size:.76rem;color:#26352c;font-weight:750}
+.croqui-metric small{font-size:.68rem;color:#7f857a;line-height:1.45}
+.croqui-tabbar{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid #d7dacf;padding-bottom:12px;margin:20px 0}
+.croqui-tabbar button.secondary{border-color:transparent!important}
+.croqui-tabbar button[aria-current=page]{background:#35473c;border-color:#35473c!important}
+.croqui-catalog-grid{display:grid;grid-template-columns:minmax(180px,275px) minmax(0,1fr);gap:14px;align-items:start}
+.croqui-sector-list,.croqui-via-list,.croqui-panel{background:#fdfbf8;border:1px solid #e2e2d8;border-radius:12px;padding:18px;min-width:0}
+.croqui-panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.croqui-panel-head h2{font-size:.96rem;margin:0;line-height:1.35}
+.croqui-panel-head small,.croqui-panel-head a{font-size:.7rem;color:#737f73}
+.croqui-sector-list{display:flex;flex-direction:column;gap:5px}
+.croqui-sector-list button{text-align:left;width:100%;justify-content:flex-start;white-space:normal}
+.croqui-sector-list button.secondary{background:#f5f5f0!important}
+.croqui-sector-list button.primary{background:#e4ebe2!important;color:#263c2d!important;border-color:#809f83!important}
+.croqui-via-scroll{max-height:575px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;padding:3px 2px}
+.croqui-search-wrap{display:flex;flex-direction:column;gap:6px;margin:5px 0 15px}
+.croqui-search-wrap label{font-size:.7rem;color:#6c786d;font-weight:750}
+.croqui-search-wrap input,.croqui-form input,.croqui-form textarea,.croqui-form select{width:100%;border:1px solid #d7ddd1;background:#fbfcf8;border-radius:8px;padding:10px 11px;color:#25342a;font-size:.8rem;max-width:100%}
+.croqui-route{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:9px;border:1px solid #e6e8e0;background:#f9faf6;color:#27342c;text-align:left}
+.croqui-route:hover,.croqui-route.active{background:#e9eee6;border-color:#7f9b82}
+.croqui-route span:first-child{min-width:0;display:flex;flex-direction:column;gap:4px}
+.croqui-route b{font-size:.79rem}
+.croqui-route small{color:#838d81;font-size:.67rem}
+.croqui-grade{font-size:.69rem;font-weight:800;text-align:right;color:#9e4b32;max-width:165px}
+.croqui-route[hidden]{display:none!important}
+.croqui-selected{display:flex;justify-content:space-between;gap:14px;align-items:center;margin:15px 0;padding:18px 21px;background:#edf3e9;border-radius:10px;border:1px solid #d3ded0}
+.croqui-selected h3{margin:6px 0;font-size:.97rem}
+.croqui-selected p{margin:0;color:#54675a;font-size:.75rem}
+.croqui-button-line{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.croqui-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;align-items:start}
+.croqui-panel h2{margin:0 0 13px;font-size:.95rem}
+.croqui-panel>p{font-size:.8rem;color:#667069;line-height:1.55}
+.croqui-form{display:flex;flex-direction:column;gap:12px}
+.croqui-form label{display:flex;flex-direction:column;gap:6px;font-size:.76rem;font-weight:750;color:#354439}
+.croqui-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.croqui-form .primary{align-self:start}
+.croqui-task{width:100%;display:flex;align-items:center;justify-content:space-between;text-align:left;gap:10px;padding:11px 5px;background:transparent;border:0;border-top:1px solid #e8e7dd;color:#344038}
+.croqui-task b{font-size:.79rem;display:block}
+.croqui-task small{font-size:.71rem;color:#818b7f;line-height:1.5;display:block;max-width:460px;white-space:normal;margin-top:5px}
+.croqui-task:hover{background:#edf0e8}
+.croqui-steps{padding-left:20px;color:#4a5b4d;font-size:.8rem;line-height:1.85}
+.croqui-steps li::marker{color:#d95635;font-weight:850}
+.croqui-reference{border-top:1px solid #e4e6de;margin-top:18px;padding-top:17px}
+.croqui-reference p{font-size:.75rem;color:#6d7b70;margin-top:10px}
+.croqui-caution,.croqui-warning{font-size:.73rem;color:#817567;line-height:1.55;display:block;margin:14px 0 0}
+.croqui-warning{border-left:3px solid #d95635;padding:9px 12px;background:#fff2e9;color:#873a26}
+.croqui-empty{border:1px dashed #b9cabc;border-radius:12px;background:#f5f7f1;padding:40px 26px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.croqui-empty h2{margin-bottom:9px}
+.croqui-empty p{max-width:610px;font-size:.8rem;color:#65776a}
+.croqui-empty-tiny{font-size:.78rem;color:#879088;margin:15px 0}
+.croqui-bottom{display:flex;flex-wrap:wrap;gap:15px;margin-top:17px;padding:15px 0;border-top:1px solid #d9dbd2}
+.croqui-bottom a,.croqui-bottom button{font-size:.73rem;color:#8b4d38;background:none;border:none;text-decoration:none;font-weight:750;padding:4px 0}
+.croqui-bottom a:hover,.croqui-bottom button:hover{text-decoration:underline}
+@media(max-width:1050px){.croqui-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.croqui-hero{align-items:start;flex-direction:column}.croqui-two{grid-template-columns:1fr}}
+@media(max-width:760px){.croqui-catalog-grid{grid-template-columns:1fr}.croqui-hero{padding:20px}.croqui-hero-actions{min-width:auto}.croqui-via-scroll{max-height:390px}.croqui-heading{flex-direction:column;align-items:start}.croqui-editor-link{margin:0}.croqui-selected{flex-direction:column;align-items:start}}
+@media(max-width:440px){.croqui-summary{grid-template-columns:1fr 1fr;gap:6px}.croqui-metric{padding:12px}.croqui-metric strong{font-size:1.1rem}.croqui-form-grid{grid-template-columns:1fr}}
