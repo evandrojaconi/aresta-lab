@@ -309,3 +309,5 @@ if (!read("index.html").includes("https://arestaclimb.com/croquis")) throw Error
 console.log("Aresta Lab V2 publicada no artefato:", base, "Artigos:", posts.length);
 // Unificar visual, links internos e CTAs sem afetar a página oficial nem o HTML premium original.
 await import("./unify-v2-pages.mjs");
+// Página experimental voltada ao escalador; V2 atual permanece intacta.
+await import("./build-app-first.mjs");
