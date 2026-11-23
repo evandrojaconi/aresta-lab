@@ -72,7 +72,7 @@
             <article class="territory-spotlight">
               <div class="spotlight-label"><span class="pulse"></span> TERRITÓRIO EM FOCO</div>
               <div class="spotlight-map" aria-hidden="true">
-                <svg viewBox="0 0 400 190" role="img"><path d="M-10 110 Q60 10 140 84 T290 68 T420 87" fill="none" stroke="#b9c2ac" stroke-width="1.8" /><path d="M-10 136 Q60 38 145 112 T290 96 T420 116" fill="none" stroke="#b9c2ac" stroke-width="1.8" /><path d="M-10 162 Q60 66 150 140 T300 124 T420 144" fill="none" stroke="#b9c2ac" stroke-width="1.8" /><path d="M-10 185 Q60 95 150 169 T310 149 T420 171" fill="none" stroke="#b9c2ac" stroke-width="1.8" /><path d="M-10 86 Q60 -13 135 55 T285 38 T420 57" fill="none" stroke="#b9c2ac" stroke-width="1.8" /><circle cx="225" cy="87" r="8" fill="#de5d36"/><circle cx="225" cy="87" r="18" fill="none" stroke="#de5d36" opacity=".35" /></svg>
+                <svg viewBox="0 0 400 190" role="img"><path d="M-10 110 Q60 10 140 84 T290 68 T420 87" fill="none" stroke="#d0d7de" stroke-width="1.8" /><path d="M-10 136 Q60 38 145 112 T290 96 T420 116" fill="none" stroke="#d0d7de" stroke-width="1.8" /><path d="M-10 162 Q60 66 150 140 T300 124 T420 144" fill="none" stroke="#d0d7de" stroke-width="1.8" /><path d="M-10 185 Q60 95 150 169 T310 149 T420 171" fill="none" stroke="#d0d7de" stroke-width="1.8" /><path d="M-10 86 Q60 -13 135 55 T285 38 T420 57" fill="none" stroke="#d0d7de" stroke-width="1.8" /><circle cx="225" cy="87" r="8" fill="#2b579a"/><circle cx="225" cy="87" r="18" fill="none" stroke="#2b579a" opacity=".35" /></svg>
               </div>
               <div class="spotlight-bottom"><div><small>PICO EM DESTAQUE</small><h3>Gruta da Lapinha</h3><span>Lagoa Santa · Minas Gerais</span></div><button class="circle-arrow" data-navigate="territorios" aria-label="Abrir territórios">↗</button></div>
             </article>
@@ -97,7 +97,7 @@
         </section>
 
         <section id="section-territorios" class="screen" aria-labelledby="territories-title">
-          <div class="page-heading"><div><h1 id="territories-title">Picos de escalada</h1><p>Escolha um pico, veja o que falta no croqui e contribua com o que você conhece.</p></div><button class="btn btn-primary" id="createCroquiBtn" type="button">+ Criar Croqui</button></div>
+          <div class="page-heading"><div><h1 id="territories-title">Territórios</h1><p>Abra um croqui para ver as tarefas de preenchimento.</p></div><button class="btn btn-primary" id="createCroquiBtn" type="button">+ Criar Croqui</button></div>
           <div class="toolbar">
             <div class="segmented" role="group" aria-label="Filtrar territórios">
               <button class="seg active" data-territory-filter="todos" aria-pressed="true">Todos</button>
@@ -112,8 +112,10 @@
             <p>Salvos neste navegador.</p>
             <div id="localCroquiItems" class="review-list"></div>
           </article>
-          <div id="territoryCards" class="territory-grid"></div>
-          <article class="panel detail-panel" id="territoryDetails" aria-live="polite"></article>
+          <div class="editor-territory-workspace">
+            <div id="territoryCards" class="territory-grid" aria-label="Croquis por pico"></div>
+            <article class="panel detail-panel" id="territoryDetails" aria-live="polite"></article>
+          </div>
         </section>
 
         <section id="section-manutencao" class="screen" aria-labelledby="collaboration-title">
@@ -198,7 +200,7 @@
         <label>Território<select id="obsTerritory" required></select></label>
         <label>O que você quer melhorar?<select id="obsCategory" required><option value="croqui">Croqui da via</option><option value="acesso">Caminho de acesso</option><option value="ambiental">Condição ambiental</option><option value="comunidade">Memória do pico</option></select></label>
         <div id="croquiFields">
-          <label>Campo<select id="croquiField"><option value="inicio">Onde a via começa</option><option value="tracado">Posição da marca no croqui</option><option value="foto">Foto do setor</option><option value="localizacao">Localização do setor ou bloco</option><option value="trilha">Trilha de aproximação</option></select></label>
+          <label>Campo<select id="croquiField"><option value="inicio">Onde a via começa</option><option value="tracado">Posição da marca no croqui</option><option value="foto">Foto do setor</option><option value="localizacao">Localização do setor ou bloco</option><option value="trilha">Trilha de aproximação</option><option value="grau">Grau de dificuldade</option><option value="mapa">Mapa do setor</option><option value="creditos">Créditos do croqui</option></select></label>
           <div id="editPosition" hidden>
             <div class="diff-wall" aria-hidden="true"><span class="diff-marker original" style="--point:44%"></span><span class="diff-marker proposed" id="draftMarker"></span></div>
             <label>Posição proposta no desenho<input id="obsPosition" type="range" min="20" max="80" value="55"></label>

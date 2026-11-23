@@ -56,6 +56,9 @@ const matches=q=>String(q||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").t
 const countStatus=status=>state.reviews.filter(r=>r.status===status).length;
 
 const fields = {
+ grau:{label:"Grau de dificuldade",benefit:"O grau ajuda a escolher o que escalar no setor.",before:"Grau não informado no exemplo.",placeholder:"Identifique a via ou bloco e indique o grau a conferir."},
+ mapa:{label:"Mapa do setor",benefit:"Um mapa ajuda a localizar as vias e os blocos na parede.",before:"Sem mapa conferido no exemplo.",placeholder:"Identifique o setor e descreva a foto ou mapa que pode servir de base."},
+ creditos:{label:"Créditos do croqui",benefit:"Os créditos reconhecem quem documentou o pico e ajudam a encontrar a fonte do croqui.",before:"Créditos não registrados no exemplo.",placeholder:"Indique a autoria e a fonte. Use nomes fictícios neste teste."},
  foto:{label:"Foto do setor", benefit:"Uma foto nítida, de frente e com a parede inteira ajuda a reconhecer o setor e dá uma boa base para desenhar as linhas.", before:"Sem foto atual do setor no exemplo.", placeholder:"Identifique o setor e descreva a foto que você fez. Inclua uma referência de teste, se tiver."},
  localizacao:{label:"Localização do setor ou bloco", benefit:"Coordenadas colhidas no local ajudam a encontrar o setor ou bloco no mapa.", before:"Sem coordenadas conferidas no exemplo.", placeholder:"Indique o setor ou bloco e uma latitude e longitude fictícias."},
  trilha:{label:"Trilha de aproximação", benefit:"Um traçado de GPS ajuda a seguir a aproximação indicada e a encontrar a parede.", before:"Sem trilha de aproximação no exemplo.", placeholder:"Indique de onde sai a trilha e onde chega. Use um link de teste do Wikiloc, se tiver."},
@@ -180,15 +183,40 @@ function renderOverview(){
   <div><p><strong>${esc(r.title)}</strong> · ${esc(territoryName(r.territoryId))}</p>
   <small>${esc(labelStatus(r.status))} · ${esc(dateBR(r.date))} · Fonte simulada</small></div></div>`).join("");
 }
+const editorStages = [
+ {title:"Etapa 1: Essenciais para Publicação", tasks:[
+  ["acesso","Instruções de chegada e acesso","Adicionar instruções de acesso"],
+  ["mapa","Mapas nos setores","Adicionar mapa do setor"],
+  ["grau","Grau de dificuldade nas escaladas","Definir grau"],
+ ]},
+ {title:"Etapa 2: Qualidade, Navegação Offline e Segurança", tasks:[
+  ["localizacao","Coordenadas de estacionamento e escalada nos setores","Adicionar coordenadas"],
+  ["trilha","Trilhas de aproximação nos setores","Adicionar trilha"],
+  ["inicio","Descrição e beta textual nas escaladas","Adicionar descrição"],
+  ["foto","Foto de capa nos setores e grupos","Adicionar foto de capa"],
+ ]},
+ {title:"Etapa 3: Lapidação, História e Comunidade", tasks:[
+  ["creditos","Créditos aos autores do croqui","Adicionar créditos"],
+ ]},
+];
+
 function renderTerritoryTasks(territoryId){
- return ["foto","localizacao","trilha"].map(field=>{
+ const statusFor=field=>{
    const proposals=state.reviews.filter(item=>item.territoryId===territoryId&&item.field===field);
-   const done=proposals.some(item=>item.status==="aprovada");
-   const waiting=proposals.some(item=>item.status==="pendente");
-   return '<li><div><strong>'+esc(fields[field].label)+'</strong><p>'+esc(fields[field].benefit)+'</p></div>'+
-    (done||waiting?'<span class="tag '+(done?'green':'orange')+'">'+(done?'Conferido no teste':'Aguardando revisão')+'</span>':
-     '<button type="button" class="btn btn-quiet" data-contribute="'+esc(territoryId)+'" data-field="'+field+'">Sugerir '+({foto:'foto',localizacao:'localização',trilha:'trilha'}[field])+'</button>')+
-    '</li>';
+   if(proposals.some(item=>item.status==="aprovada"))return "Conferido no teste";
+   if(proposals.some(item=>item.status==="pendente"))return "Aguardando revisão";
+   return "A preencher";
+ };
+ return editorStages.map(({title,tasks},index)=>{
+   const done=tasks.filter(([field])=>statusFor(field)==="Conferido no teste").length;
+   return '<details class="quality-stage"'+(index===0?' open':'')+'><summary>'+esc(title)+
+    '<small>'+done+'/'+tasks.length+' conferidos</small></summary><ul>'+tasks.map(([field,label,action])=>{
+      const status=statusFor(field);
+      return '<li><div><strong>'+esc(label)+'</strong><p>'+esc(fields[field].benefit)+'</p></div>'+
+       '<div class="quality-task-actions"><span class="tag '+(status==="Conferido no teste"?'green':'')+'">'+esc(status)+'</span>'+
+       (status==="A preencher"?'<button type="button" class="btn btn-quiet" data-contribute="'+esc(territoryId)+
+       '" data-field="'+field+'">'+esc(action)+'</button>':'')+'</div></li>';
+    }).join("")+'</ul></details>';
  }).join("");
 }
 function renderTerritories(){
@@ -213,10 +241,12 @@ function renderTerritories(){
     <button type="button" class="btn btn-primary" data-contribute="${esc(t.id)}">Atualizar croqui</button>
     <button type="button" class="btn btn-quiet" data-review-territory="${esc(t.id)}">Ver sugestões deste pico</button>
   </div>
-  <section class="territory-progress" aria-label="O que conferir no pico">
-    <h4>O que conferir no pico</h4>
-    <p>Dados de teste. Escolha um item para simular uma contribuição.</p>
-    <ul>${renderTerritoryTasks(t.id)}</ul>
+  <section class="territory-progress" aria-labelledby="quality-panel-title">
+    <header class="quality-header">
+      <h4 id="quality-panel-title">Painel de Qualidade do Croqui</h4>
+      <p>Prévia com tarefas do Editor e dados de teste.</p>
+    </header>
+    ${renderTerritoryTasks(t.id)}
   </section>
   `:`<p>Nenhum território selecionado.</p>`;
 }
@@ -268,7 +298,8 @@ function showVerification(visible){
 function openContribution(territoryId,field){
  byId("observationForm").reset();
  byId("obsTerritory").value=territoryId||state.reviewTerritory||state.selectedTerritory;
- if(field)byId("croquiField").value=field;
+ if(field==="acesso")byId("obsCategory").value="acesso";
+ else if(field)byId("croquiField").value=field;
  state.draft=null;
  renderSuggestionFields();
  byId("observationDialog").showModal();
