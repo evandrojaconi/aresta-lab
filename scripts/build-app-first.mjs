@@ -3,8 +3,21 @@ import {join} from "node:path";
 
 // V3 somente laboratório: o HTML premium fica em /v2/visao/; /oficial/ permanece intacto.
 const root=".output/public/v2",base="/"+(process.env.GITHUB_REPOSITORY?.split("/").at(-1)||"aresta-lab")+"/v2/";
+// Extrair a fotografia real exatamente como foi incorporada à landing premium,
+// em vez de criar, redesenhar ou referenciar uma foto externa. É o mesmo WebP
+// utilizado no hero e no offline da V2 original.
+const originalPremium=readFileSync("lab-v2/premium/source.html","utf8");
+const backgroundMatches=[...originalPremium.matchAll(/url\('data:image\/webp;base64,([A-Za-z0-9+/=]+)'\)/g)];
+if(backgroundMatches.length!==2 || backgroundMatches[0][1]!==backgroundMatches[1][1])
+ throw Error("Foto de rocha premium inesperada: conferir a fonte antes de publicar");
+const realRock=Buffer.from(backgroundMatches[0][1],"base64");
+if(realRock.length<100000 || realRock.subarray(0,4).toString()!=="RIFF" ||
+   realRock.subarray(8,12).toString()!=="WEBP")
+ throw Error("Fotografia real premium não é WebP válido");
+writeFileSync(join(root,"assets","aresta-rocha-fundo-original.webp"),realRock);
+
 const target=join(root,"app-first"),src="lab-v2/app-first";
-for(const filename of ["index.html","style.css","legacy-merge.css","app.js","projeto.html"])
+for(const filename of ["index.html","style.css","legacy-merge.css","rock-backgrounds.css","app.js","projeto.html"])
  if(!existsSync(join(src,filename)))throw Error("Arquivo App First ausente: "+filename);
 for(const file of ["explorar-locais.png","pedra-grande.png","croqui-interativo.png","comunidade-pico.png","setor-principal.png"])
  if(!existsSync(join(root,"assets/app",file)))throw Error("Captura real do app ausente: "+file);
@@ -40,7 +53,7 @@ if(!enriched.includes('name="robots" content="noindex,nofollow"')||!enriched.inc
  throw Error("Home App First não é uma prévia rastreável");
 mkdirSync(target,{recursive:true});
 writeFileSync(join(target,"index.html"),enriched);
-for(const file of ["style.css","legacy-merge.css","app.js"])cpSync(join(src,file),join(target,file));
+for(const file of ["style.css","legacy-merge.css","rock-backgrounds.css","app.js"])cpSync(join(src,file),join(target,file));
 mkdirSync(join(root,"projeto"),{recursive:true});
 cpSync(join(src,"projeto.html"),join(root,"projeto","index.html"));
 // Guardar a versão premium integral como acervo navegável, sem alterar o HTML fonte.
@@ -55,6 +68,7 @@ writeFileSync(join(root,"visao","index.html"),premium);
 let home=enriched.replace(/(href|src)="\.\.\//g,'$1="');
 home=home.replace('href="style.css"','href="app-first/style.css"')
          .replace('href="legacy-merge.css"','href="app-first/legacy-merge.css"')
+         .replace('href="rock-backgrounds.css"','href="app-first/rock-backgrounds.css"')
          .replace('src="app.js"','src="app-first/app.js"');
 writeFileSync(previousHome,home);
 const metaPath=join(root,"source.json");

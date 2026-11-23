@@ -9,6 +9,7 @@ const home=readFileSync(".output/public/v2/index.html","utf8");
 const original=readFileSync(".output/public/v2/visao/index.html","utf8");
 const project=readFileSync(".output/public/v2/projeto/index.html","utf8");
 const mergedCss=readFileSync(join(dir,"legacy-merge.css"),"utf8");
+const rockCss=readFileSync(join(dir,"rock-backgrounds.css"),"utf8");
 const css=readFileSync(join(dir,"style.css"),"utf8");
 const script=readFileSync(join(dir,"app.js"),"utf8");
 const errors=[];
@@ -32,6 +33,31 @@ for(const [key,label] of [
  ["https://apps.apple.com/us/app/aresta-climb-guia-de-escalada/id6776467893","App Store"]
 ])need(key,label);
 if(/smartHome|smart home|home automation|client testimonials/i.test(html))errors.push("Texto do template de referência entrou indevidamente");
+// Real rock original used as the background photo in multiple existing sections.
+// The source image must match the immutable premium HTML, not a generated asset.
+const originalPremium=readFileSync("lab-v2/premium/source.html","utf8");
+const backgrounds=[...originalPremium.matchAll(/url\('data:image\/webp;base64,([A-Za-z0-9+/=]+)'\)/g)];
+const rockPath=".output/public/v2/assets/aresta-rocha-fundo-original.webp";
+if(backgrounds.length!==2 || backgrounds[0][1]!==backgrounds[1][1] || !existsSync(rockPath))
+ errors.push("Fotografia original da landing premium não foi recuperada");
+else {
+ const rock=readFileSync(rockPath);
+ const reference=Buffer.from(backgrounds[0][1],"base64");
+ if(!rock.equals(reference) || rock.length<100000) errors.push("Foto de rocha não é idêntica à fonte original");
+}
+for(const [piece,label] of [
+ ['--aresta-rock: url("../assets/aresta-rocha-fundo-original.webp")',"URL real da rocha"],
+ [".hero{","hero com foto"],
+ [".feature-art-light{","seção do app com foto"],
+ [".community-section .feature-art-cream{","comunidade com foto"],
+ [".statement{","bloco de destaque com foto"],
+ [".download-art{","download com foto"],
+ ["@media(max-width:720px)","tratamento da foto no mobile"]
+])if(!rockCss.includes(piece))errors.push("CSS fotografia ausente: "+label);
+if(!html.includes('href="rock-backgrounds.css"') ||
+   !home.includes('href="app-first/rock-backgrounds.css"'))
+ errors.push("Foto real não está ligada às duas entradas da V3");
+
 if(!css.includes("@media(max-width:720px)")||!css.includes("@media(max-width:430px)"))errors.push("Responsive CSS ausente");
 if(!css.includes(".site-header.is-hidden"))errors.push("Scroll tipo notificação ausente");
 for(const text of ["nav-mobile","Escape","requestAnimationFrame","faq"])if(!script.includes(text))errors.push("JS sem "+text);
