@@ -9,6 +9,7 @@ import {fetchArestaSuggestions} from './editor-collaboration.js';
 import {installProcessHandlers} from './process-center.js';
 import {renderMissionHub,installMissionHandlers} from './process-operations.js';
 import {renderTerritoryDashboard,installTerritoryHandlers} from './territory-dashboard.js';
+import {renderCroquiWorkspace,installCroquiHandlers} from './croqui-workspace.js';
 import {renderMarketing, renderProduct, renderInsights, renderOpportunities, installWorkflowHandlers} from './workflows.js';
 import {renderCommandHome,renderTaskDrawer,renderKnowledgeLibrary,renderConnectionCenter,installWorkbenchHandlers} from './workbench.js';
 
@@ -44,6 +45,7 @@ const state = {
   editorSuggestions:{records:[],fetchedAt:null,loading:false,error:null},
   croquiProcesses:[],processFilter:'todos',processLimit:12,missionFlow:'visao',
   territoryReport:null,territoryEvidenceType:'todos',
+  croquiCatalog:null,croquiLoading:false,croquiError:'',croquiSector:null,croquiViaUid:null,croquiSearch:'',croquiViewTab:'catalogo',
   notice:'', error:'', aiResult:'', aiLoading:false, aiMode:''
 };
 const canEdit = () => !!state.membership && ['admin','editor'].includes(state.membership.role);
@@ -230,10 +232,11 @@ function render() {
   if (state.loading) return renderSplash('Carregando o workspace...');
   if (db && !state.session) return renderLogin();
   if (db && !state.membership) return renderNoAccess();
-  const nav=[['hoje','Hoje'],['processos','Processos'],['territorio','Territórios'],['pipeline','Tarefas'],['marketing','Marketing'],['produto','Produto'],['dados','Dados'],['oportunidades','Oportunidades'],['pessoas','Pessoas'],['acervo','Biblioteca'],['canais','Conexões'],['ia','Assistente'],['acesso','Ajustes']];
+  const nav=[['hoje','Hoje'],['croquis','Croquis & Vias'],['territorio','Territórios'],['processos','Processos'],['pipeline','Tarefas'],['marketing','Marketing'],['produto','Produto'],['dados','Dados'],['oportunidades','Oportunidades'],['pessoas','Pessoas'],['acervo','Biblioteca'],['canais','Conexões'],['ia','Assistente'],['acesso','Ajustes']];
   const body={hoje:renderToday,pipeline:renderPipeline,acervo:renderKnowledge,extensoes:renderExtensions,pessoas:renderContacts,canais:renderChannels,ia:renderAI,acesso:renderAccess,
     processos:()=>renderMissionHub({state,readonly}),
     territorio:()=>renderTerritoryDashboard({state,readonly}),
+    croquis:()=>renderCroquiWorkspace({state,readonly}),
     marketing:()=>renderMarketing({state,esc,readonly}),produto:()=>renderProduct({state,esc,readonly}),
     dados:()=>renderInsights({state,esc,readonly}),
     oportunidades:()=>renderOpportunities({state,esc,readonly})}[state.view]();
@@ -517,6 +520,7 @@ installWorkbenchHandlers(()=>({db,state,ws,readonly,loadData,render,refreshEdito
 installProcessHandlers(()=>({db,state,ws,readonly,loadData,render}));
 installMissionHandlers(()=>({state,render}));
 installTerritoryHandlers(()=>({db,state,ws,readonly,loadData,render}));
+installCroquiHandlers(()=>({db,state,ws,readonly,loadData,render,refreshEditorSuggestions}));
 let lastVisibilitySync=0;
 document.addEventListener('visibilitychange',async()=>{
   if(document.hidden||!db||!ws()||state.focusTaskId||state.loading)return;
