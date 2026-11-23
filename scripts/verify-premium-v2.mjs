@@ -3,14 +3,15 @@ import { join } from "node:path";
 const slug=process.env.GITHUB_REPOSITORY?.split("/").at(-1)||"aresta-lab";
 const base="/"+slug+"/v2/";
 const folder=".output/public/v2";
-const expected=["index.html","app/index.html","editor/index.html","premium-enhancements.css","premium-enhancements.js",
+const expected=["index.html","visao/index.html","projeto/index.html","app-first/index.html","app-first/legacy-merge.css","app/index.html","editor/index.html","premium-enhancements.css","premium-enhancements.js",
   "blog.css","blog.js","assets/aresta-climb-logo-oficial-inpi.jpg","assets/aresta-climb-simbolo-montanha-branco.svg","assets/gruta-da-lapinha-mapa-historico-2002.webp","assets/aresta-editor-painel-qualidade-real-2026-11-20.webp","design-source.json","source.json","blog/index.html",
   "blog/historia-escalada-gruta-da-lapinha/index.html","blog/croqui-nao-comeca-na-parede/index.html","blog/offline-e-preparacao/index.html","blog/territorio-e-comunidade/index.html"];
 const errors=[];
 for(const p of expected)if(!existsSync(join(folder,p)))errors.push("Arquivo ausente: "+p);
 if(errors.length){console.error(errors.join("\n"));process.exit(1);}
 const file=p=>readFileSync(join(folder,p),"utf8");
-const home=file("index.html"),blog=file("blog/index.html"),css=file("premium-enhancements.css"),body=file("design-source.json");
+// A home premium é preservada no acervo /visao/; a entrada /v2/ agora é App First.
+const home=file("visao/index.html"),blog=file("blog/index.html"),css=file("premium-enhancements.css"),body=file("design-source.json");
 const source=readFileSync("lab-v2/premium/source.html","utf8");
 const checks=[
 ["hero premium","Menos caça à informação."],["continuação hero","Mais tempo na parede."],
