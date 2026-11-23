@@ -125,6 +125,23 @@ function renderCatalog(state,readonly){
   '<p class="croqui-caution">Leitura do repositório público em '+E(new Date(cat.fetchedAt).toLocaleString('pt-BR'))+'. '+
   'Não é telemetria do aplicativo nem confirma autorização de intervenção.</p>';
 }
+function renderReviewQueue(state){
+ const info=state.editorSuggestions||{};
+ const pending=(info.records||[]).filter(record=>record.status==='aberta');
+ return '<div class="croqui-reference"><h3>Sugestões aguardando revisão</h3>'+
+  '<p>Fila geral do ArestaDB. Para comparar o antes e o depois, abra <strong>Revisar Sugestões</strong> no Editor com sua conta de mantenedor.</p>'+
+  '<div class="croqui-button-line">'+editorLink+
+   '<button type="button" class="secondary" data-action="refresh-editor-prs"'+(info.loading?' disabled':'')+'>'+
+   (info.loading?'Consultando…':'Atualizar fila')+'</button></div>'+
+  (info.error?'<p role="status">'+E(info.error)+(info.fetchedAt?' Exibindo a última consulta.':'')+'</p>':'')+
+  (info.fetchedAt?'<p class="micro">'+pending.length+' em aberto na última consulta'+
+   (info.truncated?' · consulta limitada aos 100 registros mais recentes':'')+'.</p>':'')+
+  (pending.length?'<ul>'+pending.slice(0,5).map(record=>
+   '<li><a href="https://github.com/aresta-climb/aresta_db/pull/'+E(record.number)+'" target="_blank" rel="noopener noreferrer">'+
+    E(record.title)+'</a> <small>#'+E(record.number)+'</small></li>').join('')+'</ul>':'')+
+  (pending.length>5?'<button type="button" class="secondary" data-view="processos">Ver fila em Processos</button>':'')+
+ '</div>';
+}
 function renderUpdate(state,readonly){
  const cat=state.croquiCatalog;
  const current=cat?.vias.find(v=>v.uid===state.croquiViaUid);
@@ -133,9 +150,10 @@ function renderUpdate(state,readonly){
  return '<div class="croqui-two"><section class="croqui-panel"><div class="croqui-panel-head"><h2>Colaborar no croqui</h2></div>'+
   '<p>No Editor, faça o ajuste na via e clique em <strong>Enviar Sugestão</strong>. Confirme seu e-mail com o código de seis dígitos.</p>'+editorLink+
   (suggestion && suggestion.kind===state.croquiChangeKind?'<p><strong>'+suggestion.title+' · '+E(current.name)+'</strong><br>'+suggestion.benefit+'</p>':'')+
+  (current?'<div class="croqui-reference">'+button('copy-mcp','Copiar contexto para o Editor')+'</div>':'')+
   (!cat?button('refresh','Carregar vias','', 'primary'):
    (readonly()?'':
-    '<details open><summary>Preparar ajuste para o Editor</summary><form id="croqui-update-form" class="croqui-form">'+
+    '<details'+(current?' open':'')+'><summary>Preparar ajuste para o Editor</summary><form id="croqui-update-form" class="croqui-form">'+
       '<label>Setor / via<select name="via_uid" required><option value="">Selecionar via…</option>'+
         cat.vias.map(v=>'<option value="'+E(v.uid)+'"'+(v.uid===current?.uid?' selected':'')+'>'+E(v.sector)+' · '+E(v.name)+'</option>').join('')+'</select></label>'+
       '<label>Tipo de alteração<select name="change_kind" required>'+
@@ -143,14 +161,14 @@ function renderUpdate(state,readonly){
       '<label>O que deve ser alterado?<textarea name="change_text" minlength="12" maxlength="1400" rows="4" required placeholder="Descreva a informação atual e a correção sugerida, com contexto."></textarea></label>'+
       '<label>Fonte da correção (quando houver)<input name="evidence_url" type="url" placeholder="https://..."></label>'+
       '<button class="primary croqui-btn" type="submit">Salvar na fila interna</button></form></details>'))+
-  '</section><section class="croqui-panel"><div class="croqui-panel-head"><h2>Revisar sugestões</h2><small>'+requests.length+' registros internos</small></div>'+
-  '<p>No Editor, abra <strong>Revisar Sugestões</strong> para comparar o croqui antes e depois e decidir a alteração.</p>'+editorLink+
+  '</section><section class="croqui-panel"><div class="croqui-panel-head"><h2>Curadoria</h2></div>'+
+  renderReviewQueue(state)+
+  '<details><summary>Ajustes internos da Lapinha ('+requests.length+')</summary>'+
   (requests.length?requests.slice().sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at))).slice(0,10).map(t=>
    '<button class="croqui-task" type="button" data-croqui="open-task" data-id="'+E(t.id)+'">'+
    '<span><b>'+E(t.title)+'</b><small>'+E(status(t.status))+' · '+E(t.next_action)+'</small></span><span>›</span></button>').join(''):
-   '<p class="croqui-empty-tiny">Nenhuma solicitação registrada neste workspace. As PRs externas são acompanhadas no fluxo de curadoria.</p>')+
-  (current?'<div class="croqui-reference">'+button('copy-mcp','Copiar contexto para o Editor')+'</div>':'')+
-  '</section></div>';
+   '<p class="croqui-empty-tiny">Nenhum ajuste preparado neste workspace.</p>')+
+  '</details></section></div>';
 }
 function renderCreate(state,readonly){
  const items=(state.items||[]).filter(t=>String(t.external_key||'').startsWith('croqui:new:'));
