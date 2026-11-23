@@ -182,13 +182,43 @@
     </div>
   </div>
 
-  <dialog id="croquiDraftDialog" aria-labelledby="croqui-draft-title">
-    <form id="croquiDraftForm" class="dialog-body">
+  <dialog id="croquiDraftDialog" class="web-croqui-dialog" aria-labelledby="croqui-draft-title">
+    <form id="croquiDraftForm" class="dialog-body" novalidate>
       <div class="dialog-heading"><h2 id="croqui-draft-title">Criar croqui</h2><button type="button" class="icon-button" data-close="croquiDraftDialog" aria-label="Fechar">✕</button></div>
-      <p>Comece pelo nome do pico. Você pode completar os dados depois.</p>
-      <label>Pico<input name="pico" required maxlength="100" placeholder="Nome usado no local"></label>
-      <label>Cidade e estado<input name="cidade" required maxlength="100" placeholder="Ex.: Lagoa Santa, MG"></label>
-      <label>Primeiro setor<input name="setor" maxlength="100" placeholder="Opcional"></label>
+      <div class="segmented croqui-editor-nav" role="group" aria-label="Ferramentas do croqui">
+        <button type="button" class="seg active" data-croqui-pane="dados" aria-pressed="true">Dados</button>
+        <button type="button" class="seg" data-croqui-pane="imagens" aria-pressed="false">Imagens</button>
+        <button type="button" class="seg" data-croqui-pane="mapas" aria-pressed="false">Mapas</button>
+        <button type="button" class="seg" data-croqui-pane="betas" aria-pressed="false">Betas</button>
+      </div>
+      <div data-croqui-content="dados" class="croqui-edit-fields">
+        <label>Pico<input name="pico" required maxlength="100" placeholder="Nome usado no local"></label>
+        <label>Cidade e estado<input name="cidade" required maxlength="100" placeholder="Ex.: Lagoa Santa, MG"></label>
+        <label>Setor<input name="setor" maxlength="100"></label>
+        <label>Via ou bloco<input name="via" maxlength="100"></label>
+        <label>Grau<input name="grau" maxlength="30" placeholder="Ex.: 6a"></label>
+        <label>Latitude<input name="latitude" inputmode="decimal" maxlength="24"></label>
+        <label>Longitude<input name="longitude" inputmode="decimal" maxlength="24"></label>
+        <label>Trilha de aproximação<input name="trilhaUrl" type="url" placeholder="Link do Wikiloc ou de outro mapa"></label>
+        <label>Instruções de acesso<textarea name="acesso" maxlength="1000"></textarea></label>
+        <label>Créditos do croqui<input name="creditos" maxlength="180"></label>
+      </div>
+      <div data-croqui-content="imagens" hidden>
+        <label>Foto do setor<input name="arquivoFoto" type="file" accept="image/jpeg,image/png,image/webp"></label>
+        <p class="footnote">Use uma foto de frente que mostre a parede. Limite de 2 MB neste protótipo.</p>
+        <img id="sectorPhoto" class="croqui-preview" alt="Foto do setor carregada no rascunho" hidden>
+        <button type="button" class="btn btn-quiet" id="removeSectorPhoto" hidden>Remover foto e linha</button>
+      </div>
+      <div data-croqui-content="mapas" hidden>
+        <p>Clique na foto para marcar os pontos da linha da via, da base ao topo. Pelo teclado, use as setas e Enter.</p>
+        <canvas id="croquiCanvas" class="croqui-preview croqui-canvas" width="720" height="460" tabindex="0" aria-label="Desenhar linha da via na foto do setor"></canvas>
+        <p id="croquiCanvasStatus" class="footnote" role="status"></p>
+        <button type="button" class="btn btn-quiet" id="undoCroquiPoint">Desfazer último ponto</button>
+      </div>
+      <div data-croqui-content="betas" hidden>
+        <label>Beta da via<textarea name="beta" maxlength="1000" placeholder="O que ajuda a reconhecer o começo ou entender a linha?"></textarea></label>
+        <label>Vídeo de beta<input name="betaUrl" type="url" placeholder="Link do vídeo, se houver"></label>
+      </div>
       <p id="draftError" role="alert"></p>
       <div class="dialog-actions"><button type="button" class="btn btn-quiet" data-close="croquiDraftDialog">Cancelar</button><button type="submit" class="btn btn-primary">Salvar rascunho</button></div>
     </form>

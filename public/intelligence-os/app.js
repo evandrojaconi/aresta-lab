@@ -1,4 +1,5 @@
 import { createLocalDraftRepository, readDraftFields } from "./croqui-drafts.ts";
+import { installDraftEditor } from "./croqui-editor.ts";
 
 /**
  * ARESTA INTELLIGENCE OS — Protótipo isolado e sem serviços externos.
@@ -119,6 +120,8 @@ function renderSubmissionStatus(){
 
 const drafts = createLocalDraftRepository();
 let editingDraft = null;
+let draftEditor;
+let editingTerritoryId="";
 
 function renderLocalCroquis(){
  const items=drafts.list().filter(draft=>matches([draft.pico,draft.cidade,draft.setor].join(" ")));
@@ -129,17 +132,14 @@ function renderLocalCroquis(){
   '<button type="button" class="btn btn-quiet" data-edit-croqui="'+esc(draft.id)+'">Editar rascunho</button></article>').join("");
 }
 
-function openLocalCroqui(draft){
+function openLocalCroqui(draft, territory, field){
  const form=byId("croquiDraftForm");
- form.reset();
- byId("draftError").textContent="";
  editingDraft=draft||null;
+ editingTerritoryId=draft?.territorioId||territory?.territorioId||"";
  byId("croqui-draft-title").textContent=editingDraft?"Editar croqui":"Criar croqui";
- if(editingDraft){
-  for(const field of ["pico","cidade","setor"])form.elements[field].value=editingDraft[field];
- }
+ draftEditor.open(draft||territory);
  byId("croquiDraftDialog").showModal();
- form.elements.pico.focus();
+ draftEditor.focusField(field);
 }
 
 function toast(msg){
@@ -214,8 +214,8 @@ function renderTerritoryTasks(territoryId){
       const status=statusFor(field);
       return '<li><div><strong>'+esc(label)+'</strong><p>'+esc(fields[field].benefit)+'</p></div>'+
        '<div class="quality-task-actions"><span class="tag '+(status==="Conferido no teste"?'green':'')+'">'+esc(status)+'</span>'+
-       (status==="A preencher"?'<button type="button" class="btn btn-quiet" data-contribute="'+esc(territoryId)+
-       '" data-field="'+field+'">'+esc(action)+'</button>':'')+'</div></li>';
+       (status==="A preencher"?'<button type="button" class="btn btn-quiet" data-edit-territory="'+esc(territoryId)+
+       '" data-editor-field="'+field+'">'+esc(action)+'</button>':'')+'</div></li>';
     }).join("")+'</ul></details>';
  }).join("");
 }
@@ -238,7 +238,8 @@ function renderTerritories(){
     <div><span>REGRAS DE PUBLICAÇÃO</span><strong>${esc(t.rights)}</strong></div>
   </div>
   <div class="territory-actions">
-    <button type="button" class="btn btn-primary" data-contribute="${esc(t.id)}">Atualizar croqui</button>
+    <button type="button" class="btn btn-primary" data-edit-territory="${esc(t.id)}">Editar croqui na web</button>
+    <button type="button" class="btn btn-quiet" data-contribute="${esc(t.id)}">Sugerir correção</button>
     <button type="button" class="btn btn-quiet" data-review-territory="${esc(t.id)}">Ver sugestões deste pico</button>
   </div>
   <section class="territory-progress" aria-labelledby="quality-panel-title">
@@ -368,12 +369,13 @@ function saveDecision(decision){
 }
 
 function init(){
+ draftEditor=installDraftEditor(byId("croquiDraftForm"));
  byId("createCroquiBtn").addEventListener("click",()=>openLocalCroqui());
  byId("croquiDraftForm").addEventListener("submit",event=>{
    event.preventDefault();
    try {
      const fields=readDraftFields(new FormData(event.currentTarget));
-     drafts.save(fields,editingDraft?.id);
+     drafts.save({...fields,...draftEditor.media(),territorioId:editingTerritoryId},editingDraft?.id);
    } catch(error) {
      byId("draftError").textContent=error.message;
      return;
@@ -406,6 +408,14 @@ function init(){
    }
    const decision=ev.target.closest("[data-decision]");
    if(decision)saveDecision(decision.dataset.decision);
+   const editTerritory=ev.target.closest("[data-edit-territory]");
+   if(editTerritory){
+     const territory=state.territories.find(item=>item.id===editTerritory.dataset.editTerritory);
+     if(territory){
+       const existing=drafts.list().find(item=>item.territorioId===territory.id);
+       openLocalCroqui(existing,{pico:territory.name,cidade:territory.region,setor:"",territorioId:territory.id},editTerritory.dataset.editorField);
+     }
+   }
    const edit=ev.target.closest("[data-edit-croqui]");
    if(edit){
      const draft=drafts.list().find(item=>item.id===edit.dataset.editCroqui);
