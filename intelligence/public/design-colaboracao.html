@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Colaboração no croqui · Aresta Intelligence</title>
+<style>
+:root{color-scheme:dark;--bg:#171a16;--panel:#222720;--line:#414a3b;--text:#f4f5eb;--muted:#bcc6b4;--accent:#d5ee91;--old:#ffb49b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,sans-serif}header{border-bottom:1px solid var(--line)}header>div,main{max-width:1160px;margin:auto;padding:20px clamp(16px,4vw,45px)}header>div,.row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}header strong{letter-spacing:.13em}header small,p,small{color:var(--muted)}a{color:var(--accent)}main{padding-top:34px}h1{font-size:clamp(32px,6vw,62px);letter-spacing:-.045em;line-height:1;margin:9px 0 16px}h2,h3,p{margin:0 0 12px}.location{color:var(--accent);font-weight:650}nav{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0}button{font:inherit;cursor:pointer;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:9px 14px}button.primary,nav [aria-current=page]{background:var(--accent);color:#202715;border-color:var(--accent);font-weight:700}button:disabled{opacity:.48;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:3px}.grid{display:grid;grid-template-columns:minmax(0,1.22fr) minmax(0,1fr);gap:18px;align-items:start}.card{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:clamp(14px,3vw,24px);margin:0 0 15px}.note{border-left:3px solid var(--accent);padding:4px 12px;margin:12px 0;color:var(--muted)}canvas{width:100%;height:auto;display:block;background:#2b3127;border-radius:8px;margin-bottom:10px}label{display:block;margin:12px 0}input,textarea,select{font:inherit}textarea,select,input:not([type=checkbox]):not([type=range]){display:block;width:100%;color:var(--text);background:#161b15;border:1px solid #697564;border-radius:7px;padding:10px;margin-top:4px}input[type=range]{width:100%;accent-color:var(--accent)}input[type=checkbox]{accent-color:var(--accent)}.actions{display:flex;gap:8px;flex-wrap:wrap}.legend{display:flex;gap:14px;flex-wrap:wrap}.before{color:var(--old)}.after{color:var(--accent)}#status:empty{display:none}#status{padding:10px 14px;border:1px solid var(--line);border-radius:8px;margin-bottom:14px;color:var(--accent)}summary{cursor:pointer;margin:12px 0}.error{color:var(--old)}@media(max-width:720px){.grid{grid-template-columns:1fr}}[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header><div><strong>ARESTA INTELLIGENCE</strong><small>Design de teste · simulação</small><a href="./">Voltar ao Intelligence</a></div></header>
+<main>
+<div class="location">Gruta da Lapinha · Setor demonstrativo</div>
+<h1 id="title" tabindex="-1">Colaboração no croqui</h1>
+<nav aria-label="Etapas do teste"><button data-view="croqui" aria-current="page">Croqui</button><button data-view="triagem">Triagem</button><button data-view="revisao">Revisão</button></nav>
+<div id="status" role="status"></div>
+<section id="croqui" class="grid">
+ <article class="card">
+  <h2>Via Escola</h2>
+  <canvas id="edit-map" width="660" height="440" aria-label="Croqui esquemático da Via Escola, com posição ajustável da chapeleta"></canvas>
+  <label for="position">Ajustar posição da chapeleta</label><input id="position" type="range" min="40" max="78" value="51">
+  <small>Mapa esquemático com uma via fictícia.</small>
+ </article>
+ <article class="card">
+  <h2>Completar o beta da via</h2>
+  <p class="note">Uma referência do início ajuda quem chega à parede a reconhecer a via e dá ao mantenedor contexto para revisar o traçado.</p>
+  <label>Referência de início<textarea id="beta" maxlength="300" rows="3" placeholder="Ex.: a linha começa à esquerda da fenda"></textarea></label>
+  <div class="actions"><button id="start" class="primary">Enviar Sugestão</button><button id="reset">Reiniciar teste</button></div>
+  <p id="contrib-error" class="error" role="alert"></p>
+  <form id="otp" hidden>
+   <h3>Confirme o envio</h3>
+   <p>Use o e-mail fictício abaixo e o código de teste <strong>123456</strong>.</p>
+   <label>E-mail de teste<input value="escalador@example.com" readonly></label>
+   <label>Código de seis dígitos<input id="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required></label>
+   <button class="primary">Confirmar sugestão</button>
+   <p id="otp-error" class="error" role="alert"></p>
+  </form>
+ </article>
+</section>
+<section id="triagem" class="grid" hidden>
+ <article class="card">
+  <h2>Fila do mantenedor</h2>
+  <p id="empty">Envie uma sugestão pelo croqui para experimentar a triagem.</p>
+  <div id="suggestion" hidden>
+   <h3>Via Escola · Setor demonstrativo</h3>
+   <p id="summary"></p><p id="priority"></p>
+   <p><strong>Responsável</strong> · Mantenedor da Lapinha</p>
+   <button class="primary" data-view="revisao">Abrir revisão visual</button>
+  </div>
+ </article>
+ <article class="card">
+  <h2>Alertas ao mantenedor</h2>
+  <p id="alert-preview"></p>
+  <details><summary>Preferências de teste</summary>
+   <label><input type="checkbox" checked disabled> Caixa de entrada</label>
+   <label><input id="email" type="checkbox" checked> E-mail</label>
+   <label><input id="discord" type="checkbox"> Discord</label>
+   <label>Frequência<select id="frequency"><option value="now">Imediato</option><option value="high">Só prioridade alta</option><option value="digest">Resumo diário</option></select></label>
+  </details>
+ </article>
+</section>
+<section id="revisao" class="grid" hidden>
+ <article class="card">
+  <h2>Comparar croquis</h2>
+  <p id="no-diff">Envie uma sugestão para abrir a comparação.</p>
+  <div id="diff" hidden>
+   <div class="actions" aria-label="Visualização"><button data-mode="before" aria-pressed="false">Antes</button><button data-mode="after" aria-pressed="false">Depois</button><button data-mode="overlay" aria-pressed="true">Sobrepor</button></div>
+   <canvas id="review-map" width="660" height="440" aria-label="Comparação esquemática da posição antiga e proposta da chapeleta"></canvas>
+   <p class="legend"><span class="before">● Original</span><span class="after">◆ Proposta</span></p>
+  </div>
+ </article>
+ <article class="card">
+  <h2>Decisão do mantenedor</h2>
+  <p id="review-summary">A sugestão aparecerá aqui após o envio.</p>
+  <div class="actions"><button class="primary" id="approve" disabled>Aprovar</button><button id="reject" disabled>Rejeitar</button></div>
+ </article>
+</section>
+</main>
+<script>
+const el=id=>document.getElementById(id);
+const initial=51;
+let suggestion=null, mode='overlay';
+const statusText=()=>suggestion?.decision || 'Aguardando revisão';
+function notify(message){el('status').textContent=message;}
+function openView(view){
+ for(const id of ['croqui','triagem','revisao'])el(id).hidden=id!==view;
+ document.querySelectorAll('nav button').forEach(button=>{
+  if(button.dataset.view===view)button.setAttribute('aria-current','page');
+  else button.removeAttribute('aria-current');
+ });
+ el('title').focus();
+}
+function draw(id,points){
+ const ctx=el(id).getContext('2d');
+ ctx.fillStyle='#2b3127';ctx.fillRect(0,0,660,440);
+ // Contours are schematic and solely illustrate the interaction.
+ ctx.lineWidth=2;ctx.strokeStyle='#465043';
+ for(let row=0;row<6;row++){
+  ctx.beginPath();ctx.moveTo(0,60+row*63);ctx.bezierCurveTo(250,40+row*75,360,105+row*51,660,40+row*63);ctx.stroke();
+ }
+ ctx.strokeStyle='#ecede3';ctx.lineWidth=4;ctx.setLineDash([8,7]);
+ ctx.beginPath();ctx.moveTo(248,390);ctx.lineTo(278,310);ctx.lineTo(366,165);ctx.lineTo(420,54);ctx.stroke();ctx.setLineDash([]);
+ for(const {value,color,marker} of points){
+  const x=value*6.6,y=245;
+  ctx.fillStyle=color;ctx.strokeStyle='#20241d';ctx.lineWidth=4;ctx.beginPath();
+  if(marker==='novo'){ctx.moveTo(x,y-13);ctx.lineTo(x+13,y);ctx.lineTo(x,y+13);ctx.lineTo(x-13,y);ctx.closePath();}
+  else ctx.arc(x,y,11,0,Math.PI*2);
+  ctx.fill();ctx.stroke();
+ }
+}
+const point=(value,marker)=>({value,marker,color:marker==='novo'?'#d5ee91':'#ffb49b'});
+function summary(){
+ if(!suggestion)return '';
+ return [suggestion.position!==initial?'Posição da chapeleta ajustada.':'',suggestion.beta?'Referência de início: '+suggestion.beta:''].filter(Boolean).join(' ');
+}
+function render(){
+ draw('edit-map',[point(Number(el('position').value),'novo')]);
+ const exists=Boolean(suggestion), pending=exists&&!suggestion.decision;
+ el('empty').hidden=exists;el('suggestion').hidden=!exists;
+ el('no-diff').hidden=exists;el('diff').hidden=!exists;
+ el('approve').disabled=!pending;el('reject').disabled=!pending;el('start').disabled=exists;
+ const high=exists&&suggestion.position!==initial;
+ el('summary').textContent=summary();
+ el('priority').textContent=exists?(high?'Alta · mudou a posição de uma proteção.':'Normal · complemento de descrição.'):'';
+ el('review-summary').textContent=exists?statusText()+'. '+summary():'A sugestão aparecerá aqui após o envio.';
+ if(exists){
+  const markers=[];
+  if(mode!=='after')markers.push(point(initial,'original'));
+  if(mode!=='before' && (mode==='after'||suggestion.position!==initial))markers.push(point(suggestion.position,'novo'));
+  draw('review-map',markers);
+ }
+ const external=['email','discord'].filter(id=>el(id).checked).map(id=>id==='email'?'e-mail':'Discord');
+ const frequency=el('frequency').value;
+ const channels=frequency==='high'&&!high?[]:external;
+ el('alert-preview').textContent=!exists?'Envie uma sugestão para ver a prévia do alerta.':
+  !pending?'Alerta encerrado · '+statusText()+'.':
+  'Simulação · Caixa de entrada'+(channels.length?' + '+channels.join(' + '):'')+
+   (channels.length&&frequency==='digest'?' no resumo diário.':'.')+' '+statusText()+'.';
+}
+document.addEventListener('click',event=>{
+ const button=event.target.closest('button');if(!button)return;
+ if(button.dataset.view)openView(button.dataset.view);
+ if(button.dataset.mode){
+  mode=button.dataset.mode;
+  document.querySelectorAll('[data-mode]').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));
+  render();
+ }
+});
+el('start').addEventListener('click',()=>{
+ if(Number(el('position').value)===initial&&!el('beta').value.trim()){
+  el('contrib-error').textContent='Preencha a referência ou ajuste a posição no croqui.';
+  return;
+ }
+ el('contrib-error').textContent='';el('otp').hidden=false;el('code').focus();
+});
+el('otp').addEventListener('submit',event=>{
+ event.preventDefault();
+ if(el('code').value!=='123456'){el('otp-error').textContent='Use o código de teste 123456.';return;}
+ const position=Number(el('position').value),beta=el('beta').value.trim();
+ if(suggestion || (position===initial&&!beta)){
+  el('otp-error').textContent='Faça um ajuste no croqui antes de confirmar.';return;
+ }
+ suggestion={position,beta};
+ el('otp').reset();el('otp').hidden=true;el('otp-error').textContent='';
+ render();openView('triagem');notify('Sugestão recebida no teste. O mantenedor já pode revisar.');
+});
+for(const [id,decision] of [['approve','Aprovada'],['reject','Rejeitada']])el(id).addEventListener('click',()=>{
+ if(!suggestion||suggestion.decision)return;
+ suggestion.decision=decision;render();notify('Sugestão '+decision.toLowerCase()+' na simulação.');
+});
+el('reset').addEventListener('click',()=>{
+ suggestion=null;mode='overlay';el('position').value=initial;el('beta').value='';
+ el('email').checked=true;el('discord').checked=false;el('frequency').value='now';
+ el('otp').reset();el('otp').hidden=true;el('otp-error').textContent='';el('contrib-error').textContent='';
+ document.querySelectorAll('[data-mode]').forEach(item=>item.setAttribute('aria-pressed',String(item.dataset.mode===mode)));
+ notify('');render();
+});
+for(const id of ['position','email','discord','frequency'])el(id).addEventListener(id==='position'?'input':'change',render);
+render();
+</script>
+</body>
+</html>
