@@ -43,7 +43,7 @@ test('botões e filas usam dados do workspace e respeitam leitura',()=>{
  const state={croquiCatalog:cat,croquiViewTab:'catalogo',croquiSector:'setor_mapa_1.md',items:[],contents:[]};
  const html=renderCroquiWorkspace({state,readonly:()=>true});
  assert.match(html,/Setor Castelinho/);assert.match(html,/Perrengue total/);
- assert.match(html,/data-croqui="via"/);assert.match(html,/Criar croqui/);
+ assert.match(html,/data-croqui="via"/);assert.match(html,/Novo croqui/);
  const readonly=renderCroquiWorkspace({state:{...state,croquiViewTab:'atualizacoes'},readonly:()=>true});
  assert.doesNotMatch(readonly,/id="croqui-update-form"/);
  const edit=renderCroquiWorkspace({state:{...state,croquiViewTab:'atualizacoes'},readonly:()=>false});
