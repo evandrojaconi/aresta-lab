@@ -1,6 +1,22 @@
 # Aresta Lab — estado técnico
 
-Atualização: 2026-11-19
+Atualização: 2026-11-23
+
+## Estado vigente — 23/11/2026
+
+**LANDING APROVADA COMO REFERÊNCIA (no laboratório):** V3.1 — App First com fotografia original de rocha, Diário de Rocha integrado e descoberta progressiva para Editor/comunidade/projeto.
+
+- URL principal de homologação: https://evandrojaconi.github.io/aresta-lab/v2/
+- Branch de referência congelada por convenção: `baseline/landing-v3.1-aprovada-2026-11-23` (commit `e9ec881a1dd97e673ff85364b64187fbf3ce59ab`).
+- Código editável permanece em `main`; próximas mudanças devem partir da versão aprovada e ser versionadas por PR.
+- Fonte da home: `lab-v2/app-first/`; build: `scripts/build-app-first.mjs`; testes: `scripts/verify-app-first.mjs`.
+- Visão premium anterior: `/v2/visao/`; espelho de produção: `/oficial/`.
+- **Produção não alterada:** `arestaclimb.com` ainda é separado e exige planejamento/deploy próprios.
+- Ver decisão rastreável: [LANDING-BASELINE-APROVADA.md](LANDING-BASELINE-APROVADA.md).
+
+---
+
+## Registro histórico (19/11/2026)
 
 ## Identidade
 
