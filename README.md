@@ -1,5 +1,18 @@
 # ARESTA LAB
 
+## Landing aprovada — versão de referência V3.1 (23/11/2026)
+
+A **landing oficial de referência para todas as próximas edições** é a **V3.1 App First**, aprovada pelo responsável pelo projeto. Ela está publicada no **ambiente de laboratório**, não no domínio oficial de produção.
+
+- **[ABRIR A LANDING APROVADA](https://evandrojaconi.github.io/aresta-lab/v2/)** — home App First, croquis, offline, comunidade e Diário de Rocha.
+- **[Visão premium anterior preservada](https://evandrojaconi.github.io/aresta-lab/v2/visao/)** — conteúdo completo para consulta.
+- **[Diário de Rocha](https://evandrojaconi.github.io/aresta-lab/v2/blog/)** — integrado à nova home.
+- **[Branch de baseline aprovada](https://github.com/evandrojaconi/aresta-lab/tree/baseline/landing-v3.1-aprovada-2026-11-23)** — fotografia imutável por convenção do código aceito, no commit `e9ec881a1dd97e673ff85364b64187fbf3ce59ab`.
+- **[Registro oficial da decisão e roteiro de edição](docs/LANDING-BASELINE-APROVADA.md)**.
+
+**Fluxo das próximas mudanças:** partir da `main` → branch por ajuste → PR e testes → publicar em `/v2/`; manter a baseline e a versão anterior preservadas. Não alterar `arestaclimb.com` sem solicitação específica para a produção.
+
+
 **Ambiente de produto, interfaces e experimentação do [Aresta Climb](https://arestaclimb.com/).**
 
 Neste repositório desenvolvemos e testamos a **landing page navegável** e páginas de descoberta territorial do Aresta. O nome do laboratório não substitui a marca do aplicativo.
@@ -27,15 +40,15 @@ A fonte oficial de croquis é um Worker separado e continua sendo [arestaclimb.c
 
 Veja [a documentação de homologação](docs/ESPELHO-SITE-OFICIAL.md).
 
-## Proposta V2: mesma base oficial, visual territorial e blog
+## Histórico: proposta V2 e fonte premium preservadas
 
 - **Versão oficial (espelho fiel):** https://evandrojaconi.github.io/aresta-lab/oficial/
-- **Proposta V2 (reestilizada):** https://evandrojaconi.github.io/aresta-lab/v2/
+- **V2 premium anterior (acervo):** https://evandrojaconi.github.io/aresta-lab/v2/visao/
 - **Diário de Rocha (blog piloto):** https://evandrojaconi.github.io/aresta-lab/v2/blog/
 
 **Fonte de verdade visual da V2:** o arquivo premium `aresta-climb-home-premium-conteudo-oficial-LEVE(2).html` fornecido pelo usuário, versionado integralmente em [`lab-v2/premium/source.html`](lab-v2/premium/source.html). Contém foto de rocha, capturas reais do aplicativo e Editor, modo claro/escuro, título “Menos caça à informação. Mais tempo na parede.” e as seções originais. **Não** usa mais a versão antiga do Drive (31/08/2026) para construir a home. O build conserva páginas e assets técnicos do repositório oficial, integra links do catálogo web, app, Editor e blog de três artigos piloto. Consulte [documentação atual](docs/V2-PREMIUM-SOURCE.md), `lab-v2/premium/`, `lab-v2/posts.json` e `scripts/build-v2.mjs`.
 
-Não substitui /croquis (Cloudflare Worker), não altera a produção, não envia telemetria e usa `noindex` por ser ambiente de avaliação. Dados exibidos na landing de produção continuam sujeitos a validação de data e qualidade antes da futura publicação. Os três textos do blog são **rascunhos editoriais para discussão**, não notícias validadas.
+Não substitui /croquis (Cloudflare Worker), não altera a produção, não envia telemetria e usa `noindex` por ser ambiente de avaliação. Dados exibidos na landing de produção continuam sujeitos a validação de data e qualidade antes da futura publicação. A publicação editorial é controlada pelo estado dos registros em `lab-v2/posts.json`. Rascunhos não devem ser anunciados como artigos publicados.
 
 ## O que é navegável
 
