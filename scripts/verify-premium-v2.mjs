@@ -223,3 +223,5 @@ if(source.length<750000||home.length<610000)errors.push("Imagens premium ausente
 if(home.includes("Quer um Beta?<br>")||home.includes("Menos incerteza.<br>"))errors.push("Landing antiga ainda presente");
 if(errors.length){console.error(errors.join("\n"));process.exit(1);}
 console.log("Premium V2 QA OK: fonte intacta + navegação + blog + páginas oficiais; origem",source.length,"chars");
+// Testar separadamente o conceito App First sem alterar os critérios V2.
+await import("./verify-app-first.mjs");
