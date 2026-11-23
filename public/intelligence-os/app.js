@@ -49,29 +49,29 @@ const byId=id=>document.getElementById(id);
 const esc=(v)=>String(v??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 const territoryName=id=>state.territories.find(t=>t.id===id)?.name??"Não identificado";
 const dateBR=d=>{const [y,m,day]=d.split("-");return `${day}/${m}/${y}`};
-const labelStatus=s=>({pendente:"Pendente de curadoria",aprovada:"Aprovada na simulação",rejeitada:"Não incorporada",inventario:"Inventário",documentado:"Documentado (simulado)"})[s]||s;
+const labelStatus=s=>({pendente:"Aguardando revisão",aprovada:"Aprovada no teste",rejeitada:"Não incorporada",inventario:"Inventário",documentado:"Documentado (simulado)"})[s]||s;
 const matches=q=>String(q||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().includes(state.search.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase());
 const countStatus=status=>state.reviews.filter(r=>r.status===status).length;
 
 const fields = {
- inicio:{label:"Referência de início da via", benefit:"Ajuda quem chega à parede a encontrar a via e dá ao mantenedor um ponto de referência para revisar o croqui.", before:"Início sem referência no croqui demonstrativo."},
- tracado:{label:"Posição de uma marca no croqui", benefit:"Uma marca bem posicionada ajuda a comparar o desenho com a parede e facilita a conferência pelo mantenedor.", before:"Marca na posição original do desenho."},
- acesso:{label:"Caminho de acesso", benefit:"Ajuda a comunidade a seguir o acesso indicado e dá ao mantenedor contexto para atualizar as orientações do pico.", before:"Acesso sem a atualização proposta."},
- ambiental:{label:"Condição ambiental", benefit:"Ajuda quem cuida do pico a identificar mudanças e orientar o uso do setor.", before:"Sem observação ambiental registrada sobre este ponto."},
- comunidade:{label:"Memória do pico", benefit:"Preserva a história local e ajuda o mantenedor a conferir créditos e fontes.", before:"Sem o registro comunitário proposto."}
+ inicio:{label:"Onde a via começa", benefit:"Uma fenda, um bloco ou outro ponto visível ajuda a achar o começo da via na parede.", before:"Início sem referência no croqui demonstrativo."},
+ tracado:{label:"Posição da marca no croqui", benefit:"A marca no lugar certo ajuda a reconhecer a via na foto e a conferir o que mudou.", before:"Marca na posição original do desenho."},
+ acesso:{label:"Caminho de acesso", benefit:"Dizer onde a trilha vira ajuda a próxima pessoa a chegar pelo caminho indicado.", before:"Acesso sem a atualização proposta."},
+ ambiental:{label:"Condição ambiental", benefit:"Diga onde e quando você viu a mudança. Isso ajuda quem cuida do setor a conferir o relato.", before:"Sem observação ambiental registrada sobre este ponto."},
+ comunidade:{label:"Memória do pico", benefit:"Um nome e uma fonte ajudam a dar crédito a quem abriu a via ou fez o croqui.", before:"Sem o registro comunitário proposto."}
 };
 const fieldFor = item => fields[item.field] || fields[item.category] || fields.inicio;
 const idFor = () => "demo-" + (state.reviews.length + 1);
 const submissionStatus = {
- pendente:"Sugestão recebida pela curadoria.",
- aprovada:"Sugestão validada no teste.",
- rejeitada:"Sugestão encerrada sem incorporação no teste."
+ pendente:"Sugestão recebida. Agora ela aguarda revisão.",
+ aprovada:"Sugestão aprovada no teste.",
+ rejeitada:"A revisão terminou. A sugestão ficou fora do croqui de teste."
 };
 
 function triage(item){
  return item.field==="tracado"
-  ? {label:"Alta",reason:"A proposta altera uma referência visual do croqui."}
-  : {label:"Normal",reason:"A proposta complementa a informação do território."};
+  ? {label:"Alta",reason:"Muda a posição de uma marca no croqui."}
+  : {label:"Normal",reason:"Acrescenta uma informação sobre o pico."};
 }
 
 function renderAlerts(){
@@ -84,7 +84,7 @@ function renderAlerts(){
     '<p>'+esc(territoryName(item.territoryId))+' · '+esc(alert.priority.label)+' · '+esc(alert.priority.reason)+'</p>'+
     '<small>Mantenedor de teste · '+esc(alert.channels.join(" + "))+' · '+esc(alert.mode)+'</small></div>'+
     '<button type="button" class="btn btn-quiet" data-open-review="'+esc(item.id)+'">Abrir revisão</button></article>';
- }).join(""):'<p class="footnote">As sugestões confirmadas nesta sessão aparecem aqui para o mantenedor do território.</p>';
+ }).join(""):'<p class="footnote">Quando alguém enviar uma sugestão, ela aparece aqui com o pico e o que mudou.</p>';
 }
 
 function notifyMaintainer(item){
@@ -133,7 +133,7 @@ function metric(label,n,foot){
 function renderOverview(){
  byId("overviewMetrics").innerHTML=[
    metric("Territórios na amostra",state.territories.length,"Todos os cadastros são simulados"),
-   metric("Sugestões para curadoria",countStatus("pendente"),"Não enviadas ao GitHub"),
+   metric("Sugestões aguardando revisão",countStatus("pendente"),"Não enviadas ao GitHub"),
    metric("Observações demonstrativas",state.observations.length,"Não representam visitas"),
    metric("Decisões registradas",state.reviews.length-countStatus("pendente"),"Apenas nesta sessão")
  ].join("");
@@ -152,14 +152,14 @@ function renderTerritories(){
  let t=state.territories.find(t=>t.id===state.selectedTerritory);
  if(t&&!areas.some(x=>x.id===t.id))t=areas[0];
  byId("territoryDetails").innerHTML=t?`
-  <div class="eyebrow">DETALHE TERRITORIAL / EXEMPLO</div>
+  <div class="eyebrow">SOBRE O PICO</div>
   <h3>${esc(t.name)}</h3><p>${esc(t.overview)}</p>
   <div class="detail-meta"><span class="tag">${esc(t.region)}</span><span class="tag orange">Dados demonstrativos</span></div>
   <div class="detail-data">
-    <div><span>ESTADO DE CURADORIA</span><strong>${esc(labelStatus(t.type))}</strong></div>
-    <div><span>REFERÊNCIA DE RESPONSÁVEL</span><strong>${esc(t.steward)}</strong></div>
+    <div><span>STATUS DO CADASTRO</span><strong>${esc(labelStatus(t.type))}</strong></div>
+    <div><span>QUEM CUIDA DO PICO</span><strong>${esc(t.steward)}</strong></div>
     <div><span>REGRAS DE PUBLICAÇÃO</span><strong>${esc(t.rights)}</strong></div>
-  </div><button type="button" class="btn btn-quiet" data-contribute="${esc(t.id)}">Sugerir atualização</button>
+  </div><button type="button" class="btn btn-quiet" data-contribute="${esc(t.id)}">Sugerir uma mudança</button>
   `:`<p>Nenhum território selecionado.</p>`;
 }
 function renderReviews(){
@@ -209,7 +209,7 @@ function renderSuggestionFields(){
  byId("draftMarker").style.setProperty("--point",byId("obsPosition").value+"%");
  byId("fieldBenefit").textContent=field.benefit;
  byId("descriptionLabel").textContent=moving?"Motivo da correção":field.label;
- byId("obsDescription").placeholder=moving?"Indique o que você conferiu na imagem da via.":"Inclua uma referência do local ou da fonte.";
+ byId("obsDescription").placeholder=moving?"Ex.: no croqui, a marca ficou à direita da fenda.":"Conte o que viu e, se tiver, inclua a fonte.";
  byId("obsDescription").setCustomValidity("");
 }
 
@@ -271,7 +271,7 @@ function renderReviewDetail(){
   diff+'<div class="diff-text"><div><strong>Antes</strong><p>'+esc(item.before||field.before)+'</p></div>'+
   '<div><strong>Proposta</strong><p>'+esc(item.description)+'</p></div></div>'+
   '<p class="field-benefit">'+esc(field.benefit)+'</p>'+
-  (item.status==="pendente"?'<p class="dialog-note">Prévia da revisão do mantenedor no Editor. Decisões de teste ficam nesta sessão.</p>'+
+  (item.status==="pendente"?'<p class="dialog-note">Compare com o croqui atual antes de decidir. A decisão vale só neste teste.</p>'+
   '<div class="dialog-actions"><button type="button" class="btn btn-quiet" data-decision="rejeitada">Não incorporar</button>'+
   '<button type="button" class="btn btn-primary" data-decision="aprovada">Aprovar no teste</button></div>':
   '<p class="tag">'+esc(labelStatus(item.status))+'</p>');
@@ -335,7 +335,7 @@ function init(){
  const obsTerritory=byId("obsTerritory");
  obsTerritory.innerHTML=state.territories.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join("");
  byId("newObservationBtn").addEventListener("click",()=>openContribution());
- byId("addTerritoryBtn").addEventListener("click",()=>toast("Cadastro de territórios requer integração e curadoria. Esta demonstração é somente leitura nessa seção."));
+ byId("addTerritoryBtn").addEventListener("click",()=>toast("O cadastro de novos picos ainda não está disponível neste teste."));
  byId("openMethodBtn").addEventListener("click",()=>byId("methodDialog").showModal());
  for(const id of ["obsCategory","croquiField","obsPosition"])
    byId(id).addEventListener(id==="obsPosition"?"input":"change",renderSuggestionFields);
@@ -345,7 +345,7 @@ function init(){
    ev.preventDefault();
    const input=byId("obsDescription"),description=input.value.trim();
    if(description.length<10){
-     input.setCustomValidity("Inclua pelo menos 10 caracteres para contextualizar a sugestão.");
+     input.setCustomValidity("Conte um pouco mais sobre o que mudou (mínimo de 10 caracteres).");
      input.reportValidity();
      return;
    }
@@ -387,7 +387,7 @@ function init(){
    navigate("colaboracao");
    byId("collaboration-title").setAttribute("tabindex","-1");
    byId("collaboration-title").focus();
-   toast(duplicate?"Esta sugestão já consta na fila.":"Sugestão confirmada. A curadoria já pode revisar nesta sessão.");
+   toast(duplicate?"Essa sugestão já está na fila.":"Sugestão enviada para revisão no teste.");
  });
  byId("exportBtn").addEventListener("click",()=>{
    const data={_warning:"DADOS TOTALMENTE SIMULADOS; sem conexão com sistemas reais.",_schema:"aresta-intelligence-os-demo-v0.2",exportedAt:new Date().toISOString(),territories:state.territories,reviews:state.reviews,observations:state.observations,projects:state.projects,alerts:state.alerts};
