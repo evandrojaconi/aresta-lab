@@ -10,6 +10,7 @@
   <meta name="description" content="Descubra picos, explore setores, consulte vias e leve croquis de escalada offline. Conheça o aplicativo Aresta Climb para todos os escaladores.">
   <link rel="icon" href="../assets/logo_app.png">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="legacy-merge.css">
   <script defer src="app.js"></script>
 </head>
 <body>
@@ -21,22 +22,31 @@
         <span class="brand-word">ARESTA <b>CLIMB</b></span>
       </a>
       <div class="nav-links">
-        <a href="#recursos">O aplicativo</a>
-        <a href="#croquis">Croquis</a>
-        <a href="#offline">Offline</a>
-        <a href="#comunidade">Comunidade</a>
+        <a href="#recursos" aria-current="page">Aplicativo</a>
+        <a href="../croquis/">Croquis</a>
+        <a href="../blog/">Diário de Rocha</a>
+        <details class="nav-deeper" id="nav-deeper">
+          <summary>Sobre</summary>
+          <div class="deeper-links">
+            <a href="../projeto/">O projeto Aresta</a>
+            <a href="../editor/">Editor de Croquis</a>
+            <a href="../comunidade/">Comunidade</a>
+            <a href="#duvidas">Dúvidas frequentes</a>
+          </div>
+        </details>
       </div>
       <div class="nav-actions">
         <a class="button button-nav" href="../app/">Baixar app <span aria-hidden="true">↗</span></a>
         <details class="nav-mobile" id="nav-mobile">
           <summary aria-label="Abrir navegação">Menu <span aria-hidden="true">☰</span></summary>
           <div class="nav-drawer">
-            <a href="#recursos">O aplicativo</a>
-            <a href="#croquis">Croquis</a>
-            <a href="#offline">Offline</a>
-            <a href="#comunidade">Comunidade</a>
-            <a href="#duvidas">Dúvidas frequentes</a>
+            <a href="#recursos">Aplicativo</a>
+            <a href="../croquis/">Croquis Web</a>
             <a href="../blog/">Diário de Rocha</a>
+            <a href="../comunidade/">Comunidade</a>
+            <a href="../projeto/">O projeto Aresta</a>
+            <a href="../editor/">Editor de Croquis</a>
+            <a href="#duvidas">Dúvidas frequentes</a>
             <a href="../app/" class="button">Baixar aplicativo ↗</a>
           </div>
         </details>
@@ -158,12 +168,53 @@
       </div>
     </section>
 
+    <section class="pathways" id="descubra-mais" aria-labelledby="paths-title">
+      <div class="wrap">
+        <div class="pathways-title">
+          <div><p class="eyebrow eyebrow-rust">O APLICATIVO É SÓ O COMEÇO</p><h2 id="paths-title">Tem muito mais história<br>por trás de cada via.</h2></div>
+          <p class="pathways-lead">A rocha é de todo mundo. O conhecimento fica melhor quando quem escala, quem cuida e quem conhece o lugar participa.</p>
+        </div>
+        <div class="pathway-grid">
+          <article class="pathway">
+            <span class="pathway-no">01 / CONHECIMENTO VIVO</span>
+            <h3>Conhece um pico?<br>Ajude a documentar.</h3>
+            <p>Entenda como o Editor Aresta organiza fotos, setores e vias para criar croquis e preparar sua publicação.</p>
+            <a href="../editor/">Conhecer o Editor</a>
+          </article>
+          <article class="pathway">
+            <span class="pathway-no">02 / CONSTRUÇÃO COLETIVA</span>
+            <h3>A comunidade<br>mantém a história.</h3>
+            <p>Contribuições, orientações locais e informações de acesso ajudam cada pessoa a chegar mais preparada à rocha.</p>
+            <a href="../comunidade/">Participar da comunidade</a>
+          </article>
+          <article class="pathway">
+            <span class="pathway-no">03 / POR TRÁS DO APLICATIVO</span>
+            <h3>Tecnologia feita<br>para o território.</h3>
+            <p>Conheça a proposta do Aresta, a autoria dos croquis, a relação com os picos e o desenvolvimento do projeto.</p>
+            <a href="../projeto/">Explorar o projeto</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="statement">
       <div class="wrap statement-inner">
         <p class="eyebrow eyebrow-white">PRA QUEM ESCALA</p>
         <h2>Mais parede.<br>Menos incerteza.</h2>
         <p>Do primeiro croqui ao pico preferido. Informação acessível para fazer parte do caminho.</p>
         <a class="button button-white" href="../app/">Quero o aplicativo <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+
+    <section class="journal" id="diario" aria-labelledby="journal-title">
+      <div class="wrap">
+        <div class="journal-head">
+          <div><p class="eyebrow eyebrow-rust">DIÁRIO DE ROCHA · HISTÓRIAS DE QUEM ESCALA</p>
+          <h2 id="journal-title">O croqui mostra a via.<br>A história conta o resto.</h2></div>
+          <a href="../blog/">Ler o Diário de Rocha ↗</a>
+        </div>
+        <!-- BLOG_FEATURED_START -->
+        <!-- BLOG_FEATURED_END -->
       </div>
     </section>
 
@@ -206,7 +257,7 @@
     <aside class="deep-link">
       <div class="wrap deep-link-inner">
         <div><span class="eyebrow eyebrow-white">CONHECIMENTO QUE CONTINUA</span><h2>Conhece bem um pico?<br>Ajude essa história a seguir.</h2></div>
-        <a href="../editor/">Conheça o Editor Aresta <span aria-hidden="true">↗</span></a>
+        <a href="../projeto/">Conheça quem constrói os croquis <span aria-hidden="true">↗</span></a>
       </div>
     </aside>
   </main>
@@ -218,10 +269,10 @@
         <p>Um aplicativo de escalada e croquis para encontrar caminhos, compartilhar conhecimento e chegar mais preparado à rocha.</p>
       </div>
       <div><h3>Para escalar</h3><a href="../app/">Aplicativo</a><a href="../croquis/">Croquis Web</a><a href="../comunidade/">Comunidade</a></div>
-      <div><h3>Conheça mais</h3><a href="../blog/">Diário de Rocha</a><a href="../editor/">Editor Aresta</a><a href="../contato/">Contato</a></div>
-      <div><h3>Informações</h3><a href="../termos-de-uso/">Termos de uso</a><a href="../politica-de-privacidade/">Privacidade</a><a href="../">Landing atual (V2)</a></div>
+      <div><h3>Conheça mais</h3><a href="../blog/">Diário de Rocha</a><a href="../editor/">Editor Aresta</a><a href="../projeto/">O projeto</a><a href="../contato/">Contato</a></div>
+      <div><h3>Informações</h3><a href="../termos-de-uso/">Termos de uso</a><a href="../politica-de-privacidade/">Privacidade</a><a href="../visao/">Visão completa do Aresta</a></div>
     </div>
-    <div class="wrap footer-bottom"><span>ARESTA CLIMB · FEITO PELA COMUNIDADE. ABERTO PARA O MUNDO.</span><span>Conceito experimental de landing · Aresta Lab</span></div>
+    <div class="wrap footer-bottom"><span>ARESTA CLIMB · FEITO PELA COMUNIDADE. ABERTO PARA O MUNDO.</span><span>Prévia de integração · Aresta Lab</span></div>
   </footer>
 </body>
 </html>

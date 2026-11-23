@@ -6,13 +6,15 @@ if(!existsSync(join(root,"index.html"))||!existsSync(join(root,"blog/index.html"
 const out=path=>base+path;
 cpSync("lab-v2/premium/shared-pages.css",join(root,"shared-pages.css"));
 cpSync("lab-v2/premium/shared-pages.js",join(root,"shared-pages.js"));
-const pages=[["app/","Aplicativo"],["croquis/","Croquis"],["editor/","Editor"],["comunidade/","Comunidade"],["blog/","Diário de Rocha"]];
+const pages=[["","Aplicativo"],["croquis/","Croquis"],["blog/","Diário de Rocha"]];
+const deepPages=[["projeto/","O projeto Aresta"],["editor/","Editor de Croquis"],["comunidade/","Comunidade"],["contato/","Contato e suporte"]];
 function routeFor(path){
  if(path.startsWith("blog/"))return "blog/";
  if(path.startsWith("editor/")||path==="editor.html")return "editor/";
  if(path.startsWith("app")||path.startsWith("download"))return "app/";
  if(path.startsWith("comunidade"))return "comunidade/";
  if(path.startsWith("croquis"))return "croquis/";
+ if(path.startsWith("projeto"))return "projeto/";
  return "";
 }
 function nav(path){
@@ -22,12 +24,13 @@ function nav(path){
  '<a class="lab-unified-nav__brand" href="'+base+'" aria-label="Aresta Climb — página inicial">'+
  '<span class="lab-unified-nav__mark"><img src="'+out("assets/aresta-climb-simbolo-montanha-branco.svg")+'" width="300" height="167" alt=""></span>'+
  '<span class="lab-unified-nav__name">ARESTA CLIMB</span></a>'+
- '<div class="lab-unified-nav__links">'+pages.map(item).join("")+'</div>'+
+ '<div class="lab-unified-nav__links">'+pages.map(item).join("")+
+ '<details class="lab-unified-nav__more"><summary>Sobre</summary><div class="lab-unified-nav__more-links">'+deepPages.map(item).join("")+'</div></details></div>'+
  '<div class="lab-unified-nav__actions"><button type="button" class="lab-unified-nav__theme" data-lab-theme aria-label="Alternar tema">☼</button>'+
  '<a class="lab-unified-nav__cta" href="'+out("app/")+'">Baixar App <span aria-hidden="true">→</span></a>'+
  '<details class="lab-unified-nav__mobile"><summary aria-label="Abrir navegação">Menu</summary>'+
  '<div class="lab-unified-nav__drawer">'+pages.map(item).join("")+
- '<a href="'+out("contato/")+'">Contato e suporte</a><a href="'+base+'">Página inicial</a>'+
+ deepPages.map(item).join("")+
  '<a class="lab-unified-nav__cta" href="'+out("app/")+'">Baixar aplicativo →</a></div></details></div></nav>';
 }
 const action=(href,label,secondary=false,external=false)=>
@@ -36,7 +39,7 @@ function next(path){
  const here=routeFor(path);
  const choices=path.startsWith("editor/beta")?
  [["editor/","Editor para computador"],["app/","Aplicativo"],["contato/","Suporte"]]:
- pages.filter(([url])=>url!==here).slice(0,3);
+ [...pages,...deepPages].filter(([url])=>url!==here).slice(0,3);
  return '<section class="lab-next-steps" aria-label="Continue explorando o Aresta">'+
  '<span class="lab-next-steps__eyebrow">MAIS ARESTA · MESMA COMUNIDADE</span>'+
  '<h2>Explore outras formas de chegar à rocha.</h2><div class="lab-next-steps__links">'+

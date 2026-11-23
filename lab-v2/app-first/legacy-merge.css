@@ -1,0 +1,94 @@
+/* Aresta V3 — caminhos progressivos: o app primeiro, profundidade por interesse. */
+.nav-deeper{position:relative;color:#272925}
+.nav-deeper>summary{list-style:none;cursor:pointer;padding:10px 0;font:700 12px Inter,sans-serif;color:#272925}
+.nav-deeper>summary::-webkit-details-marker{display:none}
+.nav-deeper>summary:after{content:"⌄";font-size:13px;margin-left:6px}
+.nav-deeper[open]>summary{color:var(--orange-dark)}
+.nav-deeper .deeper-links{position:absolute;right:-22px;top:calc(100% + 14px);min-width:222px;display:grid;gap:3px;padding:9px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 35px #16140c26}
+.nav-deeper:not([open]) .deeper-links{display:none}
+.nav-deeper .deeper-links a{font-size:12px;white-space:nowrap;padding:11px 12px;border-radius:9px;color:var(--ink)}
+.nav-deeper .deeper-links a:hover{background:var(--paper)}
+.pathways{padding:102px 0;background:#fff}
+.pathways-title{display:flex;gap:35px;align-items:end;justify-content:space-between;margin-bottom:33px}
+.pathways h2{font-size:clamp(35px,4.6vw,55px);line-height:1.1;margin-top:18px;max-width:670px}
+.pathways-lead{color:var(--muted);font-size:14px;max-width:320px;margin-bottom:6px}
+.pathway-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.pathway{display:flex;flex-direction:column;min-height:315px;position:relative;overflow:hidden;background:var(--paper);border:1px solid var(--line);border-radius:21px;padding:27px 25px;transition:border .18s,transform .18s}
+.pathway:hover{transform:translateY(-3px);border-color:rgba(181,62,41,.45)}
+.pathway:nth-child(2){background:#e8eee5}
+.pathway:nth-child(3){background:#f1e5dc}
+.pathway .pathway-no{font:800 12px Inter;color:var(--orange-dark);letter-spacing:.1em}
+.pathway h3{font-size:clamp(21px,2.3vw,27px);line-height:1.15;margin:30px 0 12px}
+.pathway p{font-size:13px;color:var(--muted);line-height:1.65}
+.pathway a{display:inline-flex;gap:10px;align-items:center;margin-top:auto;padding-top:22px;font-size:12px;color:var(--orange-dark);font-weight:800;align-self:flex-start}
+.pathway a:after{content:"↗"}
+.pathway:nth-child(3) p{color:#6a5b4b}
+.journal{background:#f5f2ec;padding:103px 0 112px}
+.journal-head{display:flex;gap:25px;align-items:end;justify-content:space-between;margin-bottom:28px}
+.journal h2{font-size:clamp(38px,4.5vw,58px);line-height:1.08;margin:18px 0 0}
+.journal-head>a{flex:none;font-weight:800;font-size:13px;color:var(--orange-dark);padding:8px 0;border-bottom:1px solid var(--orange-dark)}
+.journal-grid{display:grid;grid-template-columns:1.28fr .72fr;gap:16px}
+.journal-lead-card{border-radius:23px;overflow:hidden;background:#fff;border:1px solid var(--line);color:var(--ink)}
+.journal-photo{height:280px;overflow:hidden;background:#d7c2a3}
+.journal-photo img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.journal-lead-card:hover .journal-photo img{transform:scale(1.03)}
+.journal-copy{padding:28px 30px 31px}
+.journal-copy .eyebrow{color:var(--orange-dark)}
+.journal-copy h3{font-size:clamp(24px,2.8vw,35px);line-height:1.18;margin:13px 0}
+.journal-copy p{font-size:14px;color:var(--muted);line-height:1.65}
+.journal-card-link{display:inline-block;font-size:13px;font-weight:800;color:var(--orange-dark);margin-top:20px}
+.journal-side{display:flex;flex-direction:column;gap:14px}
+.journal-side-card{padding:28px 26px;background:#18231d;color:#fff;border-radius:23px;flex:1;display:flex;flex-direction:column;justify-content:space-between;min-height:235px}
+.journal-side-card:last-child{background:#e9dfd1;color:var(--ink)}
+.journal-side-card strong{font:800 21px/1.2 Epilogue;letter-spacing:-.04em}
+.journal-side-card p{font-size:13px;color:inherit;opacity:.77;margin-top:15px}
+.journal-side-card a{font-size:12px;font-weight:800;margin-top:23px;text-decoration:underline;text-underline-offset:5px}
+.project-depth{padding:93px 0;background:#f8f6f1}
+.project-head{max-width:780px;margin-bottom:40px}
+.project-head h1{font-size:clamp(41px,5vw,65px);line-height:1.08;margin:19px 0}
+.project-head p{font-size:16px;color:var(--muted)}
+.project-index{display:grid;grid-template-columns:repeat(2,1fr);gap:17px;margin-bottom:34px}
+.project-index article{border-radius:20px;padding:27px;background:#fff;border:1px solid var(--line)}
+.project-index article span{font:800 11px Inter;color:var(--orange-dark);letter-spacing:.1em}
+.project-index article h2{font-size:26px;margin:13px 0}
+.project-index article p{font-size:14px;color:var(--muted)}
+.project-index article a{display:inline-block;margin-top:18px;font-size:13px;font-weight:800;color:var(--orange-dark);text-decoration:underline;text-underline-offset:5px}
+.project-editor{display:grid;grid-template-columns:.95fr 1.05fr;gap:30px;align-items:center;margin-top:45px;border-radius:24px;overflow:hidden;background:#17211a;color:white}
+.project-editor-copy{padding:42px 38px}
+.project-editor h2{font-size:clamp(28px,3.4vw,40px);margin:12px 0}
+.project-editor p{font-size:14px;color:#d3ddd2}
+.project-editor a{display:inline-block;margin-top:22px;color:#fff;text-decoration:underline;text-underline-offset:5px;font-weight:800;font-size:13px}
+.project-editor img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.project-related{margin-top:32px;border:1px solid var(--line);padding:22px;border-radius:18px;display:flex;align-items:center;justify-content:space-between;gap:16px;background:#fff}
+.project-related p{max-width:480px;color:var(--muted);font-size:13px}
+.project-related a{font-size:13px;font-weight:800;color:var(--orange-dark);text-decoration:underline;text-underline-offset:5px}
+.footer-brand p{max-width:330px}
+@media(max-width:920px){
+ .pathways,.journal{padding:80px 0}
+ .pathways-title{align-items:start}
+ .journal-photo{height:245px}
+ .project-editor-copy{padding:28px}
+}
+@media(max-width:720px){
+ .nav-deeper{display:none}
+ .pathways-title,.journal-head{display:block}
+ .pathways-lead{max-width:550px;margin-top:15px}
+ .pathway-grid{grid-template-columns:1fr;gap:12px}
+ .pathway{min-height:210px;padding:22px}
+ .pathway h3{margin:20px 0 9px}
+ .journal-grid{grid-template-columns:1fr}
+ .journal-head>a{display:inline-block;margin-top:21px}
+ .journal-photo{height:230px}
+ .journal-side{display:grid;grid-template-columns:1fr 1fr}
+ .journal-side-card{min-height:220px;padding:20px}
+ .project-index,.project-editor{grid-template-columns:1fr}
+ .project-editor img{height:265px;object-fit:cover}
+ .project-related{flex-direction:column;align-items:start}
+}
+@media(max-width:430px){
+ .journal-side{grid-template-columns:1fr}
+ .journal-side-card{min-height:165px}
+ .journal-copy{padding:23px}
+ .project-index article{padding:22px}
+ .project-depth{padding:80px 0}
+}

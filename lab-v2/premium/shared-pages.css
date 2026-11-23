@@ -47,6 +47,15 @@ html[data-theme="dark"] .lab-v2-unified{
   white-space:nowrap;color:var(--lab-ink)!important;padding:9px 0;
   opacity:.78;transition:color .15s,opacity .15s;
 }
+/* Menu contextual: mesma hierarquia visual da home App First. */
+.lab-unified-nav__more{position:relative;display:block;flex:none}
+.lab-unified-nav__more>summary{list-style:none;font:700 11px Inter,sans-serif;padding:9px 0;cursor:pointer;color:var(--lab-ink)}
+.lab-unified-nav__more>summary::-webkit-details-marker{display:none}
+.lab-unified-nav__more>summary:after{content:"⌄";margin-left:6px;font-size:13px}
+.lab-unified-nav__more-links{position:absolute;right:-12px;top:calc(100% + 15px);width:225px;padding:9px;background:var(--lab-paper);border:1px solid var(--lab-line);border-radius:14px;display:grid;gap:4px;box-shadow:var(--lab-shadow)}
+.lab-unified-nav__more:not([open]) .lab-unified-nav__more-links{display:none!important}
+.lab-unified-nav__more-links a{display:block;padding:11px 12px!important;border-radius:9px!important;white-space:normal!important}
+.lab-unified-nav__more-links a:hover{background:var(--lab-bg)}
 .lab-unified-nav__links a:hover,.lab-unified-nav__links a[aria-current="page"]{color:var(--lab-accent-dark)!important;opacity:1}
 .lab-unified-nav__links a[aria-current="page"]{border-bottom:2px solid var(--lab-accent)}
 .lab-unified-nav__actions{display:flex;align-items:center;gap:7px;flex:none}
