@@ -112,15 +112,19 @@ function toast(msg){
  clearTimeout(toast.timeout);toast.timeout=setTimeout(()=>node.classList.remove("visible"),3400);
 }
 function navigate(section,updateHash=true){
- const allowed=["visao-geral","territorios","colaboracao","transparencia","impacto"];
- if(!allowed.includes(section))section="visao-geral";
+ const sections={
+   "visao-geral":"Painel","criar-croqui":"Criar Croqui",manutencao:"Manutenção",
+   territorios:"Picos",marketing:"Marketing",configuracoes:"Configurações",transparencia:"Projetos e recursos"
+ };
+ if(section==="colaboracao"||section==="impacto")section="manutencao";
+ if(!Object.hasOwn(sections,section))section="visao-geral";
  state.section=section;
  $$(".screen").forEach(el=>el.classList.toggle("active",el.id===`section-${section}`));
  $$(".nav-link").forEach(el=>{
-   const on=el.dataset.section===section; el.classList.toggle("active",on);
+   const on=el.dataset.section===(section==="territorios"?"manutencao":section==="transparencia"?"configuracoes":section); el.classList.toggle("active",on);
    if(on)el.setAttribute("aria-current","page"); else el.removeAttribute("aria-current");
  });
- byId("breadcrumbCurrent").textContent=({"visao-geral":"Visão geral",territorios:"Territórios",colaboracao:"Colaboração",transparencia:"Transparência",impacto:"Impacto"})[section];
+ byId("breadcrumbCurrent").textContent=sections[section];
  byId("shell").classList.remove("menu-open");
  byId("menuBtn").setAttribute("aria-expanded","false");
  if(updateHash && location.hash.slice(1)!==section)history.replaceState(null,"",`#${section}`);
@@ -179,26 +183,8 @@ function renderProjects(){
   <td>Não informado</td><td>Não informado</td><td>Não informado</td>
   <td><span class="tag orange">Sem fonte oficial</span></td></tr>`).join("")||`<tr><td colspan="6">Nenhum projeto encontrado.</td></tr>`;
 }
-function renderImpact(){
- const validated=state.observations.filter(o=>o.validated).length, total=state.observations.length;
- const decided=state.reviews.filter(r=>r.status!=="pendente").length;
- byId("impactMetrics").innerHTML=[
-   metric("Taxa de decisão de sugestões",`${Math.round(100*decided/Math.max(1,state.reviews.length))}%`,"Sobre amostra simulada"),
-   metric("Observações curadas",validated,"Não há medição de visitação"),
-   metric("Sugestões com decisão",decided,"Decisões locais de demonstração"),
-   metric("Fontes financeiras oficiais","0","Nenhuma fonte real carregada")
- ].join("");
- const bars=[
-   ["Observações validadas",validated,total],
-   ["Sugestões decididas",decided,state.reviews.length],
-   ["Projetos com fonte verificável",0,state.projects.length],
- ];
- byId("qualityBars").innerHTML=bars.map(([title,n,d])=>`
-  <div class="quality-row"><div class="quality-label"><span>${esc(title)}</span><span>${n}/${d}</span></div>
-  <div class="bar" role="progressbar" aria-label="${esc(title)}" aria-valuenow="${n}" aria-valuemin="0" aria-valuemax="${d}"><span style="width:${Math.round(100*n/Math.max(1,d))}%"></span></div></div>`).join("");
-}
 function render(){
- renderOverview();renderTerritories();renderReviews();renderProjects();renderImpact();renderAlerts();renderSubmissionStatus();
+ renderOverview();renderTerritories();renderReviews();renderProjects();renderAlerts();renderSubmissionStatus();
 }
 function renderSuggestionFields(){
  const category=byId("obsCategory").value;
@@ -336,7 +322,6 @@ function init(){
  obsTerritory.innerHTML=state.territories.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join("");
  byId("newObservationBtn").addEventListener("click",()=>openContribution());
  byId("addTerritoryBtn").addEventListener("click",()=>toast("O cadastro de novos picos ainda não está disponível neste teste."));
- byId("openMethodBtn").addEventListener("click",()=>byId("methodDialog").showModal());
  for(const id of ["obsCategory","croquiField","obsPosition"])
    byId(id).addEventListener(id==="obsPosition"?"input":"change",renderSuggestionFields);
  byId("obsDescription").addEventListener("input",()=>byId("obsDescription").setCustomValidity(""));
@@ -384,7 +369,7 @@ function init(){
    byId("searchInput").value="";
    state.search="";
    $("[data-review-filter='todos']").click();
-   navigate("colaboracao");
+   navigate("manutencao");
    byId("collaboration-title").setAttribute("tabindex","-1");
    byId("collaboration-title").focus();
    toast(duplicate?"Essa sugestão já está na fila.":"Sugestão enviada para revisão no teste.");

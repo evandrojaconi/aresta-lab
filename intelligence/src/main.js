@@ -35,8 +35,11 @@ const preview = [
 const previewChannels = ['Instagram/Meta','Facebook','LinkedIn','WhatsApp','Discord','Notion','Google Drive','Google Calendar','Gmail','GitHub'].map(provider=>({
   id:provider,provider,status:'nao_conectado',notes:'Integração técnica ainda não verificada.'
 }));
+const entryViews = {'criar-croqui':'croquis',marketing:'marketing',ajustes:'acesso'};
+const entry = new URLSearchParams(window.location.search).get('view');
+const entryView = Object.hasOwn(entryViews, entry) ? entryViews[entry] : 'hoje';
 const state = {
-  view:'hoje', track:'Todas', loading:true, busy:false,
+  view:entryView, track:'Todas', loading:true, busy:false,
   session:null, membership:null, memberships:[], workspaceNames:{}, knowledge:[], extensions:[], knowledgeKind:'all', items:[], contacts:[], touchpoints:[], channels:[], audit:[],
   contents:[], proposals:[], opportunities:[], metricSources:[], metricSnapshots:[], marketingFilter:'Todos',
   taskContexts:[],creativeAssets:[],reviewMarks:[],githubApprovals:[],focusTaskId:null,activeContentId:null,
@@ -45,7 +48,7 @@ const state = {
   editorSuggestions:{records:[],fetchedAt:null,loading:false,error:null},
   croquiProcesses:[],processFilter:'todos',processLimit:12,missionFlow:'visao',
   territoryReport:null,territoryEvidenceType:'todos',
-  croquiCatalog:null,croquiLoading:false,croquiError:'',croquiSector:null,croquiViaUid:null,croquiSearch:'',croquiViewTab:'catalogo',
+  croquiCatalog:null,croquiLoading:false,croquiError:'',croquiSector:null,croquiViaUid:null,croquiSearch:'',croquiViewTab:entry==='criar-croqui'?'criar':'catalogo',
   notice:'', error:'', aiResult:'', aiLoading:false, aiMode:''
 };
 const canEdit = () => !!state.membership && ['admin','editor'].includes(state.membership.role);
@@ -464,7 +467,7 @@ document.addEventListener('submit',async event=>{
     if(!email)return;
     state.error=''; state.notice='';
     const {error}=await db.auth.signInWithOtp({ email, options: {
-      emailRedirectTo:window.location.origin+window.location.pathname,
+      emailRedirectTo:window.location.origin+window.location.pathname+(entryView==='hoje'?'':'?view='+encodeURIComponent(entry)),
       shouldCreateUser:false
     }});
     if(error)state.error='Falha ao enviar link: '+error.message;

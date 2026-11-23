@@ -21,11 +21,11 @@
       </a>
       <div class="side-label">SISTEMA</div>
       <nav aria-label="Áreas do sistema" class="nav">
-        <button type="button" data-section="visao-geral" class="nav-link active" aria-current="page"><span class="nav-icon">◫</span> Visão geral</button>
-        <button type="button" data-section="territorios" class="nav-link"><span class="nav-icon">⌁</span> Territórios</button>
-        <button type="button" data-section="colaboracao" class="nav-link"><span class="nav-icon">⤨</span> Colaboração <span class="nav-counter" id="navCount">3</span></button>
-        <button type="button" data-section="transparencia" class="nav-link"><span class="nav-icon">▤</span> Transparência</button>
-        <button type="button" data-section="impacto" class="nav-link"><span class="nav-icon">◎</span> Impacto</button>
+        <button type="button" data-section="visao-geral" class="nav-link active" aria-label="Painel" aria-current="page"><span class="nav-icon" aria-hidden="true">◫</span> Painel</button>
+        <button type="button" data-section="criar-croqui" class="nav-link" aria-label="Criar Croqui"><span class="nav-icon" aria-hidden="true">+</span> Criar Croqui</button>
+        <button type="button" data-section="manutencao" class="nav-link"><span class="nav-icon" aria-hidden="true">⤨</span> Manutenção <span class="nav-counter" id="navCount" aria-label="Sugestões aguardando revisão">3</span></button>
+        <button type="button" data-section="marketing" class="nav-link" aria-label="Marketing"><span class="nav-icon" aria-hidden="true">↗</span> Marketing</button>
+        <button type="button" data-section="configuracoes" class="nav-link" aria-label="Configurações"><span class="nav-icon" aria-hidden="true">⚙</span> Configurações</button>
       </nav>
       <div class="sidebar-foot">
         <div class="status-pill"><span class="status-dot"></span> Ambiente demonstrativo</div>
@@ -39,7 +39,7 @@
       <header class="topbar">
         <div class="topbar-left">
           <button class="mobile-menu" id="menuBtn" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">☰</button>
-          <div class="breadcrumbs"><span>ARESTA / INTELLIGENCE</span><strong id="breadcrumbCurrent">Visão geral</strong></div>
+          <div class="breadcrumbs"><span>ARESTA / INTELLIGENCE</span><strong id="breadcrumbCurrent">Painel</strong></div>
         </div>
         <div class="topbar-right">
           <label class="search-wrapper" for="searchInput">
@@ -47,7 +47,6 @@
             <input id="searchInput" type="search" placeholder="Buscar territórios, registros..." autocomplete="off">
             <kbd>/</kbd>
           </label>
-          <button class="btn btn-quiet" id="exportBtn" type="button" title="Exportar demonstração">Exportar JSON</button>
           <span class="avatar" title="Visualização demonstrativa">DEMO</span>
         </div>
       </header>
@@ -82,7 +81,7 @@
           <div class="metric-grid" id="overviewMetrics"></div>
           <div class="split-grid">
             <article class="panel">
-              <div class="panel-head"><div><div class="eyebrow">ATIVIDADE</div><h3>Sugestões recentes</h3></div><button class="text-action" data-navigate="colaboracao">Ver colaboração ↗</button></div>
+              <div class="panel-head"><div><div class="eyebrow">ATIVIDADE</div><h3>Sugestões recentes</h3></div><button class="text-action" data-navigate="manutencao">Ver manutenção ↗</button></div>
               <div id="activityList" class="timeline"></div>
             </article>
             <article class="panel">
@@ -107,27 +106,22 @@
             </div>
             <span class="support-text">A lista mostra os picos cadastrados.</span>
           </div>
+          <p><button type="button" class="btn btn-quiet" data-navigate="manutencao">Voltar para sugestões</button></p>
           <div id="territoryCards" class="territory-grid"></div>
           <article class="panel detail-panel" id="territoryDetails" aria-live="polite"></article>
         </section>
 
-        <section id="section-colaboracao" class="screen" aria-labelledby="collaboration-title">
+        <section id="section-manutencao" class="screen" aria-labelledby="collaboration-title">
           <div class="page-heading">
-            <div><h1 id="collaboration-title">Colaboração</h1><p>Viu algo que mudou? Conte o que encontrou e acompanhe a revisão.</p></div>
+            <div><h1 id="collaboration-title">Manutenção</h1><p>Confira o que mudou nos croquis, nos acessos e nos setores.</p></div>
             <button class="btn btn-primary" type="button" data-contribute>+ Enviar sugestão</button>
           </div>
+          <div class="toolbar" aria-label="Áreas de manutenção"><div class="segmented"><button type="button" class="seg active" aria-current="page" disabled>Sugestões</button><button type="button" class="seg" data-navigate="territorios">Picos</button></div></div>
           <p id="contributionStatus" class="contribution-status" role="status" hidden></p>
           <details class="panel alert-panel">
             <summary><strong>Sugestões para revisar</strong> <span class="tag" id="unreadCount">0 novos</span></summary>
             <div id="alertItems"></div>
-            <details class="alert-settings">
-              <summary>Como receber avisos</summary>
-              <form id="alertPreferences">
-                <label><input type="checkbox" name="email" checked> E-mail</label>
-                <label><input type="checkbox" name="discord"> Discord</label>
-                <label>Frequência <select name="frequency"><option value="immediate">Imediata</option><option value="high">Só alta prioridade</option><option value="daily">Resumo diário</option></select></label>
-              </form>
-            </details>
+            <button type="button" class="text-action" data-navigate="configuracoes">Configurar avisos ↗</button>
           </details>
           <div class="toolbar"><div class="segmented" role="group" aria-label="Filtrar sugestões">
             <button class="seg active" data-review-filter="todos" aria-pressed="true">Todas</button>
@@ -145,16 +139,39 @@
           <div class="panel small-panel"><h3>Como ler as etapas</h3><p>Autorização, pagamento e prestação de contas são etapas diferentes. Cada uma precisa do seu próprio documento.</p></div>
         </section>
 
-        <section id="section-impacto" class="screen" aria-labelledby="impact-title">
-          <div class="page-heading"><div><h1 id="impact-title">O que dá para acompanhar</h1><p>Veja quantas sugestões foram revistas e quais informações têm fonte.</p></div><button class="btn btn-primary" type="button" id="openMethodBtn">Como medimos ↗</button></div>
-          <div class="metric-grid" id="impactMetrics"></div>
+        <section id="section-criar-croqui" class="screen" aria-labelledby="create-title">
+          <div class="page-heading"><div><h1 id="create-title">Criar Croqui</h1><p>Comece pelo nome do pico, onde ele fica e quem pode confirmar as informações.</p></div></div>
+          <article class="panel">
+            <h2>Preparar um novo croqui</h2>
+            <p>Use o formulário do Intelligence para registrar o pedido. O desenho e a criação do croqui acontecem no Editor Aresta.</p>
+            <p><a class="btn btn-primary" href="../intelligence/?view=criar-croqui">Abrir formulário de criação ↗</a></p>
+          </article>
+        </section>
+        <section id="section-marketing" class="screen" aria-labelledby="marketing-title">
+          <div class="page-heading"><div><h1 id="marketing-title">Marketing</h1><p>Planeje pautas, revise materiais e acompanhe o que saiu.</p></div></div>
+          <article class="panel">
+            <h2>Seu espaço de trabalho</h2>
+            <p>Entre no Intelligence para abrir o painel de Marketing do seu workspace.</p>
+            <p><a class="btn btn-primary" href="../intelligence/?view=marketing">Abrir painel de Marketing ↗</a></p>
+          </article>
+        </section>
+        <section id="section-configuracoes" class="screen" aria-labelledby="settings-title">
+          <div class="page-heading"><div><h1 id="settings-title">Configurações</h1><p>Escolha como receber avisos e acesse as opções da sua conta.</p></div></div>
           <div class="split-grid">
-            <article class="panel"><div class="panel-head"><div><h3>Registros conferidos</h3></div></div><div id="qualityBars"></div><p class="footnote">Percentuais calculados exclusivamente sobre a amostra simulada do protótipo.</p></article>
-            <article class="panel"><div class="panel-head"><div><h3>O que acompanhar com dados reais</h3></div></div>
-              <div class="principle"><span>01</span><div><strong>Correções validadas</strong><small>Tempo até decisão e publicação real.</small></div></div>
-              <div class="principle"><span>02</span><div><strong>Problemas com devolutiva</strong><small>Sem confundir registro com solução.</small></div></div>
-              <div class="principle"><span>03</span><div><strong>Curadoria local ativa</strong><small>Representatividade, autoria e continuidade.</small></div></div>
-              <div class="principle"><span>04</span><div><strong>Benefícios socioeconômicos</strong><small>Pesquisa contextualizada e baseline verificável.</small></div></div>
+            <article class="panel">
+              <h2>Avisos de manutenção</h2>
+              <p>Escolha os canais e a frequência para os próximos envios do teste.</p>
+              <form id="alertPreferences">
+                <label><input type="checkbox" name="email" checked> E-mail</label>
+                <label><input type="checkbox" name="discord"> Discord</label>
+                <label>Frequência <select name="frequency"><option value="immediate">Imediata</option><option value="high">Só alta prioridade</option><option value="daily">Resumo diário</option></select></label>
+              </form>
+            </article>
+            <article class="panel">
+              <h2>Conta e workspace</h2>
+              <p><a class="btn btn-quiet" href="../intelligence/?view=ajustes">Abrir ajustes do Intelligence ↗</a></p>
+              <button class="btn btn-quiet" id="exportBtn" type="button">Exportar dados de teste</button>
+              <button class="btn btn-quiet" type="button" data-navigate="transparencia">Projetos e recursos</button>
             </article>
           </div>
         </section>
@@ -194,16 +211,6 @@
     <div class="dialog-body">
       <div class="dialog-heading"><h2 id="review-title" tabindex="-1">Revisão da sugestão</h2><button type="button" class="icon-button" data-close="reviewDialog" aria-label="Fechar">✕</button></div>
       <div id="reviewDetail"></div>
-    </div>
-  </dialog>
-  <dialog id="methodDialog" aria-labelledby="method-title">
-    <div class="dialog-body">
-      <div class="dialog-heading"><div><div class="eyebrow">METODOLOGIA / IMPACTO</div><h2 id="method-title">Como ler os números</h2></div><button type="button" class="icon-button" data-close="methodDialog" aria-label="Fechar">✕</button></div>
-      <p><strong>Observação recebida</strong> indica relato submetido, não validação da realidade.</p>
-      <p><strong>Registro validado</strong> passou por curadoria, com fonte, data e limites conhecidos.</p>
-      <p><strong>Visitação total</strong> não pode ser calculada diretamente por cliques, downloads ou uso voluntário do aplicativo.</p>
-      <p><strong>Impacto positivo</strong> depende de método, linha de base, acompanhamento e evidências de resultado.</p>
-      <div class="dialog-actions"><button type="button" class="btn btn-primary" data-close="methodDialog">Entendi</button></div>
     </div>
   </dialog>
   <div id="toast" class="toast" aria-live="polite" role="status"></div>
