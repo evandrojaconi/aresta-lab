@@ -41,6 +41,8 @@ export function parseCroquiSector(file,raw){
   if(nameLine&&!current.name){current.name=clean(nameLine[1]);continue}
   const grade=/^    dificuldade:\s*(.+)$/.exec(line);
   if(grade)current.grade=clean(grade[1]).replace(/^BR_/,'').replace(/_/g,' ');
+  const description=/^    descricao:\s*(.*)$/.exec(line);
+  if(description)current.hasDescription=!/^(?:null|~)?$/i.test(clean(description[1]));
  }
  complete();
  return {file,name,mapFile,vias};
@@ -67,16 +69,37 @@ export async function fetchLapinhaCatalog(fetcher=fetch){
 }
 const button=(action,label,extra='',style='secondary')=>'<button type="button" class="'+style+' croqui-btn" data-croqui="'+action+'" '+extra+'>'+E(label)+'</button>';
 const tab=(id,title,active)=>button('tab',title,'data-tab="'+id+'" '+(active===id?'aria-current="page"':''),active===id?'primary':'secondary');
-const stat=(value,label,help)=>'<div class="croqui-metric"><strong>'+E(value)+'</strong><span>'+E(label)+'</span><small>'+E(help)+'</small></div>';
 const status=x=>({entrada:'Recebida',pronto:'Pronta',fazendo:'Em execução',aguardando:'Aguardando',concluido:'Concluída',medido:'Medido'})[x]||x;
 const nameFromFile=(file)=>file?.replace(/^setor_mapa_(\d+)\.md$/,'Setor $1')||'Setor';
 const isLapinhaTask=t=>String(t.external_key||'').startsWith('croqui:lapinha:');
 const isLapinhaContent=c=>/lapinha|rupestre/i.test([c.title,c.objective,c.source_url].filter(Boolean).join(' '))||
   String(c.source_url||'').includes(CROQUI_ID);
 const sourceUrl=v=>v?.file?'https://github.com/aresta-climb/aresta_db/blob/main/'+CROQUI_PATH+'/'+v.file:CROQUI_YAML;
-function renderCatalog(state){
+const editorLink='<a class="croqui-link" href="https://arestaclimb.com/editor" target="_blank" rel="noopener noreferrer">Abrir Editor Aresta ↗</a>';
+
+function nextMissingField(via){
+ if(!via || via.restricted)return null;
+ if(via.grade==='Não informado')return {
+  kind:'graduacao',title:'Completar a graduação',benefit:'Ajuda quem chega ao setor a escolher uma via para o seu nível e dá ao mantenedor uma referência para revisar o grau.'
+ };
+ if(via.hasDescription!==true && via.type!=='Não especificado')return {
+  kind:'descricao',title:'Adicionar uma descrição',benefit:'Uma referência do início da via ajuda quem chega à base e preserva esse beta no croqui do setor.'
+ };
+ return null;
+}
+
+function renderFieldSuggestion(via,readonly){
+ const suggestion=nextMissingField(via);
+ if(!suggestion)return '';
+ return '<div class="croqui-reference"><strong>'+suggestion.title+'</strong><p>'+suggestion.benefit+'</p>'+
+  '<div class="croqui-button-line">'+editorLink+
+  (readonly()?'':button('edit-selected','Preparar para o Editor','data-kind="'+suggestion.kind+'"','primary'))+
+  '</div></div>';
+}
+
+function renderCatalog(state,readonly){
  const cat=state.croquiCatalog;const loading=state.croquiLoading;
- if(!cat)return '<div class="croqui-empty"><h2>Explorar as vias reais da Lapinha</h2><p>O catálogo é consultado diretamente no ArestaDB. O Intelligence não substitui a curadoria e não publica alterações nesta tela.</p>'+
+ if(!cat)return '<div class="croqui-empty"><h2>Escolha um setor</h2><p>Veja as vias e os mapas do croqui oficial.</p>'+
   button('refresh',loading?'Consultando cadastro…':'Carregar setores e vias','','primary')+'</div>';
  const selected=cat.setores.find(s=>s.file===state.croquiSector)||cat.setores[0];
  const query=String(state.croquiSearch||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
@@ -95,37 +118,57 @@ function renderCatalog(state){
   '</section></div>'+
   (current?'<div class="croqui-selected"><div><span class="overline">VIA SELECIONADA</span><h3>'+E(current.name)+'</h3>'+
    '<p>'+E(current.sector)+' · '+E(current.type)+' · '+E(current.grade)+' · UID '+E(current.uid)+'</p></div>'+
-   '<div class="croqui-button-line">'+button('edit-selected','Solicitar correção','','primary')+
-   '<a class="croqui-link" href="'+E(sourceUrl(current))+'" target="_blank" rel="noopener noreferrer">Ver arquivo</a></div></div>':
+   '<div class="croqui-button-line">'+button('edit-selected','Sugerir correção')+
+   '<a class="croqui-link" href="'+E(sourceUrl(current))+'" target="_blank" rel="noopener noreferrer">Ver arquivo</a></div></div>'+renderFieldSuggestion(current,readonly):
    '<p class="croqui-empty-tiny">Selecione uma via para preparar uma atualização.</p>')+
   (cat.errors.length?'<p class="croqui-warning">'+cat.errors.length+' arquivos indisponíveis. Resultado parcial; atualize novamente.</p>':'')+
   '<p class="croqui-caution">Leitura do repositório público em '+E(new Date(cat.fetchedAt).toLocaleString('pt-BR'))+'. '+
   'Não é telemetria do aplicativo nem confirma autorização de intervenção.</p>';
 }
+function renderReviewQueue(state){
+ const info=state.editorSuggestions||{};
+ const pending=(info.records||[]).filter(record=>record.status==='aberta');
+ return '<div class="croqui-reference"><h3>Aguardando revisão</h3>'+
+  '<p>Fila geral do ArestaDB. Para comparar o antes e o depois, abra <strong>Revisar Sugestões</strong> no Editor com sua conta de mantenedor.</p>'+
+  '<div class="croqui-button-line">'+editorLink+
+   '<button type="button" class="secondary" data-action="refresh-editor-prs"'+(info.loading?' disabled':'')+'>'+
+   (info.loading?'Consultando…':'Atualizar fila')+'</button></div>'+
+  (info.error?'<p role="status">'+E(info.error)+(info.fetchedAt?' Exibindo a última consulta.':'')+'</p>':'')+
+  (info.fetchedAt?'<p class="micro">'+pending.length+' em aberto na última consulta'+
+   (info.truncated?' · consulta limitada aos 100 registros mais recentes':'')+'.</p>':'')+
+  (pending.length?'<ul>'+pending.slice(0,5).map(record=>
+   '<li><a href="https://github.com/aresta-climb/aresta_db/pull/'+E(record.number)+'" target="_blank" rel="noopener noreferrer">'+
+    E(record.title)+'</a> <small>#'+E(record.number)+'</small></li>').join('')+'</ul>':'')+
+  (pending.length>5?'<button type="button" class="secondary" data-view="processos">Ver fila em Processos</button>':'')+
+ '</div>';
+}
 function renderUpdate(state,readonly){
  const cat=state.croquiCatalog;
  const current=cat?.vias.find(v=>v.uid===state.croquiViaUid);
  const requests=(state.items||[]).filter(isLapinhaTask);
- return '<div class="croqui-two"><section class="croqui-panel"><div class="croqui-panel-head"><h2>Atualizar croqui</h2><small>Solicitação rastreável</small></div>'+
-  '<p>Escolha uma via do atlas, descreva a correção e encaminhe à curadoria. O arquivo oficial só muda após edição, revisão e incorporação no ArestaDB.</p>'+
+ const suggestion=nextMissingField(current);
+ return '<div class="croqui-two"><section class="croqui-panel"><div class="croqui-panel-head"><h2>Colaborar no croqui</h2></div>'+
+  '<p>No Editor, faça o ajuste na via e clique em <strong>Enviar Sugestão</strong>. Confirme seu e-mail com o código de seis dígitos.</p>'+editorLink+
+  (suggestion && suggestion.kind===state.croquiChangeKind?'<p><strong>'+suggestion.title+' · '+E(current.name)+'</strong><br>'+suggestion.benefit+'</p>':'')+
+  (current?'<div class="croqui-reference">'+button('copy-mcp','Copiar contexto para o Editor')+'</div>':'')+
   (!cat?button('refresh','Carregar vias','', 'primary'):
-   (readonly()?'<p class="croqui-warning">Seu perfil não tem permissão de edição neste workspace.</p>':
-    '<form id="croqui-update-form" class="croqui-form">'+
+   (readonly()?'':
+    '<details'+(current?' open':'')+'><summary>Preparar ajuste para o Editor</summary><form id="croqui-update-form" class="croqui-form">'+
       '<label>Setor / via<select name="via_uid" required><option value="">Selecionar via…</option>'+
         cat.vias.map(v=>'<option value="'+E(v.uid)+'"'+(v.uid===current?.uid?' selected':'')+'>'+E(v.sector)+' · '+E(v.name)+'</option>').join('')+'</select></label>'+
       '<label>Tipo de alteração<select name="change_kind" required>'+
-        [['graduacao','Graduação'],['descricao','Descrição ou beta'],['nome','Nome da via'],['autoria','Autoria e créditos'],['seguranca','Condição técnica / alerta'],['outro','Outro ajuste']].map(([id,name])=>'<option value="'+id+'">'+name+'</option>').join('')+'</select></label>'+
+        [['graduacao','Graduação'],['descricao','Descrição ou beta'],['nome','Nome da via'],['autoria','Autoria e créditos'],['seguranca','Condição técnica / alerta'],['outro','Outro ajuste']].map(([id,name])=>'<option value="'+id+'"'+(id===state.croquiChangeKind?' selected':'')+'>'+name+'</option>').join('')+'</select></label>'+
       '<label>O que deve ser alterado?<textarea name="change_text" minlength="12" maxlength="1400" rows="4" required placeholder="Descreva a informação atual e a correção sugerida, com contexto."></textarea></label>'+
       '<label>Fonte da correção (quando houver)<input name="evidence_url" type="url" placeholder="https://..."></label>'+
-      '<button class="primary croqui-btn" type="submit">Registrar solicitação</button></form>'))+
-  '</section><section class="croqui-panel"><div class="croqui-panel-head"><h2>Fila de alterações</h2><small>'+requests.length+' registros internos</small></div>'+
+      '<button class="primary croqui-btn" type="submit">Salvar na fila interna</button></form></details>'))+
+  '</section><section class="croqui-panel"><div class="croqui-panel-head"><h2>Curadoria</h2></div>'+
+  renderReviewQueue(state)+
+  '<details><summary>Ajustes internos da Lapinha ('+requests.length+')</summary>'+
   (requests.length?requests.slice().sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at))).slice(0,10).map(t=>
    '<button class="croqui-task" type="button" data-croqui="open-task" data-id="'+E(t.id)+'">'+
    '<span><b>'+E(t.title)+'</b><small>'+E(status(t.status))+' · '+E(t.next_action)+'</small></span><span>›</span></button>').join(''):
-   '<p class="croqui-empty-tiny">Nenhuma solicitação registrada neste workspace. As PRs externas são acompanhadas no fluxo de curadoria.</p>')+
-  '<div class="croqui-reference">'+button('copy-mcp','Copiar instrução para Editor/MCP')+
-   '<p>O Editor Aresta é desktop. O MCP roda no computador do operador (127.0.0.1); não abrimos essa porta na internet nem usamos credenciais no navegador.</p></div>'+
-  '</section></div>';
+   '<p class="croqui-empty-tiny">Nenhum ajuste preparado neste workspace.</p>')+
+  '</details></section></div>';
 }
 function renderCreate(state,readonly){
  const items=(state.items||[]).filter(t=>String(t.external_key||'').startsWith('croqui:new:'));
@@ -165,38 +208,28 @@ function renderContent(state,readonly){
 }
 export function renderCroquiWorkspace({state,readonly}){
  const active=['catalogo','atualizacoes','criar','comunicacao'].includes(state.croquiViewTab)?state.croquiViewTab:'catalogo';
- const catalog=state.croquiCatalog;
- return '<section class="section-head croqui-heading"><div><span class="overline">ARESTA / TERRITÓRIOS / EDITOR</span>'+
-   '<h1>Croquis & Vias</h1><p>Gruta da Lapinha · Atlas técnico, edição controlada e comunicação no mesmo fluxo.</p></div>'+
-   '<a href="https://arestaclimb.com/editor" target="_blank" rel="noopener noreferrer" class="croqui-link croqui-editor-link">Editor Desktop ↗</a></section>'+
-  '<div class="croqui-hero"><div><span class="overline">FONTE OFICIAL · ARESTADB</span>'+
-   '<h2>O croqui é o centro da operação.</h2>'+
-   '<p>Selecione setor e via. Registre melhorias com fonte, passe pela curadoria e acompanhe sua distribuição para quem escala.</p></div>'+
-   '<div class="croqui-hero-actions">'+button('tab','Criar croqui','data-tab="criar"','primary')+
-    button('tab','Atualizar via','data-tab="atualizacoes"')+'</div></div>'+
-  '<div class="croqui-summary">'+
-   stat(catalog?catalog.setores.length+'/'+catalog.files.length:'—','Setores carregados','ArestaDB · leitura desta sessão')+
-   stat(catalog?catalog.vias.length:'—','Vias lidas','Não representa inspeção em campo')+
-   stat((state.items||[]).filter(isLapinhaTask).length,'Solicitações registradas','Workspace privado')+
-   stat((state.contents||[]).filter(isLapinhaContent).length,'Pautas vinculadas','Por texto ou link de fonte')+'</div>'+
+ return '<section class="section-head croqui-heading"><div><h1>Croquis & Vias</h1>'+
+   '<p>Gruta da Lapinha · Lagoa Santa, MG</p></div>'+editorLink+'</section>'+
   '<div class="croqui-tabbar" role="navigation" aria-label="Ações do croqui">'+
-   tab('catalogo','Atlas de vias',active)+tab('atualizacoes','Atualizações',active)+tab('criar','Novo croqui',active)+tab('comunicacao','Comunicação',active)+'</div>'+
-  (active==='catalogo'?renderCatalog(state):active==='atualizacoes'?renderUpdate(state,readonly):
+   tab('catalogo','Vias',active)+tab('atualizacoes','Colaborar',active)+
+   '<details'+(['criar','comunicacao'].includes(active)?' open':'')+'><summary>Mais</summary>'+
+   tab('criar','Novo croqui',active)+tab('comunicacao','Comunicação',active)+
+   button('go-territory','Território')+'</details></div>'+
+  (active==='catalogo'?renderCatalog(state,readonly):active==='atualizacoes'?renderUpdate(state,readonly):
   active==='criar'?renderCreate(state,readonly):renderContent(state,readonly))+
-  '<div class="croqui-bottom"><a href="'+CROQUI_REPO+'" target="_blank" rel="noopener noreferrer">Arquivos e histórico do ArestaDB</a>'+
-  '<a href="https://github.com/aresta-climb/aresta_db/pulls" target="_blank" rel="noopener noreferrer">Curadoria · Pull Requests</a>'+
-  '<button type="button" data-croqui="go-territory">Relatórios e observações do território</button></div>';
+  '<div class="croqui-bottom"><a href="'+CROQUI_REPO+'" target="_blank" rel="noopener noreferrer">Arquivos e histórico do croqui</a></div>';
 }
 export function buildMcpInstructions(state){
  const cat=state.croquiCatalog,v=cat?.vias.find(v=>v.uid===state.croquiViaUid);
- const request=state.croquiMcpRequest;
+ const request=state.croquiMcpRequest?.uid===v?.uid?state.croquiMcpRequest:null;
+ const field=nextMissingField(v);
  return [
   'ARESTA EDITOR — CONTEXTO PARA AGENTE MCP LOCAL',
   'Território: Gruta da Lapinha (Lagoa Santa, MG)',
   'ID do croqui: '+CROQUI_ID,
   'Fonte: '+CROQUI_YAML,
   v?'Via: '+v.name+' | Setor: '+v.sector+' | UID: '+v.uid+' | arquivo: '+v.file:'Via não selecionada. Localizar manualmente no Editor antes de editar.',
-  request?'Solicitação interna: '+request.kind+' | '+request.change+' | fonte complementar: '+(request.evidence||'não informada'):'Não há correção estruturada selecionada nesta sessão.',
+  request?'Solicitação interna: '+request.kind+' | '+request.change+' | fonte complementar: '+(request.evidence||'não informada'):field?'Campo sugerido: '+field.kind+' | '+field.benefit:'Não há correção estruturada selecionada nesta sessão.',
   '1. Conectar ao servidor MCP do Editor Aresta no computador do operador (127.0.0.1:27378/mcp).',
   '2. Chamar aresta_listar_croquis e abrir o croqui correto, confirmando ID e autoria.',
   '3. Inspecionar a árvore com aresta_obter_arvore e conferir UID antes de propor qualquer alteração.',
@@ -216,10 +249,11 @@ export function installCroquiHandlers(getCtx){
    state.croquiViewTab=el.dataset.tab;render();return;
   }
   if(action==='sector'){
-   state.croquiSector=el.dataset.file;state.croquiViaUid=null;state.croquiSearch='';render();return;
+   state.croquiSector=el.dataset.file;state.croquiViaUid=null;state.croquiChangeKind='';state.croquiSearch='';render();return;
   }
-  if(action==='via'){state.croquiViaUid=el.dataset.uid;render();return;}
-  if(action==='edit-selected'){state.croquiViewTab='atualizacoes';render();return;}
+  if(action==='via'){state.croquiViaUid=el.dataset.uid;state.croquiChangeKind='';render();return;}
+  if(action==='edit-selected'){state.croquiChangeKind=el.dataset.kind||'';state.croquiViewTab='atualizacoes';render();
+   document.querySelector('#croqui-update-form [name="change_text"]')?.focus();return;}
   if(action==='go-territory'){state.view='territorio';render();return;}
   if(action==='open-task'){
    if(!(state.items||[]).some(t=>t.id===el.dataset.id))return;
@@ -231,7 +265,7 @@ export function installCroquiHandlers(getCtx){
   }
   if(action==='copy-mcp'){
    const value=buildMcpInstructions(state);
-   try{await navigator.clipboard.writeText(value);state.notice='Instrução preparada para o MCP do Editor local. Nenhuma alteração enviada.';}
+   try{await navigator.clipboard.writeText(value);state.notice='Contexto da via copiado para o Editor.';}
    catch{state.error='O navegador bloqueou a cópia. Conceda permissão de área de transferência.';}
    render();return;
   }
@@ -240,7 +274,7 @@ export function installCroquiHandlers(getCtx){
    state.croquiLoading=true;state.croquiError=null;render();
    try{
     state.croquiCatalog=await fetchLapinhaCatalog();state.croquiSector=state.croquiCatalog.setores[0]?.file;
-    state.croquiViaUid=null;state.croquiSearch='';
+    state.croquiViaUid=null;state.croquiChangeKind='';state.croquiSearch='';
     state.notice=state.croquiCatalog.errors.length?'Cadastro parcialmente carregado; verifique arquivos ausentes.':'Setores e vias consultados no ArestaDB público.';
    }catch(err){state.croquiError=String(err?.message||err);state.error='Falha ao consultar cadastro: '+state.croquiError;}
    finally{state.croquiLoading=false;render();}
@@ -250,6 +284,7 @@ export function installCroquiHandlers(getCtx){
   if(e.target?.name!=='via_uid')return;
   const {state}=getCtx();
   if(state.croquiCatalog?.vias.some(x=>x.uid===e.target.value))state.croquiViaUid=e.target.value;
+  state.croquiChangeKind='';
  });
  document.addEventListener('input',e=>{
   if(e.target?.id!=='croqui-search')return;
@@ -292,8 +327,11 @@ export function installCroquiHandlers(getCtx){
     const {error}=await db.from('crm_work_items').insert(payload);
     if(error)throw error;
     state.croquiViaUid=via.uid;
-    state.croquiMcpRequest={kind,change:details,evidence:source};
-    state.notice='Atualização registrada para curadoria. O ArestaDB ainda não foi alterado.';
+    state.croquiMcpRequest={uid:via.uid,kind,change:details,evidence:source};
+    const learned=nextMissingField(via);
+    state.croquiChangeKind='';
+    state.notice='Ajuste preparado para a curadoria. O próximo passo é conferir a via no Editor.'+
+     (learned?.kind===kind?' '+learned.benefit:'');
     state.croquiViewTab='atualizacoes';
    }else if(form==='croqui-create-form'){
     const name=String(fd.get('name')||'').trim(),city=String(fd.get('city')||'').trim();
