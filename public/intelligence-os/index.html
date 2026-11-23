@@ -97,16 +97,15 @@
         </section>
 
         <section id="section-territorios" class="screen" aria-labelledby="territories-title">
-          <div class="page-heading"><div><h1 id="territories-title">Territórios</h1><p>Abra um croqui para ver as tarefas de preenchimento.</p></div><button class="btn btn-primary" id="createCroquiBtn" type="button">+ Criar Croqui</button></div>
+          <div class="page-heading"><div><h1 id="territories-title">Territórios</h1><p>Escolha um pico para editar o croqui ou revisar sugestões.</p></div><button class="btn btn-primary" id="createCroquiBtn" type="button">+ Criar Croqui</button></div>
           <div class="toolbar">
             <div class="segmented" role="group" aria-label="Filtrar territórios">
               <button class="seg active" data-territory-filter="todos" aria-pressed="true">Todos</button>
               <button class="seg" data-territory-filter="documentado" aria-pressed="false">Documentados</button>
               <button class="seg" data-territory-filter="inventario" aria-pressed="false">Inventário</button>
             </div>
-            <span class="support-text">A lista mostra os picos cadastrados.</span>
           </div>
-          <p><button type="button" class="btn btn-quiet" data-navigate="manutencao">Ver sugestões de todos os picos</button></p>
+          <p class="territory-queue"><button type="button" class="text-action" data-navigate="manutencao">Ver sugestões de todos os picos ↗</button></p>
           <article class="panel detail-panel" id="localCroquis" hidden aria-labelledby="local-croquis-title">
             <h2 id="local-croquis-title">Seus rascunhos</h2>
             <p>Salvos neste navegador.</p>
@@ -184,33 +183,50 @@
 
   <dialog id="croquiDraftDialog" class="web-croqui-dialog" aria-labelledby="croqui-draft-title">
     <form id="croquiDraftForm" class="dialog-body" novalidate>
-      <div class="dialog-heading"><h2 id="croqui-draft-title">Criar croqui</h2><button type="button" class="icon-button" data-close="croquiDraftDialog" aria-label="Fechar">✕</button></div>
+      <header class="croqui-dialog-header">
+        <div class="dialog-heading"><div><h2 id="croqui-draft-title">Criar croqui</h2><p id="croqui-draft-context"></p></div><button type="button" class="icon-button" data-close="croquiDraftDialog" aria-label="Fechar">✕</button></div>
       <div class="segmented croqui-editor-nav" role="group" aria-label="Ferramentas do croqui">
         <button type="button" class="seg active" data-croqui-pane="dados" aria-pressed="true">Dados</button>
         <button type="button" class="seg" data-croqui-pane="imagens" aria-pressed="false">Imagens</button>
         <button type="button" class="seg" data-croqui-pane="mapas" aria-pressed="false">Mapas</button>
         <button type="button" class="seg" data-croqui-pane="betas" aria-pressed="false">Betas</button>
       </div>
-      <div data-croqui-content="dados" class="croqui-edit-fields">
+      </header>
+      <div class="croqui-dialog-body">
+      <div data-croqui-content="dados">
+        <fieldset class="croqui-edit-fields"><legend>Pico e via</legend>
         <label>Pico<input name="pico" required maxlength="100" placeholder="Nome usado no local"></label>
         <label>Cidade e estado<input name="cidade" required maxlength="100" placeholder="Ex.: Lagoa Santa, MG"></label>
         <label>Setor<input name="setor" maxlength="100"></label>
         <label>Via ou bloco<input name="via" maxlength="100"></label>
         <label>Grau<input name="grau" maxlength="30" placeholder="Ex.: 6a"></label>
+        </fieldset>
+        <fieldset class="croqui-edit-fields"><legend>Como chegar</legend>
         <label>Latitude<input name="latitude" inputmode="decimal" maxlength="24"></label>
         <label>Longitude<input name="longitude" inputmode="decimal" maxlength="24"></label>
         <label>Trilha de aproximação<input name="trilhaUrl" type="url" placeholder="Link do Wikiloc ou de outro mapa"></label>
-        <label>Instruções de acesso<textarea name="acesso" maxlength="1000"></textarea></label>
-        <label>Créditos do croqui<input name="creditos" maxlength="180"></label>
+        <label class="wide-field">Instruções de acesso<textarea name="acesso" maxlength="1000" rows="3" placeholder="Ex.: depois da porteira, siga pela trilha à esquerda"></textarea></label>
+        </fieldset>
+        <fieldset class="croqui-edit-fields"><legend>Autoria</legend>
+        <label class="wide-field">Créditos do croqui<input name="creditos" maxlength="180"></label>
+        </fieldset>
       </div>
       <div data-croqui-content="imagens" hidden>
         <label>Foto do setor<input name="arquivoFoto" type="file" accept="image/jpeg,image/png,image/webp"></label>
         <p class="footnote">Use uma foto de frente que mostre a parede. Limite de 2 MB neste protótipo.</p>
         <img id="sectorPhoto" class="croqui-preview" alt="Foto do setor carregada no rascunho" hidden>
-        <button type="button" class="btn btn-quiet" id="removeSectorPhoto" hidden>Remover foto e linha</button>
+        <div class="croqui-map-actions">
+          <button type="button" class="btn btn-primary" id="openMapFromPhoto" hidden>Desenhar na foto</button>
+          <button type="button" class="btn btn-quiet" id="removeSectorPhoto" hidden>Remover foto e linha</button>
+        </div>
       </div>
       <div data-croqui-content="mapas" hidden>
         <p>Clique na foto para marcar os pontos da linha da via, da base ao topo. Pelo teclado, use as setas e Enter.</p>
+        <div id="croquiMapEmpty" class="empty-state">
+          <strong>Carregue uma foto para desenhar a linha</strong>
+          <p>Use uma foto que mostre a base e o topo da via.</p>
+          <button type="button" class="btn btn-primary" id="openImagesFromMap">Abrir Imagens</button>
+        </div>
         <canvas id="croquiCanvas" class="croqui-preview croqui-canvas" width="720" height="460" tabindex="0" aria-label="Desenhar linha da via na foto do setor"></canvas>
         <p id="croquiCanvasStatus" class="footnote" role="status"></p>
         <button type="button" class="btn btn-quiet" id="undoCroquiPoint">Desfazer último ponto</button>
@@ -219,8 +235,12 @@
         <label>Beta da via<textarea name="beta" maxlength="1000" placeholder="O que ajuda a reconhecer o começo ou entender a linha?"></textarea></label>
         <label>Vídeo de beta<input name="betaUrl" type="url" placeholder="Link do vídeo, se houver"></label>
       </div>
-      <p id="draftError" role="alert"></p>
-      <div class="dialog-actions"><button type="button" class="btn btn-quiet" data-close="croquiDraftDialog">Cancelar</button><button type="submit" class="btn btn-primary">Salvar rascunho</button></div>
+      </div>
+      <footer class="croqui-dialog-footer">
+        <p id="draftError" role="alert"></p>
+        <p id="croquiDiscard" class="contribution-status" hidden>As alterações ainda não foram salvas. <button class="btn btn-quiet" type="button" id="discardCroquiDraft">Descartar alterações</button></p>
+        <div class="dialog-actions"><span class="footnote">O rascunho fica neste navegador.</span><button type="button" class="btn btn-quiet" data-close="croquiDraftDialog">Cancelar</button><button type="submit" class="btn btn-primary">Salvar rascunho</button></div>
+      </footer>
     </form>
   </dialog>
   <dialog id="observationDialog" aria-labelledby="observation-title">

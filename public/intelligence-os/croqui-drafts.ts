@@ -21,24 +21,32 @@ function isPoint(value: unknown): value is Point {
   return Number.isFinite(x) && Number.isFinite(y) && x>=0 && x<=1 && y>=0 && y<=1;
 }
 
+class DraftFieldError extends Error {
+  field: string;
+  constructor(message: string, field: string) {
+    super(message);
+    this.field = field;
+  }
+}
+
 export function readDraftFields(form: FormData): DraftFields {
   const fields = Object.fromEntries(textFields.map(field=>[field,String(form.get(field) || "").trim()])) as DraftFields;
-  if (!fields.pico || !fields.cidade) throw new Error("Em Dados, preencha o nome do pico e a cidade.");
+  if (!fields.pico || !fields.cidade) throw new DraftFieldError("Preencha o nome do pico e a cidade.", !fields.pico?"pico":"cidade");
   for (const field of ["betaUrl", "trilhaUrl"] as const) {
     if (!fields[field]) continue;
     let url;
-    try { url = new URL(fields[field]); } catch { throw new Error("Confira o link da trilha ou do vídeo."); }
-    if (url.protocol !== "https:") throw new Error("Use um link que comece com https://.");
+    try { url = new URL(fields[field]); } catch { throw new DraftFieldError("Confira o endereço do link.",field); }
+    if (url.protocol !== "https:") throw new DraftFieldError("Use um link que comece com https://.",field);
   }
   for (const [field,limit] of [["latitude",90],["longitude",180]] as const) {
     if (!fields[field]) continue;
     const value = fields[field].replace(",",".");
     if (!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(value) || Math.abs(Number(value))>limit) {
-      throw new Error("Em Dados, confira a latitude e a longitude.");
+      throw new DraftFieldError("Confira o valor da coordenada.",field);
     }
     fields[field] = String(Number(value));
   }
-  if (Boolean(fields.latitude)!==Boolean(fields.longitude)) throw new Error("Em Dados, informe latitude e longitude juntas.");
+  if (Boolean(fields.latitude)!==Boolean(fields.longitude)) throw new DraftFieldError("Informe latitude e longitude juntas.",!fields.latitude?"latitude":"longitude");
   return fields;
 }
 

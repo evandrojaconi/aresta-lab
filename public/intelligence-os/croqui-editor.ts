@@ -9,6 +9,10 @@ export function installDraftEditor(form: HTMLFormElement) {
   const ctx = canvas.getContext("2d");
   const status = form.querySelector<HTMLElement>("#croquiCanvasStatus")!;
   const error = form.querySelector<HTMLElement>("#draftError")!;
+  const mapEmpty = form.querySelector<HTMLElement>("#croquiMapEmpty")!;
+  const openMaps = form.querySelector<HTMLButtonElement>("#openMapFromPhoto")!;
+  const discard = form.querySelector<HTMLElement>("#croquiDiscard")!;
+  const body = form.querySelector<HTMLElement>(".croqui-dialog-body")!;
   const panes = [...form.querySelectorAll<HTMLElement>("[data-croqui-content]")];
   const switches = [...form.querySelectorAll<HTMLButtonElement>("[data-croqui-pane]")];
 
@@ -18,11 +22,21 @@ export function installDraftEditor(form: HTMLFormElement) {
   let cursor: Point | null = null;
   let loading = false;
   let version = 0;
+  let originalState = "";
+
+  function snapshot() {
+    return JSON.stringify([[...new FormData(form)].filter(([key])=>key!=="arquivoFoto"),foto,linha]);
+  }
 
   function draw() {
     photoPreview.hidden = !foto;
     remove.hidden = !foto;
     undo.disabled = !linha.length;
+    undo.hidden = !foto;
+    openMaps.hidden = !foto;
+    mapEmpty.hidden = Boolean(foto);
+    canvas.hidden = !foto;
+    status.hidden = !foto;
     status.textContent = !foto ? "Carregue a foto do setor em Imagens." :
       !image ? "Carregando a foto…" : linha.length+" "+(linha.length===1?"ponto marcado":"pontos marcados");
     if (!ctx) return;
@@ -74,6 +88,7 @@ export function installDraftEditor(form: HTMLFormElement) {
       toggle.classList.toggle("active",active);
       toggle.setAttribute("aria-pressed",String(active));
     }
+    body.scrollTop=0;
     if(name==="mapas")draw();
   }
 
@@ -117,6 +132,9 @@ export function installDraftEditor(form: HTMLFormElement) {
   }
   const clamp=(value:number)=>Math.max(0,Math.min(1,value));
   for(const toggle of switches)toggle.addEventListener("click",()=>select(toggle.dataset.croquiPane!));
+  openMaps.addEventListener("click",()=>{select("mapas");canvas.focus();});
+  form.querySelector("#openImagesFromMap")!.addEventListener("click",()=>{select("imagens");photoInput.focus();});
+  form.addEventListener("input",()=>{discard.hidden=true;error.textContent="";});
   photoInput.addEventListener("change",()=>{
     const file=photoInput.files?.[0];
     if(!file)return;
@@ -170,6 +188,15 @@ export function installDraftEditor(form: HTMLFormElement) {
         if(draft.foto){linha=(draft.linha||[]).map(point=>({...point}));void showPhoto(draft.foto);}
       }
       select("dados");
+      originalState=JSON.stringify([[...new FormData(form)].filter(([key])=>key!=="arquivoFoto"),draft?.foto||"",draft?.linha||[]]);
+    },
+    hasChanges() { return loading || snapshot()!==originalState; },
+    focusInput(name: string) {
+      const input=form.elements.namedItem(name);
+      if(input instanceof HTMLElement){
+        select(input.closest<HTMLElement>("[data-croqui-content]")?.dataset.croquiContent||"dados");
+        input.focus();
+      }
     },
     focusField(field?: string) {
       const targets: Record<string,[string,string]> = {

@@ -256,3 +256,40 @@ dialog::backdrop {background:rgba(15,24,17,.62);backdrop-filter:blur(3px)}
 .quality-stage summary small {margin-left:8px}
 .quality-task-actions {display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 @media(max-width:500px){.croqui-edit-fields {grid-template-columns:1fr}}
+
+.territory-queue {margin:0 0 12px}
+#section-territorios .page-heading {margin-bottom:16px}
+#section-territorios .toolbar {margin-bottom:10px}
+.territory-detail-heading {display:flex;gap:12px;align-items:start;justify-content:space-between;flex-wrap:wrap}
+.territory-detail-heading h3 {font-size:24px;margin:0 0 4px}
+.territory-detail-heading p {margin:0}
+.territory-more {margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+.territory-more summary {cursor:pointer;color:var(--muted);font-size:12px}
+.territory-more p {margin:10px 0}
+.territory-more dl {margin:0}
+.territory-more dt {font-weight:700}
+.territory-more dd {margin:0 0 6px}
+.web-croqui-dialog {max-height:min(88vh,760px);overflow:hidden}
+#croquiDraftForm {padding:0;display:flex;flex-direction:column;max-height:min(88vh,760px)}
+.croqui-dialog-header,.croqui-dialog-footer {flex:none;background:var(--paper);padding:16px 24px}
+.croqui-dialog-header {border-bottom:1px solid var(--line)}
+.croqui-dialog-header h2 {margin:0 0 4px}
+.croqui-dialog-header p {margin:0 0 12px}
+.croqui-dialog-header .segmented {margin:0}
+.croqui-dialog-body {overflow:auto;padding:14px 24px;overscroll-behavior:contain}
+.croqui-dialog-body fieldset {border:0;margin:0 0 12px;padding:6px 0 0;min-width:0}
+.croqui-dialog-body legend {font-weight:750;color:var(--text)}
+.croqui-dialog-body label {margin-top:8px}
+.croqui-dialog-body textarea {min-height:84px}
+.wide-field {grid-column:1/-1}
+.croqui-dialog-footer {border-top:1px solid var(--line)}
+.croqui-dialog-footer .dialog-actions {align-items:center;margin:0}
+.croqui-dialog-footer .footnote {margin:0 auto 0 0}
+#draftError:empty {display:none}
+#croquiDiscard {margin:0 0 9px}
+.croqui-map-actions {display:flex;gap:8px;flex-wrap:wrap}
+#croquiMapEmpty p {margin:5px 0 12px}
+@media(max-width:520px) {
+ .croqui-dialog-header,.croqui-dialog-footer,.croqui-dialog-body {padding-left:13px;padding-right:13px}
+ .croqui-dialog-footer .footnote {flex-basis:100%}
+}

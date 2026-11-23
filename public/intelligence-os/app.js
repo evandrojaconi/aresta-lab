@@ -133,10 +133,10 @@ function renderLocalCroquis(){
 }
 
 function openLocalCroqui(draft, territory, field){
- const form=byId("croquiDraftForm");
  editingDraft=draft||null;
  editingTerritoryId=draft?.territorioId||territory?.territorioId||"";
- byId("croqui-draft-title").textContent=editingDraft?"Editar croqui":"Criar croqui";
+ byId("croqui-draft-title").textContent=editingDraft||territory?"Editar croqui":"Criar croqui";
+ byId("croqui-draft-context").textContent=(draft||territory)?.pico||"Comece pelo pico e pelo setor.";
  draftEditor.open(draft||territory);
  byId("croquiDraftDialog").showModal();
  draftEditor.focusField(field);
@@ -229,19 +229,15 @@ function renderTerritories(){
  let t=state.territories.find(t=>t.id===state.selectedTerritory);
  if(t&&!areas.some(x=>x.id===t.id))t=areas[0];
  byId("territoryDetails").innerHTML=t?`
-  <div class="eyebrow">SOBRE O PICO</div>
-  <h3>${esc(t.name)}</h3><p>${esc(t.overview)}</p>
-  <div class="detail-meta"><span class="tag">${esc(t.region)}</span><span class="tag orange">Dados demonstrativos</span></div>
-  <div class="detail-data">
-    <div><span>STATUS DO CADASTRO</span><strong>${esc(labelStatus(t.type))}</strong></div>
-    <div><span>QUEM CUIDA DO PICO</span><strong>${esc(t.steward)}</strong></div>
-    <div><span>REGRAS DE PUBLICAÇÃO</span><strong>${esc(t.rights)}</strong></div>
-  </div>
+  <div class="territory-detail-heading"><div><h3>${esc(t.name)}</h3><p>${esc(t.region)} · ${esc(labelStatus(t.type))}</p></div>
+    <button type="button" class="btn btn-primary" data-edit-territory="${esc(t.id)}">${drafts.list().some(item=>item.territorioId===t.id)?"Continuar rascunho":"Editar croqui na web"}</button></div>
   <div class="territory-actions">
-    <button type="button" class="btn btn-primary" data-edit-territory="${esc(t.id)}">Editar croqui na web</button>
     <button type="button" class="btn btn-quiet" data-contribute="${esc(t.id)}">Sugerir correção</button>
     <button type="button" class="btn btn-quiet" data-review-territory="${esc(t.id)}">Ver sugestões deste pico</button>
   </div>
+  <details class="territory-more"><summary>Sobre o pico</summary><p>${esc(t.overview)}</p>
+    <dl><dt>Quem cuida do pico</dt><dd>${esc(t.steward)}</dd><dt>Regras de publicação</dt><dd>${esc(t.rights)}</dd></dl>
+  </details>
   <section class="territory-progress" aria-labelledby="quality-panel-title">
     <header class="quality-header">
       <h4 id="quality-panel-title">Painel de Qualidade do Croqui</h4>
@@ -369,6 +365,16 @@ function saveDecision(decision){
 }
 
 function init(){
+ const dialog=byId("croquiDraftDialog");
+ const tryCloseDraft=()=>{
+   if(draftEditor.hasChanges()){
+     byId("croquiDiscard").hidden=false;
+     byId("discardCroquiDraft").focus();
+   }else dialog.close();
+ };
+ dialog.addEventListener("cancel",event=>{event.preventDefault();tryCloseDraft();});
+ byId("discardCroquiDraft").addEventListener("click",()=>dialog.close());
+ dialog.addEventListener("close",()=>{byId("croquiDiscard").hidden=true;});
  draftEditor=installDraftEditor(byId("croquiDraftForm"));
  byId("createCroquiBtn").addEventListener("click",()=>openLocalCroqui());
  byId("croquiDraftForm").addEventListener("submit",event=>{
@@ -377,6 +383,7 @@ function init(){
      const fields=readDraftFields(new FormData(event.currentTarget));
      drafts.save({...fields,...draftEditor.media(),territorioId:editingTerritoryId},editingDraft?.id);
    } catch(error) {
+     if(error.field)draftEditor.focusInput(error.field);
      byId("draftError").textContent=error.message;
      return;
    }
@@ -422,7 +429,10 @@ function init(){
      if(draft)openLocalCroqui(draft);
    }
    const close=ev.target.closest("[data-close]");
-   if(close){const d=byId(close.dataset.close);if(d?.open)d.close();}
+   if(close){
+     const d=byId(close.dataset.close);
+     if(d?.open){if(d===dialog)tryCloseDraft();else d.close();}
+   }
  });
  $$("[data-territory-filter]").forEach(btn=>btn.addEventListener("click",()=>{
    state.territoryFilter=btn.dataset.territoryFilter;
