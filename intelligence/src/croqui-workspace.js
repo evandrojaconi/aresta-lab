@@ -21,8 +21,10 @@ export function parseCroquiIndex(raw){
 export function parseCroquiSector(file,raw){
  const body=String(raw).split(/\n---\s*\n/)[0];
  const name=clean(body.match(/^nome:\s*(.+)$/m)?.[1]||file);
+ const image=body.match(/^- caminho_imagem_mapa:\s*(imagens\/[A-Za-z0-9._/-]+\.webp)\s*$/m)?.[1]||null;
+ const mapFile=image&&!image.includes('..')?image:null;
  const pos=body.search(/^escaladas:\s*$/m);
- if(pos<0)return {file,name,vias:[],parseWarning:'Sem lista de escaladas no arquivo'};
+ if(pos<0)return {file,name,mapFile,vias:[],parseWarning:'Sem lista de escaladas no arquivo'};
  const section=body.slice(pos).split(/\r?\n/).slice(1);
  const vias=[];
  let current=null,buffer=[];
@@ -41,7 +43,7 @@ export function parseCroquiSector(file,raw){
   if(grade)current.grade=clean(grade[1]).replace(/^BR_/,'').replace(/_/g,' ');
  }
  complete();
- return {file,name,vias};
+ return {file,name,mapFile,vias};
 }
 export async function fetchLapinhaCatalog(fetcher=fetch){
  const abort=new AbortController();
@@ -83,6 +85,7 @@ function renderCatalog(state){
  return '<div class="croqui-catalog-grid"><section class="croqui-sector-list"><div class="croqui-panel-head"><h2>Setores</h2><small>'+cat.setores.length+'/'+cat.files.length+' carregados</small></div>'+
    cat.setores.map(s=>button('sector',s.name+' · '+s.vias.length,'data-file="'+E(s.file)+'" aria-pressed="'+(selected.file===s.file)+'"',selected.file===s.file?'primary':'secondary')).join('')+'</section>'+
   '<section class="croqui-via-list"><div class="croqui-panel-head"><h2>'+E(selected.name)+'</h2><a href="'+E(sourceUrl(selected))+'" target="_blank" rel="noopener noreferrer">Fonte</a></div>'+
+   (selected.mapFile?'<div class="croqui-map-preview"><img loading="lazy" src="'+E(CROQUI_ROOT+selected.mapFile)+'" alt="Mapa oficial do '+E(selected.name)+' no ArestaDB, sem edição de imagem"/><small>Imagem original publicada no ArestaDB, sem alterações. Verifique revisão e regras do local.</small></div>':'')+
    '<div class="croqui-search-wrap"><label for="croqui-search">Buscar via, grau ou UID</label><input id="croqui-search" type="search" value="'+E(state.croquiSearch||'')+'" placeholder="Ex.: Castelinho, BR_6..." autocomplete="off"></div>'+
    '<div class="croqui-via-scroll">'+(vias.length?vias.map(v=>
      '<button type="button" class="croqui-route '+(state.croquiViaUid===v.uid?'active':'')+'" data-croqui="via" data-uid="'+E(v.uid)+'">'+
@@ -186,12 +189,14 @@ export function renderCroquiWorkspace({state,readonly}){
 }
 export function buildMcpInstructions(state){
  const cat=state.croquiCatalog,v=cat?.vias.find(v=>v.uid===state.croquiViaUid);
+ const request=state.croquiMcpRequest;
  return [
   'ARESTA EDITOR — CONTEXTO PARA AGENTE MCP LOCAL',
   'Território: Gruta da Lapinha (Lagoa Santa, MG)',
   'ID do croqui: '+CROQUI_ID,
   'Fonte: '+CROQUI_YAML,
   v?'Via: '+v.name+' | Setor: '+v.sector+' | UID: '+v.uid+' | arquivo: '+v.file:'Via não selecionada. Localizar manualmente no Editor antes de editar.',
+  request?'Solicitação interna: '+request.kind+' | '+request.change+' | fonte complementar: '+(request.evidence||'não informada'):'Não há correção estruturada selecionada nesta sessão.',
   '1. Conectar ao servidor MCP do Editor Aresta no computador do operador (127.0.0.1:27378/mcp).',
   '2. Chamar aresta_listar_croquis e abrir o croqui correto, confirmando ID e autoria.',
   '3. Inspecionar a árvore com aresta_obter_arvore e conferir UID antes de propor qualquer alteração.',
@@ -241,6 +246,11 @@ export function installCroquiHandlers(getCtx){
    finally{state.croquiLoading=false;render();}
   }
  });
+ document.addEventListener('change',e=>{
+  if(e.target?.name!=='via_uid')return;
+  const {state}=getCtx();
+  if(state.croquiCatalog?.vias.some(x=>x.uid===e.target.value))state.croquiViaUid=e.target.value;
+ });
  document.addEventListener('input',e=>{
   if(e.target?.id!=='croqui-search')return;
   const {state}=getCtx();
@@ -281,6 +291,8 @@ export function installCroquiHandlers(getCtx){
      source_url:sourceUrl(via),source_kind:'manual',created_by:state.session.user.id};
     const {error}=await db.from('crm_work_items').insert(payload);
     if(error)throw error;
+    state.croquiViaUid=via.uid;
+    state.croquiMcpRequest={kind,change:details,evidence:source};
     state.notice='Atualização registrada para curadoria. O ArestaDB ainda não foi alterado.';
     state.croquiViewTab='atualizacoes';
    }else if(form==='croqui-create-form'){
