@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#151515">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>ARESTA Intelligence OS · Protótipo</title>
+  <meta name="description" content="Protótipo navegável de inteligência territorial do Aresta Climb; contém somente dados simulados.">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Ir para conteúdo</a>
+  <div class="shell" id="shell">
+    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+      <a class="brand" href="#visao-geral" aria-label="Aresta Intelligence OS - Início">
+        <span class="brand-mark" aria-hidden="true">A<span>∧</span></span>
+        <span><strong>ARESTA</strong><small>INTELLIGENCE / OS</small></span>
+      </a>
+      <div class="side-label">SISTEMA</div>
+      <nav aria-label="Áreas do sistema" class="nav">
+        <button type="button" data-section="visao-geral" class="nav-link active" aria-current="page"><span class="nav-icon">◫</span> Visão geral</button>
+        <button type="button" data-section="territorios" class="nav-link"><span class="nav-icon">⌁</span> Territórios</button>
+        <button type="button" data-section="colaboracao" class="nav-link"><span class="nav-icon">⤨</span> Colaboração <span class="nav-counter" id="navCount">3</span></button>
+        <button type="button" data-section="transparencia" class="nav-link"><span class="nav-icon">▤</span> Transparência</button>
+        <button type="button" data-section="impacto" class="nav-link"><span class="nav-icon">◎</span> Impacto</button>
+      </nav>
+      <div class="sidebar-foot">
+        <div class="status-pill"><span class="status-dot"></span> Ambiente demonstrativo</div>
+        <p>Sem conexão a serviços reais.<br>Não altera o ArestaDB ou o CRM.</p>
+        <div class="sidebar-divider"></div>
+        <small>ARESTA LAB <span>© 2026</span></small>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu" id="menuBtn" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">☰</button>
+          <div class="breadcrumbs"><span>ARESTA / INTELLIGENCE</span><strong id="breadcrumbCurrent">Visão geral</strong></div>
+        </div>
+        <div class="topbar-right">
+          <label class="search-wrapper" for="searchInput">
+            <span aria-hidden="true">⌕</span>
+            <input id="searchInput" type="search" placeholder="Buscar territórios, registros..." autocomplete="off">
+            <kbd>/</kbd>
+          </label>
+          <button class="btn btn-quiet" id="exportBtn" type="button" title="Exportar demonstração">Exportar JSON</button>
+          <span class="avatar" title="Visualização demonstrativa">DEMO</span>
+        </div>
+      </header>
+
+      <main id="main" tabindex="-1">
+        <div class="demo-strip"><span class="dot"></span><strong>Protótipo funcional</strong> · Todos os registros e indicadores exibidos são <strong>simulados</strong>. Não representam dados oficiais de pessoas, parques, federações ou projetos.</div>
+
+        <section id="section-visao-geral" class="screen active" aria-labelledby="overview-title">
+          <div class="page-heading">
+            <div><div class="eyebrow">PANORAMA / ECOSSISTEMA</div><h1 id="overview-title">Inteligência em movimento.</h1>
+              <p>Do que acontece na rocha ao conhecimento que volta para a comunidade.</p></div>
+            <button class="btn btn-primary" id="newObservationBtn" type="button">+ Contribuir</button>
+          </div>
+          <div class="hero-grid">
+            <article class="hero-card">
+              <div class="hero-noise" aria-hidden="true"></div>
+              <div class="hero-top"><span>INTELIGÊNCIA TERRITORIAL</span><span>01 / 05</span></div>
+              <h2>Conhecimento aberto.<br><em>Impacto verificável.</em></h2>
+              <p>Uma infraestrutura para conectar croquis, observações, instituições, projetos e evidências — sem comercializar o direito de escalar.</p>
+              <button class="link-light" type="button" data-navigate="territorios">Explorar territórios <span aria-hidden="true">↗</span></button>
+              <div class="contour" aria-hidden="true"></div>
+            </article>
+            <article class="territory-spotlight">
+              <div class="spotlight-label"><span class="pulse"></span> TERRITÓRIO EM FOCO</div>
+              <div class="spotlight-map" aria-hidden="true">
+                <svg viewBox="0 0 400 190" role="img"><path d="M-10 110 Q60 10 140 84 T290 68 T420 87" fill="none" stroke="#b9c2ac" stroke-width="1.8" /><path d="M-10 136 Q60 38 145 112 T290 96 T420 116" fill="none" stroke="#b9c2ac" stroke-width="1.8" /><path d="M-10 162 Q60 66 150 140 T300 124 T420 144" fill="none" stroke="#b9c2ac" stroke-width="1.8" /><path d="M-10 185 Q60 95 150 169 T310 149 T420 171" fill="none" stroke="#b9c2ac" stroke-width="1.8" /><path d="M-10 86 Q60 -13 135 55 T285 38 T420 57" fill="none" stroke="#b9c2ac" stroke-width="1.8" /><circle cx="225" cy="87" r="8" fill="#de5d36"/><circle cx="225" cy="87" r="18" fill="none" stroke="#de5d36" opacity=".35" /></svg>
+              </div>
+              <div class="spotlight-bottom"><div><small>PILOTO DE PRODUTO</small><h3>Gruta da Lapinha</h3><span>Lagoa Santa · Minas Gerais</span></div><button class="circle-arrow" data-navigate="territorios" aria-label="Abrir territórios">↗</button></div>
+            </article>
+          </div>
+          <div class="section-title-row"><h2>Visão operacional</h2><span class="mini-label">AMOSTRA SIMULADA</span></div>
+          <div class="metric-grid" id="overviewMetrics"></div>
+          <div class="split-grid">
+            <article class="panel">
+              <div class="panel-head"><div><div class="eyebrow">ATIVIDADE</div><h3>Fluxo de conhecimento</h3></div><button class="text-action" data-navigate="colaboracao">Ver colaboração ↗</button></div>
+              <div id="activityList" class="timeline"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-head"><div><div class="eyebrow">CAMADAS DO ECOSSISTEMA</div><h3>Um dado, várias aplicações</h3></div></div>
+              <div class="capability-list">
+                <div><span class="cap-icon">01</span><div><strong>Base aberta</strong><small>Documentação, autoria, croquis e versões.</small></div><span>↗</span></div>
+                <div><span class="cap-icon">02</span><div><strong>Observação comunitária</strong><small>Registros geográficos e socioambientais.</small></div><span>↗</span></div>
+                <div><span class="cap-icon">03</span><div><strong>Governança verificável</strong><small>Fontes, encaminhamentos e devolutivas.</small></div><span>↗</span></div>
+                <div><span class="cap-icon">04</span><div><strong>Impacto territorial</strong><small>Indicadores com método, limites e histórico.</small></div><span>↗</span></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="section-territorios" class="screen" aria-labelledby="territories-title">
+          <div class="page-heading"><div><div class="eyebrow">TERRITÓRIOS / ATLAS</div><h1 id="territories-title">A rede já está na rocha.</h1><p>Organize o conhecimento existente sem reivindicar o controle do território.</p></div><button id="addTerritoryBtn" type="button" class="btn btn-primary">+ Identificar território</button></div>
+          <div class="toolbar">
+            <div class="segmented" role="group" aria-label="Filtrar territórios">
+              <button class="seg active" data-territory-filter="todos" aria-pressed="true">Todos</button>
+              <button class="seg" data-territory-filter="documentado" aria-pressed="false">Documentados</button>
+              <button class="seg" data-territory-filter="inventario" aria-pressed="false">Inventário</button>
+            </div>
+            <span class="support-text">Cobertura documental ≠ uso real do local</span>
+          </div>
+          <div id="territoryCards" class="territory-grid"></div>
+          <article class="panel detail-panel" id="territoryDetails" aria-live="polite"></article>
+        </section>
+
+        <section id="section-colaboracao" class="screen" aria-labelledby="collaboration-title">
+          <div class="page-heading">
+            <div><h1 id="collaboration-title">Colaboração</h1><p>Sugestões dos escaladores e devolutivas de quem cuida do pico.</p></div>
+            <button class="btn btn-primary" type="button" data-contribute>+ Enviar sugestão</button>
+          </div>
+          <p id="contributionStatus" class="contribution-status" role="status" hidden></p>
+          <details class="panel alert-panel">
+            <summary><strong>Caixa de entrada do mantenedor</strong> <span class="tag" id="unreadCount">0 novos</span></summary>
+            <div id="alertItems"></div>
+            <details class="alert-settings">
+              <summary>Preferências de alertas de teste</summary>
+              <form id="alertPreferences">
+                <label><input type="checkbox" name="email" checked> E-mail</label>
+                <label><input type="checkbox" name="discord"> Discord</label>
+                <label>Frequência <select name="frequency"><option value="immediate">Imediata</option><option value="high">Só alta prioridade</option><option value="daily">Resumo diário</option></select></label>
+              </form>
+            </details>
+          </details>
+          <div class="toolbar"><div class="segmented" role="group" aria-label="Filtrar sugestões">
+            <button class="seg active" data-review-filter="todos" aria-pressed="true">Todas</button>
+            <button class="seg" data-review-filter="pendente" aria-pressed="false">Pendentes</button>
+            <button class="seg" data-review-filter="aprovada" aria-pressed="false">Aprovadas</button>
+            <button class="seg" data-review-filter="rejeitada" aria-pressed="false">Não incorporadas</button>
+          </div><span class="support-text">Fila de curadoria · decisões simuladas</span></div>
+          <div id="reviewItems" class="review-list"></div>
+        </section>
+
+        <section id="section-transparencia" class="screen" aria-labelledby="transparency-title">
+          <div class="page-heading"><div><div class="eyebrow">TRANSPARÊNCIA / PROJETOS</div><h1 id="transparency-title">Dinheiro público pede fonte.</h1><p>Separe autorização, captação, desembolso e execução. Sem inferir gastos a partir de projetos aprovados.</p></div></div>
+          <div class="disclosure"><strong>Política de evidências</strong><p>Nenhum valor financeiro é exibido sem documento verificável. Os registros desta tela são esquemas demonstrativos, não alegações sobre instituições reais.</p></div>
+          <div class="table-wrap"><table class="data-table"><thead><tr><th>Projeto demonstrativo</th><th>Etapa documental</th><th>Valor autorizado</th><th>Captado</th><th>Executado</th><th>Fonte</th></tr></thead><tbody id="projectsBody"></tbody></table></div>
+          <div class="panel small-panel"><h3>Regra central</h3><p>Publicação oficial ≠ pagamento realizado. Relatório autodeclarado ≠ prestação de contas aprovada. O Aresta organiza referências para controle social, mas não substitui fiscalização pública.</p></div>
+        </section>
+
+        <section id="section-impacto" class="screen" aria-labelledby="impact-title">
+          <div class="page-heading"><div><div class="eyebrow">IMPACTO / MÉTODO</div><h1 id="impact-title">Evidência antes de narrativa.</h1><p>Qualidade do conhecimento, resposta comunitária e benefício territorial.</p></div><button class="btn btn-primary" type="button" id="openMethodBtn">Como medimos ↗</button></div>
+          <div class="metric-grid" id="impactMetrics"></div>
+          <div class="split-grid">
+            <article class="panel"><div class="panel-head"><div><div class="eyebrow">MATURIDADE</div><h3>Estado das evidências</h3></div></div><div id="qualityBars"></div><p class="footnote">Percentuais calculados exclusivamente sobre a amostra simulada do protótipo.</p></article>
+            <article class="panel"><div class="panel-head"><div><div class="eyebrow">VALOR COLETIVO</div><h3>O que medir de verdade</h3></div></div>
+              <div class="principle"><span>01</span><div><strong>Correções validadas</strong><small>Tempo até decisão e publicação real.</small></div></div>
+              <div class="principle"><span>02</span><div><strong>Problemas com devolutiva</strong><small>Sem confundir registro com solução.</small></div></div>
+              <div class="principle"><span>03</span><div><strong>Curadoria local ativa</strong><small>Representatividade, autoria e continuidade.</small></div></div>
+              <div class="principle"><span>04</span><div><strong>Benefícios socioeconômicos</strong><small>Pesquisa contextualizada e baseline verificável.</small></div></div>
+            </article>
+          </div>
+        </section>
+      </main>
+      <footer class="footer"><span>ARESTA INTELLIGENCE OS / PROTÓTIPO v0.1</span><span>Ciência cidadã · Acesso responsável · Dados com proveniência</span></footer>
+    </div>
+  </div>
+
+  <dialog id="observationDialog" aria-labelledby="observation-title">
+    <form id="observationForm" class="dialog-body">
+      <div class="dialog-heading"><h2 id="observation-title" tabindex="-1">Enviar sugestão</h2><button type="button" class="icon-button" data-close="observationDialog" aria-label="Fechar">✕</button></div>
+      <div id="suggestionFields">
+        <label>Território<select id="obsTerritory" required></select></label>
+        <label>O que você quer melhorar?<select id="obsCategory" required><option value="croqui">Croqui da via</option><option value="acesso">Caminho de acesso</option><option value="ambiental">Condição ambiental</option><option value="comunidade">Memória do pico</option></select></label>
+        <div id="croquiFields">
+          <label>Campo<select id="croquiField"><option value="inicio">Referência de início da via</option><option value="tracado">Posição de uma marca no croqui</option></select></label>
+          <div id="editPosition" hidden>
+            <div class="diff-wall" aria-hidden="true"><span class="diff-marker original" style="--point:44%"></span><span class="diff-marker proposed" id="draftMarker"></span></div>
+            <label>Posição proposta no desenho<input id="obsPosition" type="range" min="20" max="80" value="55"></label>
+            <small>Desenho fictício para testar a comparação de posições.</small>
+          </div>
+        </div>
+        <p id="fieldBenefit" class="field-benefit" aria-live="polite"></p>
+        <label id="obsDescriptionLabel"><span id="descriptionLabel">Informação para o croqui</span><textarea id="obsDescription" aria-describedby="fieldBenefit" maxlength="500" required></textarea></label>
+        <div class="dialog-actions"><button type="button" class="btn btn-quiet" data-close="observationDialog">Cancelar</button><button type="submit" class="btn btn-primary">Continuar</button></div>
+      </div>
+    </form>
+    <form id="verificationForm" class="dialog-body verification" hidden>
+      <p>Use <strong>escalador@example.com</strong> e o código de teste <strong>123456</strong>. A simulação roda nesta sessão.</p>
+      <label>E-mail de teste<input type="email" value="escalador@example.com" readonly></label>
+      <label>Código de seis dígitos<input id="verificationCode" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" aria-describedby="verificationError" required></label>
+      <p id="verificationError" role="alert"></p>
+      <div class="dialog-actions"><button type="button" id="backToSuggestion" class="btn btn-quiet">Voltar</button><button type="submit" class="btn btn-primary">Confirmar envio</button></div>
+    </form>
+  </dialog>
+  <dialog id="reviewDialog" aria-labelledby="review-title">
+    <div class="dialog-body">
+      <div class="dialog-heading"><h2 id="review-title" tabindex="-1">Revisão da sugestão</h2><button type="button" class="icon-button" data-close="reviewDialog" aria-label="Fechar">✕</button></div>
+      <div id="reviewDetail"></div>
+    </div>
+  </dialog>
+  <dialog id="methodDialog" aria-labelledby="method-title">
+    <div class="dialog-body">
+      <div class="dialog-heading"><div><div class="eyebrow">METODOLOGIA / IMPACTO</div><h2 id="method-title">O que um registro comprova?</h2></div><button type="button" class="icon-button" data-close="methodDialog" aria-label="Fechar">✕</button></div>
+      <p><strong>Observação recebida</strong> indica relato submetido, não validação da realidade.</p>
+      <p><strong>Registro validado</strong> passou por curadoria, com fonte, data e limites conhecidos.</p>
+      <p><strong>Visitação total</strong> não pode ser calculada diretamente por cliques, downloads ou uso voluntário do aplicativo.</p>
+      <p><strong>Impacto positivo</strong> depende de método, linha de base, acompanhamento e evidências de resultado.</p>
+      <div class="dialog-actions"><button type="button" class="btn btn-primary" data-close="methodDialog">Entendi</button></div>
+    </div>
+  </dialog>
+  <div id="toast" class="toast" aria-live="polite" role="status"></div>
+</body>
+</html>
