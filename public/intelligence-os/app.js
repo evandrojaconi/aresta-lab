@@ -1,3 +1,5 @@
+import { createLocalDraftRepository, readDraftFields } from "./croqui-drafts.ts";
+
 /**
  * ARESTA INTELLIGENCE OS — Protótipo isolado e sem serviços externos.
  * Tudo aqui é SIMULAÇÃO. Não carregar dados financeiros ou pessoais reais.
@@ -112,6 +114,31 @@ function renderSubmissionStatus(){
  status.textContent=item?submissionStatus[item.status]+" "+(item.status==="rejeitada"?"":fieldFor(item).benefit):"";
 }
 
+const drafts = createLocalDraftRepository();
+let editingDraft = null;
+
+function renderLocalCroquis(){
+ const items=drafts.list().filter(draft=>matches([draft.pico,draft.cidade,draft.setor].join(" ")));
+ byId("localCroquis").hidden=items.length===0;
+ byId("localCroquiItems").innerHTML=items.map(draft=>
+  '<article class="review-card"><div><h3>'+esc(draft.pico)+'</h3><p>'+esc(draft.cidade)+
+  (draft.setor?' · '+esc(draft.setor):'')+'</p></div>'+
+  '<button type="button" class="btn btn-quiet" data-edit-croqui="'+esc(draft.id)+'">Editar rascunho</button></article>').join("");
+}
+
+function openLocalCroqui(draft){
+ const form=byId("croquiDraftForm");
+ form.reset();
+ byId("draftError").textContent="";
+ editingDraft=draft||null;
+ byId("croqui-draft-title").textContent=editingDraft?"Editar croqui":"Criar croqui";
+ if(editingDraft){
+  for(const field of ["pico","cidade","setor"])form.elements[field].value=editingDraft[field];
+ }
+ byId("croquiDraftDialog").showModal();
+ form.elements.pico.focus();
+}
+
 function toast(msg){
  const node=byId("toast");node.textContent=msg;node.classList.add("visible");
  clearTimeout(toast.timeout);toast.timeout=setTimeout(()=>node.classList.remove("visible"),3400);
@@ -165,6 +192,7 @@ function renderTerritoryTasks(territoryId){
  }).join("");
 }
 function renderTerritories(){
+ renderLocalCroquis();
  const areas=state.territories.filter(t=>(state.territoryFilter==="todos"||state.territoryFilter===t.type)&&matches(`${t.name} ${t.region} ${t.overview}`));
  byId("territoryCards").innerHTML=areas.length?areas.map(t=>`
   <button class="territory-card ${state.selectedTerritory===t.id?"selected":""}" data-territory="${esc(t.id)}" aria-pressed="${state.selectedTerritory===t.id}">
@@ -309,6 +337,24 @@ function saveDecision(decision){
 }
 
 function init(){
+ byId("createCroquiBtn").addEventListener("click",()=>openLocalCroqui());
+ byId("croquiDraftForm").addEventListener("submit",event=>{
+   event.preventDefault();
+   try {
+     const fields=readDraftFields(new FormData(event.currentTarget));
+     drafts.save(fields,editingDraft?.id);
+   } catch(error) {
+     byId("draftError").textContent=error.message;
+     return;
+   }
+   byId("croquiDraftDialog").close();
+   editingDraft=null;
+   byId("searchInput").value="";
+   state.search="";
+   renderTerritories();
+   byId("createCroquiBtn").focus();
+   toast("Rascunho salvo neste navegador.");
+ });
  $$("[data-section]").forEach(btn=>btn.addEventListener("click",()=>navigate(btn.dataset.section)));
  document.addEventListener("click",ev=>{
    const nav=ev.target.closest("[data-navigate]");
@@ -329,6 +375,11 @@ function init(){
    }
    const decision=ev.target.closest("[data-decision]");
    if(decision)saveDecision(decision.dataset.decision);
+   const edit=ev.target.closest("[data-edit-croqui]");
+   if(edit){
+     const draft=drafts.list().find(item=>item.id===edit.dataset.editCroqui);
+     if(draft)openLocalCroqui(draft);
+   }
    const close=ev.target.closest("[data-close]");
    if(close){const d=byId(close.dataset.close);if(d?.open)d.close();}
  });

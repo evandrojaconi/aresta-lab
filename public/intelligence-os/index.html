@@ -8,8 +8,8 @@
   <meta name="robots" content="noindex,nofollow,noarchive">
   <title>ARESTA Intelligence OS · Protótipo</title>
   <meta name="description" content="Protótipo navegável de inteligência territorial do Aresta Climb; contém somente dados simulados.">
-  <link rel="stylesheet" href="./styles.css?v=territorios-1">
-  <script type="module" src="./app.js?v=territorios-1"></script>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Ir para conteúdo</a>
@@ -97,7 +97,7 @@
         </section>
 
         <section id="section-territorios" class="screen" aria-labelledby="territories-title">
-          <div class="page-heading"><div><h1 id="territories-title">Picos de escalada</h1><p>Escolha um pico, veja o que falta no croqui e contribua com o que você conhece.</p></div><a class="btn btn-primary" href="../intelligence/?view=criar-croqui">+ Criar Croqui ↗</a></div>
+          <div class="page-heading"><div><h1 id="territories-title">Picos de escalada</h1><p>Escolha um pico, veja o que falta no croqui e contribua com o que você conhece.</p></div><button class="btn btn-primary" id="createCroquiBtn" type="button">+ Criar Croqui</button></div>
           <div class="toolbar">
             <div class="segmented" role="group" aria-label="Filtrar territórios">
               <button class="seg active" data-territory-filter="todos" aria-pressed="true">Todos</button>
@@ -107,6 +107,11 @@
             <span class="support-text">A lista mostra os picos cadastrados.</span>
           </div>
           <p><button type="button" class="btn btn-quiet" data-navigate="manutencao">Ver sugestões de todos os picos</button></p>
+          <article class="panel detail-panel" id="localCroquis" hidden aria-labelledby="local-croquis-title">
+            <h2 id="local-croquis-title">Seus rascunhos</h2>
+            <p>Salvos neste navegador.</p>
+            <div id="localCroquiItems" class="review-list"></div>
+          </article>
           <div id="territoryCards" class="territory-grid"></div>
           <article class="panel detail-panel" id="territoryDetails" aria-live="polite"></article>
         </section>
@@ -175,6 +180,17 @@
     </div>
   </div>
 
+  <dialog id="croquiDraftDialog" aria-labelledby="croqui-draft-title">
+    <form id="croquiDraftForm" class="dialog-body">
+      <div class="dialog-heading"><h2 id="croqui-draft-title">Criar croqui</h2><button type="button" class="icon-button" data-close="croquiDraftDialog" aria-label="Fechar">✕</button></div>
+      <p>Comece pelo nome do pico. Você pode completar os dados depois.</p>
+      <label>Pico<input name="pico" required maxlength="100" placeholder="Nome usado no local"></label>
+      <label>Cidade e estado<input name="cidade" required maxlength="100" placeholder="Ex.: Lagoa Santa, MG"></label>
+      <label>Primeiro setor<input name="setor" maxlength="100" placeholder="Opcional"></label>
+      <p id="draftError" role="alert"></p>
+      <div class="dialog-actions"><button type="button" class="btn btn-quiet" data-close="croquiDraftDialog">Cancelar</button><button type="submit" class="btn btn-primary">Salvar rascunho</button></div>
+    </form>
+  </dialog>
   <dialog id="observationDialog" aria-labelledby="observation-title">
     <form id="observationForm" class="dialog-body">
       <div class="dialog-heading"><h2 id="observation-title" tabindex="-1">Enviar sugestão</h2><button type="button" class="icon-button" data-close="observationDialog" aria-label="Fechar">✕</button></div>

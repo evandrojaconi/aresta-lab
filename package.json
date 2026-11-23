@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build",
+    "build": "vite build && vite build --config vite.intelligence-os.config.ts",
+    "dev:intelligence-os": "vite --config vite.intelligence-os.config.ts",
+    "build:intelligence-os": "vite build --config vite.intelligence-os.config.ts",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",

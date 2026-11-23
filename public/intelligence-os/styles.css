@@ -232,3 +232,6 @@ dialog::backdrop {background:rgba(15,24,17,.62);backdrop-filter:blur(3px)}
 .territory-progress ul { padding:0; list-style:none; }
 .territory-progress li { padding:12px 0; border-top:1px solid var(--line); display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; align-items:center; }
 .territory-progress li p { margin:4px 0 0; max-width:58ch; }
+
+#croquiDraftForm input { width:100%; padding:11px 12px; margin-top:7px; border:1px solid #d7dcd3; border-radius:9px; background:#fafbf8; color:#202824; }
+#draftError { color:#a2301a; margin-top:8px; }
