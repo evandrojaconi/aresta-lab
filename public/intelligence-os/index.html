@@ -21,11 +21,11 @@
       </a>
       <div class="side-label">SISTEMA</div>
       <nav aria-label="Áreas do sistema" class="nav">
-        <button type="button" data-section="visao-geral" class="nav-link active" aria-label="Painel" aria-current="page"><span class="nav-icon" aria-hidden="true">◫</span> Painel</button>
-        <button type="button" data-section="criar-croqui" class="nav-link" aria-label="Criar Croqui"><span class="nav-icon" aria-hidden="true">+</span> Criar Croqui</button>
-        <button type="button" data-section="manutencao" class="nav-link"><span class="nav-icon" aria-hidden="true">⤨</span> Manutenção <span class="nav-counter" id="navCount" aria-label="Sugestões aguardando revisão">3</span></button>
-        <button type="button" data-section="marketing" class="nav-link" aria-label="Marketing"><span class="nav-icon" aria-hidden="true">↗</span> Marketing</button>
-        <button type="button" data-section="configuracoes" class="nav-link" aria-label="Configurações"><span class="nav-icon" aria-hidden="true">⚙</span> Configurações</button>
+        <button type="button" data-section="visao-geral" class="nav-link active" aria-current="page"><span class="nav-icon" aria-hidden="true">◫</span> Visão geral</button>
+        <button type="button" data-section="territorios" class="nav-link"><span class="nav-icon" aria-hidden="true">⌁</span> Territórios</button>
+        <button type="button" data-section="colaboracao" class="nav-link"><span class="nav-icon" aria-hidden="true">⤨</span> Colaboração</button>
+        <button type="button" data-section="transparencia" class="nav-link"><span class="nav-icon" aria-hidden="true">▤</span> Transparência</button>
+        <button type="button" data-section="impacto" class="nav-link"><span class="nav-icon" aria-hidden="true">◎</span> Impacto</button>
       </nav>
       <div class="sidebar-foot">
         <div class="status-pill"><span class="status-dot"></span> Ambiente demonstrativo</div>
@@ -39,12 +39,12 @@
       <header class="topbar">
         <div class="topbar-left">
           <button class="mobile-menu" id="menuBtn" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">☰</button>
-          <div class="breadcrumbs"><span>ARESTA / INTELLIGENCE</span><strong id="breadcrumbCurrent">Painel</strong></div>
+          <div class="breadcrumbs"><span>ARESTA / INTELLIGENCE</span><strong id="breadcrumbCurrent">Visão geral</strong></div>
         </div>
         <div class="topbar-right">
           <label class="search-wrapper" for="searchInput">
             <span aria-hidden="true">⌕</span>
-            <input id="searchInput" type="search" placeholder="Buscar territórios, registros..." autocomplete="off">
+            <input id="searchInput" type="search" placeholder="Buscar picos ou sugestões..." autocomplete="off">
             <kbd>/</kbd>
           </label>
           <span class="avatar" title="Visualização demonstrativa">DEMO</span>
@@ -81,7 +81,7 @@
           <div class="metric-grid" id="overviewMetrics"></div>
           <div class="split-grid">
             <article class="panel">
-              <div class="panel-head"><div><div class="eyebrow">ATIVIDADE</div><h3>Sugestões recentes</h3></div><button class="text-action" data-navigate="manutencao">Ver manutenção ↗</button></div>
+              <div class="panel-head"><div><div class="eyebrow">ATIVIDADE</div><h3>Sugestões recentes</h3></div><button class="text-action" data-navigate="manutencao">Ver sugestões ↗</button></div>
               <div id="activityList" class="timeline"></div>
             </article>
             <article class="panel">
@@ -97,7 +97,7 @@
         </section>
 
         <section id="section-territorios" class="screen" aria-labelledby="territories-title">
-          <div class="page-heading"><div><h1 id="territories-title">Picos de escalada</h1><p>Escolha um pico para ver o que já foi registrado e sugerir uma atualização.</p></div><button id="addTerritoryBtn" type="button" class="btn btn-primary">+ Sugerir um pico</button></div>
+          <div class="page-heading"><div><h1 id="territories-title">Picos de escalada</h1><p>Escolha um pico, veja o que falta no croqui e contribua com o que você conhece.</p></div><a class="btn btn-primary" href="../intelligence/?view=criar-croqui">+ Criar Croqui ↗</a></div>
           <div class="toolbar">
             <div class="segmented" role="group" aria-label="Filtrar territórios">
               <button class="seg active" data-territory-filter="todos" aria-pressed="true">Todos</button>
@@ -106,17 +106,17 @@
             </div>
             <span class="support-text">A lista mostra os picos cadastrados.</span>
           </div>
-          <p><button type="button" class="btn btn-quiet" data-navigate="manutencao">Voltar para sugestões</button></p>
+          <p><button type="button" class="btn btn-quiet" data-navigate="manutencao">Ver sugestões de todos os picos</button></p>
           <div id="territoryCards" class="territory-grid"></div>
           <article class="panel detail-panel" id="territoryDetails" aria-live="polite"></article>
         </section>
 
         <section id="section-manutencao" class="screen" aria-labelledby="collaboration-title">
           <div class="page-heading">
-            <div><h1 id="collaboration-title">Manutenção</h1><p>Confira o que mudou nos croquis, nos acessos e nos setores.</p></div>
+            <div><h1 id="collaboration-title">Sugestões de croqui</h1><p id="reviewScope">Todos os picos</p></div>
             <button class="btn btn-primary" type="button" data-contribute>+ Enviar sugestão</button>
           </div>
-          <div class="toolbar" aria-label="Áreas de manutenção"><div class="segmented"><button type="button" class="seg active" aria-current="page" disabled>Sugestões</button><button type="button" class="seg" data-navigate="territorios">Picos</button></div></div>
+          <p><button type="button" class="btn btn-quiet" data-navigate="territorios">Voltar aos picos</button></p>
           <p id="contributionStatus" class="contribution-status" role="status" hidden></p>
           <details class="panel alert-panel">
             <summary><strong>Sugestões para revisar</strong> <span class="tag" id="unreadCount">0 novos</span></summary>
@@ -133,27 +133,22 @@
         </section>
 
         <section id="section-transparencia" class="screen" aria-labelledby="transparency-title">
-          <div class="page-heading"><div><h1 id="transparency-title">Projetos e recursos</h1><p>Veja em que etapa está cada projeto e quais documentos sustentam os valores.</p></div></div>
+          <div class="page-heading"><div><h1 id="transparency-title">Relatórios</h1><p>Veja em que etapa está cada projeto e quais documentos sustentam os valores.</p></div></div>
           <div class="disclosure"><strong>Documentos dos projetos</strong><p>Os projetos aqui são exemplos. Valores precisam de uma fonte que possa ser consultada.</p></div>
           <div class="table-wrap"><table class="data-table"><thead><tr><th>Projeto demonstrativo</th><th>Etapa documental</th><th>Valor autorizado</th><th>Captado</th><th>Executado</th><th>Fonte</th></tr></thead><tbody id="projectsBody"></tbody></table></div>
           <div class="panel small-panel"><h3>Como ler as etapas</h3><p>Autorização, pagamento e prestação de contas são etapas diferentes. Cada uma precisa do seu próprio documento.</p></div>
         </section>
 
-        <section id="section-criar-croqui" class="screen" aria-labelledby="create-title">
-          <div class="page-heading"><div><h1 id="create-title">Criar Croqui</h1><p>Comece pelo nome do pico, onde ele fica e quem pode confirmar as informações.</p></div></div>
+        <section id="section-colaboracao" class="screen" aria-labelledby="community-title">
+          <div class="page-heading"><div><h1 id="community-title">Colaboração</h1><p>Eventos, comunicados e ações em conjunto da comunidade.</p></div></div>
           <article class="panel">
-            <h2>Preparar um novo croqui</h2>
-            <p>Use o formulário do Intelligence para registrar o pedido. O desenho e a criação do croqui acontecem no Editor Aresta.</p>
-            <p><a class="btn btn-primary" href="../intelligence/?view=criar-croqui">Abrir formulário de criação ↗</a></p>
+            <h2>Agenda e comunicados</h2>
+            <p>Este espaço é para divulgar ações do pico, mutirões e avisos da comunidade. O cadastro é reservado aos mantenedores oficiais.</p>
           </article>
         </section>
-        <section id="section-marketing" class="screen" aria-labelledby="marketing-title">
-          <div class="page-heading"><div><h1 id="marketing-title">Marketing</h1><p>Planeje pautas, revise materiais e acompanhe o que saiu.</p></div></div>
-          <article class="panel">
-            <h2>Seu espaço de trabalho</h2>
-            <p>Entre no Intelligence para abrir o painel de Marketing do seu workspace.</p>
-            <p><a class="btn btn-primary" href="../intelligence/?view=marketing">Abrir painel de Marketing ↗</a></p>
-          </article>
+        <section id="section-impacto" class="screen" aria-labelledby="impact-title">
+          <div class="page-heading"><div><h1 id="impact-title">Impacto</h1><p>Acompanhe o que a comunidade já ajudou a conferir nos croquis.</p></div></div>
+          <div class="metric-grid" id="territoryProgress"></div>
         </section>
         <section id="section-configuracoes" class="screen" aria-labelledby="settings-title">
           <div class="page-heading"><div><h1 id="settings-title">Configurações</h1><p>Escolha como receber avisos e acesse as opções da sua conta.</p></div></div>
@@ -187,7 +182,7 @@
         <label>Território<select id="obsTerritory" required></select></label>
         <label>O que você quer melhorar?<select id="obsCategory" required><option value="croqui">Croqui da via</option><option value="acesso">Caminho de acesso</option><option value="ambiental">Condição ambiental</option><option value="comunidade">Memória do pico</option></select></label>
         <div id="croquiFields">
-          <label>Campo<select id="croquiField"><option value="inicio">Onde a via começa</option><option value="tracado">Posição da marca no croqui</option></select></label>
+          <label>Campo<select id="croquiField"><option value="inicio">Onde a via começa</option><option value="tracado">Posição da marca no croqui</option><option value="foto">Foto do setor</option><option value="localizacao">Localização do setor ou bloco</option><option value="trilha">Trilha de aproximação</option></select></label>
           <div id="editPosition" hidden>
             <div class="diff-wall" aria-hidden="true"><span class="diff-marker original" style="--point:44%"></span><span class="diff-marker proposed" id="draftMarker"></span></div>
             <label>Posição proposta no desenho<input id="obsPosition" type="range" min="20" max="80" value="55"></label>

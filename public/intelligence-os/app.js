@@ -36,7 +36,7 @@ const DEMO = Object.freeze({
 });
 const state = {
   section:"visao-geral", territoryFilter:"todos", reviewFilter:"todos",
-  alerts:[], lastSubmission:null, activeReview:null, draft:null, diffMode:"sobrepor",
+  alerts:[], lastSubmission:null, activeReview:null, draft:null, diffMode:"sobrepor", reviewTerritory:null,
   search:"", selectedTerritory:"lapinha",
   territories:structuredClone(DEMO.territories),
   reviews:structuredClone(DEMO.reviews),
@@ -54,6 +54,9 @@ const matches=q=>String(q||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").t
 const countStatus=status=>state.reviews.filter(r=>r.status===status).length;
 
 const fields = {
+ foto:{label:"Foto do setor", benefit:"Uma foto nítida, de frente e com a parede inteira ajuda a reconhecer o setor e dá uma boa base para desenhar as linhas.", before:"Sem foto atual do setor no exemplo.", placeholder:"Identifique o setor e descreva a foto que você fez. Inclua uma referência de teste, se tiver."},
+ localizacao:{label:"Localização do setor ou bloco", benefit:"Coordenadas colhidas no local ajudam a encontrar o setor ou bloco no mapa.", before:"Sem coordenadas conferidas no exemplo.", placeholder:"Indique o setor ou bloco e uma latitude e longitude fictícias."},
+ trilha:{label:"Trilha de aproximação", benefit:"Um traçado de GPS ajuda a seguir a aproximação indicada e a encontrar a parede.", before:"Sem trilha de aproximação no exemplo.", placeholder:"Indique de onde sai a trilha e onde chega. Use um link de teste do Wikiloc, se tiver."},
  inicio:{label:"Onde a via começa", benefit:"Uma fenda, um bloco ou outro ponto visível ajuda a achar o começo da via na parede.", before:"Início sem referência no croqui demonstrativo."},
  tracado:{label:"Posição da marca no croqui", benefit:"A marca no lugar certo ajuda a reconhecer a via na foto e a conferir o que mudou.", before:"Marca na posição original do desenho."},
  acesso:{label:"Caminho de acesso", benefit:"Dizer onde a trilha vira ajuda a próxima pessoa a chegar pelo caminho indicado.", before:"Acesso sem a atualização proposta."},
@@ -75,9 +78,11 @@ function triage(item){
 }
 
 function renderAlerts(){
- const unread=state.alerts.filter(alert=>alert.status==="novo").length;
+ const alerts=state.alerts.filter(alert=>!state.reviewTerritory||
+   state.reviews.some(item=>item.id===alert.id&&item.territoryId===state.reviewTerritory));
+ const unread=alerts.filter(alert=>alert.status==="novo").length;
  byId("unreadCount").textContent=unread+" "+(unread===1?"novo":"novos");
- byId("alertItems").innerHTML=state.alerts.length?state.alerts.map(alert=>{
+ byId("alertItems").innerHTML=alerts.length?alerts.map(alert=>{
    const status={novo:"Novo",lido:"Lido",encerrado:"Encerrado"}[alert.status];
    const item=state.reviews.find(review=>review.id===alert.id);
    return '<article class="alert-entry"><div><strong>'+esc(item.title)+'</strong> <span class="tag">'+status+'</span>'+
@@ -113,15 +118,16 @@ function toast(msg){
 }
 function navigate(section,updateHash=true){
  const sections={
-   "visao-geral":"Painel","criar-croqui":"Criar Croqui",manutencao:"Manutenção",
-   territorios:"Picos",marketing:"Marketing",configuracoes:"Configurações",transparencia:"Projetos e recursos"
+   "visao-geral":"Visão geral",territorios:"Territórios",manutencao:"Sugestões de croqui",
+   colaboracao:"Colaboração",transparencia:"Transparência",impacto:"Impacto",configuracoes:"Configurações"
  };
- if(section==="colaboracao"||section==="impacto")section="manutencao";
+ if(section==="criar-croqui")section="territorios";
+ if(section==="marketing")section="colaboracao";
  if(!Object.hasOwn(sections,section))section="visao-geral";
  state.section=section;
  $$(".screen").forEach(el=>el.classList.toggle("active",el.id===`section-${section}`));
  $$(".nav-link").forEach(el=>{
-   const on=el.dataset.section===(section==="territorios"?"manutencao":section==="transparencia"?"configuracoes":section); el.classList.toggle("active",on);
+   const on=el.dataset.section===(section==="manutencao"?"territorios":section); el.classList.toggle("active",on);
    if(on)el.setAttribute("aria-current","page"); else el.removeAttribute("aria-current");
  });
  byId("breadcrumbCurrent").textContent=sections[section];
@@ -147,6 +153,17 @@ function renderOverview(){
   <div><p><strong>${esc(r.title)}</strong> · ${esc(territoryName(r.territoryId))}</p>
   <small>${esc(labelStatus(r.status))} · ${esc(dateBR(r.date))} · Fonte simulada</small></div></div>`).join("");
 }
+function renderTerritoryTasks(territoryId){
+ return ["foto","localizacao","trilha"].map(field=>{
+   const proposals=state.reviews.filter(item=>item.territoryId===territoryId&&item.field===field);
+   const done=proposals.some(item=>item.status==="aprovada");
+   const waiting=proposals.some(item=>item.status==="pendente");
+   return '<li><div><strong>'+esc(fields[field].label)+'</strong><p>'+esc(fields[field].benefit)+'</p></div>'+
+    (done||waiting?'<span class="tag '+(done?'green':'orange')+'">'+(done?'Conferido no teste':'Aguardando revisão')+'</span>':
+     '<button type="button" class="btn btn-quiet" data-contribute="'+esc(territoryId)+'" data-field="'+field+'">Sugerir '+({foto:'foto',localizacao:'localização',trilha:'trilha'}[field])+'</button>')+
+    '</li>';
+ }).join("");
+}
 function renderTerritories(){
  const areas=state.territories.filter(t=>(state.territoryFilter==="todos"||state.territoryFilter===t.type)&&matches(`${t.name} ${t.region} ${t.overview}`));
  byId("territoryCards").innerHTML=areas.length?areas.map(t=>`
@@ -163,12 +180,21 @@ function renderTerritories(){
     <div><span>STATUS DO CADASTRO</span><strong>${esc(labelStatus(t.type))}</strong></div>
     <div><span>QUEM CUIDA DO PICO</span><strong>${esc(t.steward)}</strong></div>
     <div><span>REGRAS DE PUBLICAÇÃO</span><strong>${esc(t.rights)}</strong></div>
-  </div><button type="button" class="btn btn-quiet" data-contribute="${esc(t.id)}">Sugerir uma mudança</button>
+  </div>
+  <div class="territory-actions">
+    <button type="button" class="btn btn-primary" data-contribute="${esc(t.id)}">Atualizar croqui</button>
+    <button type="button" class="btn btn-quiet" data-review-territory="${esc(t.id)}">Ver sugestões deste pico</button>
+  </div>
+  <section class="territory-progress" aria-label="O que conferir no pico">
+    <h4>O que conferir no pico</h4>
+    <p>Dados de teste. Escolha um item para simular uma contribuição.</p>
+    <ul>${renderTerritoryTasks(t.id)}</ul>
+  </section>
   `:`<p>Nenhum território selecionado.</p>`;
 }
 function renderReviews(){
- byId("navCount").textContent=countStatus("pendente");
- const list=state.reviews.filter(r=>(state.reviewFilter==="todos"||r.status===state.reviewFilter)&&matches(`${r.title} ${r.description} ${territoryName(r.territoryId)} ${r.category}`));
+ byId("reviewScope").textContent=state.reviewTerritory?territoryName(state.reviewTerritory):"Todos os picos";
+ const list=state.reviews.filter(r=>(!state.reviewTerritory||r.territoryId===state.reviewTerritory)&&(state.reviewFilter==="todos"||r.status===state.reviewFilter)&&matches(`${r.title} ${r.description} ${territoryName(r.territoryId)} ${r.category}`));
  byId("reviewItems").innerHTML=list.length?list.map(r=>`
    <article class="review-card">
       <div class="review-content"><span class="tag ${r.status==="aprovada"?"green":r.status==="rejeitada"?"":"orange"}">${esc(labelStatus(r.status))}</span>
@@ -185,6 +211,9 @@ function renderProjects(){
 }
 function render(){
  renderOverview();renderTerritories();renderReviews();renderProjects();renderAlerts();renderSubmissionStatus();
+ byId("territoryProgress").innerHTML=state.territories.map(territory=>metric(territory.name,
+   state.reviews.filter(item=>item.territoryId===territory.id&&item.status==="aprovada").length,
+   "Sugestões aprovadas no teste")).join("");
 }
 function renderSuggestionFields(){
  const category=byId("obsCategory").value;
@@ -195,7 +224,7 @@ function renderSuggestionFields(){
  byId("draftMarker").style.setProperty("--point",byId("obsPosition").value+"%");
  byId("fieldBenefit").textContent=field.benefit;
  byId("descriptionLabel").textContent=moving?"Motivo da correção":field.label;
- byId("obsDescription").placeholder=moving?"Ex.: no croqui, a marca ficou à direita da fenda.":"Conte o que viu e, se tiver, inclua a fonte.";
+ byId("obsDescription").placeholder=field.placeholder||(moving?"Ex.: no croqui, a marca ficou à direita da fenda.":"Conte o que viu e, se tiver, inclua a fonte.");
  byId("obsDescription").setCustomValidity("");
 }
 
@@ -208,9 +237,10 @@ function showVerification(visible){
  else byId("obsCategory").focus();
 }
 
-function openContribution(territoryId){
+function openContribution(territoryId,field){
  byId("observationForm").reset();
- byId("obsTerritory").value=territoryId||state.selectedTerritory;
+ byId("obsTerritory").value=territoryId||state.reviewTerritory||state.selectedTerritory;
+ if(field)byId("croquiField").value=field;
  state.draft=null;
  renderSuggestionFields();
  byId("observationDialog").showModal();
@@ -225,7 +255,8 @@ function openReview(id){
    alert.status="lido";
    const status=byId("alertItems").querySelector('[data-alert-status="'+id+'"]');
    if(status)status.textContent="Lido";
-   const unread=state.alerts.filter(entry=>entry.status==="novo").length;
+   const unread=state.alerts.filter(entry=>entry.status==="novo"&&(!state.reviewTerritory||
+     state.reviews.some(review=>review.id===entry.id&&review.territoryId===state.reviewTerritory))).length;
    byId("unreadCount").textContent=unread+" "+(unread===1?"novo":"novos");
  }
  state.activeReview=id;
@@ -280,11 +311,14 @@ function saveDecision(decision){
 function init(){
  $$("[data-section]").forEach(btn=>btn.addEventListener("click",()=>navigate(btn.dataset.section)));
  document.addEventListener("click",ev=>{
-   const nav=ev.target.closest("[data-navigate]");if(nav)navigate(nav.dataset.navigate);
+   const nav=ev.target.closest("[data-navigate]");
+   if(nav){if(nav.dataset.navigate==="manutencao")state.reviewTerritory=null;navigate(nav.dataset.navigate);}
+   const scoped=ev.target.closest("[data-review-territory]");
+   if(scoped){state.reviewTerritory=scoped.dataset.reviewTerritory;navigate("manutencao");}
    const card=ev.target.closest("[data-territory]");
    if(card){state.selectedTerritory=card.dataset.territory;renderTerritories();}
    const contribute=ev.target.closest("[data-contribute]");
-   if(contribute)openContribution(contribute.dataset.contribute);
+   if(contribute)openContribution(contribute.dataset.contribute,contribute.dataset.field);
    const review=ev.target.closest("[data-open-review]");
    if(review)openReview(review.dataset.openReview);
    const mode=ev.target.closest("[data-diff-mode]");
@@ -321,7 +355,6 @@ function init(){
  const obsTerritory=byId("obsTerritory");
  obsTerritory.innerHTML=state.territories.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join("");
  byId("newObservationBtn").addEventListener("click",()=>openContribution());
- byId("addTerritoryBtn").addEventListener("click",()=>toast("O cadastro de novos picos ainda não está disponível neste teste."));
  for(const id of ["obsCategory","croquiField","obsPosition"])
    byId(id).addEventListener(id==="obsPosition"?"input":"change",renderSuggestionFields);
  byId("obsDescription").addEventListener("input",()=>byId("obsDescription").setCustomValidity(""));
@@ -364,6 +397,7 @@ function init(){
      notifyMaintainer(item);
      state.lastSubmission=item.id;
    }else state.lastSubmission=duplicate.id;
+   state.reviewTerritory=draft.territoryId;
    state.draft=null;
    byId("observationDialog").close();
    byId("searchInput").value="";
