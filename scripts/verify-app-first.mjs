@@ -91,7 +91,10 @@ const verifyRelative=(content,sourceFile)=>{
   const href=m[1];
   if(!href||href.startsWith("#")||/^(?:https?:|mailto:|tel:|data:)/.test(href))continue;
   const targetFile=href.split(/[?#]/)[0]; if(!targetFile)continue;
-  let full=normalize(join(basedir,targetFile));
+  const labPrefix="/"+(process.env.GITHUB_REPOSITORY?.split("/").at(-1)||"aresta-lab")+"/v2/";
+  let full=targetFile.startsWith(labPrefix)?
+    normalize(join(resolve(".output/public/v2"),targetFile.slice(labPrefix.length))):
+    normalize(join(basedir,targetFile));
   if(!full.startsWith(resolve(".output/public/v2/"))) {errors.push(sourceFile+" escapou da V2: "+href);continue;}
   if(!extname(full))full=join(full,"index.html");
   if(!existsSync(full))errors.push(sourceFile+" tem rota inexistente: "+href);
