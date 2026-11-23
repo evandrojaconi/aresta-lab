@@ -141,8 +141,10 @@ export function renderTerritoryDashboard({state,readonly=()=>true}){
   button('Mostrar todos','all')+'</div>'+
   renderProductCards(records,selected)+
   '<div class="territory-actions">'+
-  '<a href="https://arestaclimb.com/editor" target="_blank" rel="noopener noreferrer">Abrir Editor · cadastro e revisão de vias</a>'+
-  '<a href="https://github.com/aresta-climb/aresta_db/pulls" target="_blank" rel="noopener noreferrer">Consultar contribuições no ArestaDB</a></div>'+
+  button('Croquis e vias','open-croquis','data-tab="catalogo"')+
+  button('Atualizar croqui','open-croquis','data-tab="atualizacoes"')+
+  button('Criar croqui','open-croquis','data-tab="criar"')+
+  button('Comunicação local','open-croquis','data-tab="comunicacao"')+'</div>'+
   '</section>'+
   '<section class="territory-records">'+renderEvidenceList(records,selected)+renderEntryForm(readonly,selected)+'</section>'+
   '<section class="territory-governance"><div class="territory-title"><div><h2>Cooperação e responsabilidades</h2><p>Proposta para articulação — não são autorizações ou termos firmados.</p></div></div>'+
@@ -156,6 +158,11 @@ export function installTerritoryHandlers(getCtx){
   const btn=event.target.closest('[data-territory]');if(!btn)return;
   const {db,state,readonly,loadData,render}=getCtx();
   const action=btn.dataset.territory;
+  if(action==='open-croquis'){
+   const tab=btn.dataset.tab;
+   if(!['catalogo','atualizacoes','criar','comunicacao'].includes(tab))return;
+   state.croquiViewTab=tab;state.view='croquis';render();return;
+  }
   if(action==='filter'){
    const v=btn.dataset.type;
    if(!PRODUCTS.some(p=>p.id===v))return;
