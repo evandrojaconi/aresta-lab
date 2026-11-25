@@ -127,7 +127,9 @@ if(!original.includes("Menos caça à informação.")||!original.includes('id="c
  errors.push("V2 premium não foi preservada integralmente em /visao/");
 if(!project.includes("O Aresta começa na escalada.")||
    !project.includes("aresta-editor-painel-qualidade-real-2026-11-20.webp")||
-   !project.includes('href="../visao/"'))errors.push("Página do projeto não integrou os conteúdos existentes");
+   !project.includes('href="../manifesto/"')||
+   !project.includes('href="../impacto/"')||
+   !project.includes('href="../transparencia/"'))errors.push("Página do projeto perdeu conexões entre as visões e conteúdo existente");
 if(!mergedCss.includes(".journal-grid")||!mergedCss.includes(".pathway-grid")||
    !mergedCss.includes("@media(max-width:720px)"))errors.push("Camadas editoriais não são responsivas");
 for(const [part,label] of [
@@ -155,6 +157,58 @@ const verifyRelative=(content,sourceFile)=>{
 verifyRelative(home,".output/public/v2/index.html");
 verifyRelative(project,".output/public/v2/projeto/index.html");
 verifyRelative(original,".output/public/v2/visao/index.html");
+
+// V3.4: conferir tradução fiel da DIREÇÃO do guia em caminhos que não fabricam provas.
+const territoryCss=readFileSync(join(dir,"territorio-v4.css"),"utf8");
+for(const [id,label] of [
+ ['id="territorio"',"narrativa territorial"],
+ ['id="oportunidades"',"oportunidades"],
+ ['id="pesquisa"',"ciência cidadã"],
+ ['id="impacto"',"método de impacto"],
+ ['id="codigo"',"código/autoria"]
+])if(!html.includes(id)||!home.includes(id))errors.push("V3.4 sem seção: "+label);
+if(!html.includes("25+") && !html.includes("1.000Usuários")){} else errors.push("Métricas não verificadas entraram na home");
+for(const label of ["EM DESENVOLVIMENTO / VISÃO","VISÃO FUTURA","MÉTODO PROPOSTO","Não apresentamos indicadores"]){
+ if(!html.includes(label))errors.push("Falta aviso de status V4: "+label);
+}
+if(!html.includes('href="territorio-v4.css"')||!home.includes('href="app-first/territorio-v4.css"'))
+ errors.push("Estilo de território não está carregado nas duas entradas");
+for(const color of ["#14332D","#07372E","#0A4D3E","#CBDCC7","#D9AD62"]){
+ if(territoryCss.includes(color))errors.push("Paleta verde/dourada V4 foi incorporada: "+color);
+}
+if(!territoryCss.includes("@media(max-width:720px)"))
+ errors.push("V3.4 não especifica responsividade em celular");
+const themePages=["manifesto","impacto","transparencia"];
+for(const name of themePages){
+ const f=".output/public/v2/"+name+"/index.html";
+ if(!existsSync(f)){errors.push("Página V4 ausente "+name);continue;}
+ const content=readFileSync(f,"utf8");
+ if(!content.includes("Feito pela comunidade. Aberto para o mundo.")||
+    !content.includes('noindex,nofollow')||
+    !content.includes("/app-first/style.css")||
+    !content.includes("/app-first/territorio-v4.css"))
+  errors.push("Assinatura, rastreabilidade ou design incorretos em "+name);
+ verifyRelative(content,f);
+}
+const articles=JSON.parse(readFileSync("lab-v2/app-first/territorio-v4-content.json","utf8")).essays;
+const proposalIndex=".output/public/v2/propostas/index.html";
+if(articles.length!==6||!existsSync(proposalIndex))errors.push("Catálogo de propostas V4 não foi produzido");
+else{
+ const listing=readFileSync(proposalIndex,"utf8");
+ if(!listing.includes("não notícias publicadas"))errors.push("Propostas parecem notícias lançadas");
+ verifyRelative(listing,proposalIndex);
+ for(const article of articles){
+  const file=".output/public/v2/propostas/"+article.slug+"/index.html";
+  if(!existsSync(file)){errors.push("Proposta ausente "+article.slug);continue;}
+  const page=readFileSync(file,"utf8");
+  if(!page.includes("PROPOSTA EDITORIAL EM REVISÃO")||!page.includes("noindex,nofollow"))
+   errors.push("Falta aviso não publicado: "+article.slug);
+  verifyRelative(page,file);
+ }
+}
+const blogNew=readFileSync(".output/public/v2/blog/index.html","utf8");
+if(!blogNew.includes("CONTEÚDO EM REVISÃO")||!blogNew.includes("/propostas/"))
+ errors.push("Diário não distingue propostas editoriais das matérias publicadas");
 
 if(errors.length){console.error(errors.join("\n"));process.exit(1);}
 console.log("App First QA OK: telas reais, responsividade, escada de conteúdo e rotas internas.");

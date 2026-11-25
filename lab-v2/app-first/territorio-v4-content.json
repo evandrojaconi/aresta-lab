@@ -1,0 +1,345 @@
+{
+  "version": "V3.4 · Direção editorial e estrutura Território V4 · paleta V3.1 preservada",
+  "source": "ARESTA_COPY_COMPLETA_E_STYLE_V4.pdf (28 páginas), enviado pelo responsável do Aresta",
+  "signature": "Feito pela comunidade. Aberto para o mundo.",
+  "pages": [
+    {
+      "slug": "manifesto",
+      "eyebrow": "MANIFESTO · UMA IDEIA PARA MUITOS TERRITÓRIOS",
+      "title": "O território é o centro. O resto se conecta.",
+      "lead": "Não queremos colocar uma empresa acima das montanhas. Queremos que o conhecimento produzido por quem as conhece possa gerar oportunidades e voltar à preservação.",
+      "sections": [
+        {
+          "heading": "Uma comunidade não começa no cadastro",
+          "paragraphs": [
+            "O Aresta nasceu de um comportamento que já existe. Escaladores observam, exploram, documentam, conversam, ajudam, corrigem croquis, transmitem conhecimento e criam histórias sobre lugares. O aplicativo organiza parte disso — mas o fundamento é anterior à tecnologia.",
+            "A comunidade já existe nas vias, nos setores, nos encontros e nas relações com moradores. O Aresta não precisa se declarar proprietário dessa rede. Pode desenvolver ferramentas que facilitem a circulação responsável do conhecimento e preservem autoria, contexto e memória."
+          ]
+        },
+        {
+          "quote": "O território não existe para sustentar a plataforma. A plataforma existe para servir ao território."
+        },
+        {
+          "heading": "O que muda quando as informações se conectam?",
+          "paragraphs": [
+            "Uma fotografia pode documentar uma condição. Uma observação pode gerar uma conversa. Uma conversa pode revelar um mutirão. Uma visita pode mostrar a necessidade de um serviço local. Uma pesquisa pode produzir um dado útil para o gestor. Recursos mobilizados podem apoiar uma ação — e documentação rastreável pode permitir avaliar o que aconteceu."
+          ]
+        },
+        {
+          "heading": "Escalada como porta de entrada",
+          "paragraphs": [
+            "A primeira expressão concreta é o aplicativo Aresta Climb: croquis interativos, vias, setores e informações offline. O Editor Aresta organiza o trabalho de documentação. Clima contextualizado, fauna, flora, alertas, oportunidades, pesquisa e relatórios de impacto representam frentes de evolução, não funcionalidades completas disponíveis hoje."
+          ]
+        },
+        {
+          "heading": "Oportunidade sem apropriação",
+          "paragraphs": [
+            "A proposta econômica é aproximar capacidades e necessidades: produtores locais que buscam diversificar renda, visitantes que precisam de apoio, pesquisadores que desejam compreender uma paisagem e organizações que podem apoiar soluções. Esse encontro não deve privatizar conhecimento comunitário essencial, impor visitação a áreas frágeis nem ignorar os direitos de quem vive no território."
+          ]
+        },
+        {
+          "heading": "Autonomia e responsabilidade",
+          "paragraphs": [
+            "O projeto pode colaborar com clubes, federações, universidades, negócios e instituições públicas mantendo autonomia. Essa escolha exige respeito a licenças, créditos, processos verificáveis e transparência proporcional aos recursos e responsabilidades efetivamente assumidos."
+          ]
+        },
+        {
+          "heading": "Uma hipótese que pode viajar pelo mundo",
+          "paragraphs": [
+            "A escalada é o primeiro campo de aplicação porque gera experiência territorial. O mecanismo poderia ser investigado em outras comunidades que conhecem rios, florestas, trilhas, áreas rurais ou costas. Em cada lugar, necessidades e limites sociais, culturais e ecológicos são diferentes.",
+            "Conhecer. Conectar. Agir. Demonstrar. Preservar."
+          ]
+        }
+      ],
+      "notice": "Manifesto editorial de visão. Não comprova impactos produzidos, contratos, direitos territoriais ou funcionalidades futuras."
+    },
+    {
+      "slug": "impacto",
+      "eyebrow": "IMPACTO · MÉTODO EM CONSTRUÇÃO",
+      "title": "Impacto não se declara. Se demonstra.",
+      "lead": "Cada observação pode iniciar uma ação. Cada ação precisa deixar evidências. Cada resultado deve poder ser examinado, corrigido e acompanhado.",
+      "sections": [
+        {
+          "heading": "Da informação ao retorno territorial",
+          "paragraphs": [
+            "Método público proposto, pensado para evoluir a partir do uso real e da participação de pessoas e instituições locais."
+          ],
+          "steps": [
+            [
+              "01 · REGISTRAR",
+              "Observação, data, fonte, local e evidência."
+            ],
+            [
+              "02 · INTERPRETAR",
+              "Contexto, prioridade, diferentes perspectivas e limites."
+            ],
+            [
+              "03 · MOBILIZAR",
+              "Responsáveis, participantes, parceiros e recursos."
+            ],
+            [
+              "04 · REALIZAR",
+              "Entrega documentada e recursos efetivamente utilizados."
+            ],
+            [
+              "05 · VERIFICAR",
+              "Resultados, acompanhamento e correções posteriores."
+            ]
+          ]
+        },
+        {
+          "heading": "O que realmente deve ser medido?",
+          "paragraphs": [
+            "Conhecimento: novos registros úteis, revisões documentadas e cobertura, com origem e versão.",
+            "Participação: contribuidores e retorno, com consentimento e dados agregados.",
+            "Mobilização: ações propostas e concluídas, responsáveis e participantes.",
+            "Recursos: orçamento, captação, recebimento e despesa registrados separadamente.",
+            "Ambiente: resíduos, áreas acompanhadas ou mudanças observadas com metodologia técnica.",
+            "Benefício local: serviços contratados ou renda apurada com autorização e documentação."
+          ]
+        },
+        {
+          "heading": "O que não pode faltar",
+          "paragraphs": [
+            "Fonte e data de cada afirmação; registro do que não foi observado; comparação entre antes e depois; proteção de dados pessoais e ambientais; separação entre participação, entrega e impacto causal."
+          ]
+        },
+        {
+          "heading": "Uma história exemplificativa",
+          "paragraphs": [
+            "Uma trilha sofre erosão. Uma foto datada gera conversa com responsáveis pela área, planejamento de intervenção adequada, ação autorizada, registro de recursos e monitoramento posterior. A foto do mutirão prova que uma atividade ocorreu, mas não é suficiente para comprovar recuperação do ecossistema."
+          ]
+        },
+        {
+          "heading": "Referências metodológicas",
+          "paragraphs": [
+            "ISO 14031:2021: diretrizes para avaliação de desempenho ambiental. Michael Goodchild (2007): contribuições voluntárias de informação geográfica requerem contexto e métodos de qualidade."
+          ]
+        }
+      ],
+      "notice": "Estrutura e indicadores propostos. Não são relatórios de impacto concluídos nem série histórica auditada."
+    },
+    {
+      "slug": "transparencia",
+      "eyebrow": "TRANSPARÊNCIA · EVIDÊNCIAS E COMPROMISSOS",
+      "title": "O que existe. O que está aberto. O que falta demonstrar.",
+      "lead": "A diferença entre projeto, meta, dado publicado e resultado comprovado precisa ficar visível.",
+      "sections": [
+        {
+          "heading": "Sem confundir promessa com evidência",
+          "paragraphs": [
+            "O aplicativo mobile está disponível para iOS e Android, com croquis e navegação offline. O Editor desktop é uma ferramenta beta de criação e documentação de croquis. Código, documentos e licenças devem ser conferidos nas fontes oficiais e nos repositórios.",
+            "Observações ambientais integradas, clima contextualizado, alertas e relatórios automáticos de impacto são propostas de evolução, não serviços atualmente demonstrados nesta página.",
+            "Números de usuários e croquis precisam de definição, período e fonte agregada atualizados antes de aparecer como resultados oficiais. Nenhum número foi preenchido apenas para decorar a landing."
+          ]
+        },
+        {
+          "heading": "Da origem à consequência",
+          "steps": [
+            [
+              "01 · ORIGEM",
+              "Quem contribuiu? Autor, fonte, natureza da contribuição, termos e restrições."
+            ],
+            [
+              "02 · EXECUÇÃO",
+              "O que aconteceu? Data, responsáveis, documentos, recursos e alterações."
+            ],
+            [
+              "03 · CONSEQUÊNCIA",
+              "O que mudou? Evidências, indicadores, limites e revisão posterior."
+            ]
+          ]
+        },
+        {
+          "heading": "Transparência também exige saber o que não expor",
+          "paragraphs": [
+            "Coordenadas de espécies ameaçadas e de acessos frágeis, dados pessoais e informações culturais sensíveis demandam proteção. Ser aberto não significa publicar tudo indiscriminadamente."
+          ]
+        },
+        {
+          "heading": "Licenças e autoria",
+          "paragraphs": [
+            "Código, metadados e materiais têm condições jurídicas distintas; contribuição não significa renúncia à autoria. As licenças aplicáveis devem ser consultadas nas fontes e repositórios oficiais."
+          ]
+        },
+        {
+          "heading": "Auditar é contribuir",
+          "paragraphs": [
+            "Encontrou uma informação que precisa de correção? Indique a fonte e o contexto. Revisões, versões e limitações fazem parte do conhecimento confiável."
+          ]
+        }
+      ],
+      "notice": "Painel editorial de transparência no laboratório. Não substitui auditoria, demonstrações financeiras nem bases operacionais ainda não publicadas."
+    }
+  ],
+  "essays": [
+    {
+      "slug": "territorio-nao-e-produto",
+      "tag": "VISÃO",
+      "reading": "7 min",
+      "title": "O território não é um produto. É o ponto de partida.",
+      "subtitle": "Da escalada à infraestrutura de oportunidades: por que a preservação organiza a tese do Aresta.",
+      "sections": [
+        [
+          "Escalada é a porta de entrada, não o limite da ideia",
+          "Um croqui organiza informação prática antes da escalada. Mas cada registro também guarda memória, contexto e conhecimento sobre um lugar real.",
+          "A hipótese central é que contribuições voluntárias, quando contextualizadas e bem documentadas, podem apoiar colaboração e preservação territorial. O aplicativo existe; os resultados dessa hipótese ainda precisam ser demonstrados."
+        ],
+        [
+          "O território é a referência",
+          "A plataforma não se torna proprietária de uma montanha por organizar informações. A referência são as pessoas, a paisagem e as regras socioambientais aplicáveis.",
+          "Ampliar visitação pode ser oportuno em um lugar e prejudicial em outro. A decisão depende de evidência, contexto e das pessoas responsáveis."
+        ],
+        [
+          "Uma economia que começa pela pergunta certa",
+          "Uma propriedade rural pode buscar diversificar renda, escaladores podem precisar de hospedagem e pesquisadores podem querer compreender uma paisagem. Conectar essas possibilidades é uma hipótese, não uma transação garantida."
+        ],
+        [
+          "O teste não é somente o número de usuários",
+          "O valor futuro também precisará ser medido por conhecimento útil, participação local, ações documentadas e benefícios verificáveis. Alcance inicial não comprova impacto."
+        ]
+      ]
+    },
+    {
+      "slug": "agricultor-escalador-pesquisa",
+      "tag": "OPORTUNIDADES",
+      "reading": "6 min",
+      "title": "Um agricultor, um escalador e uma nova possibilidade.",
+      "subtitle": "Turismo rural, macaúba, ciência e serviços: oportunidades complementares, com preservação em primeiro lugar.",
+      "sections": [
+        [
+          "O mesmo território, necessidades diferentes",
+          "Imagine uma propriedade próxima a uma área de escalada. O proprietário conhece trilhas e vegetação, escaladores necessitam de serviços, e uma instituição pode ter interesse em pesquisa. Essas demandas podem conversar — desde que haja consentimento e benefício local."
+        ],
+        [
+          "Turismo responsável pode diversificar renda",
+          "Campings pequenos, refeições e serviços de apoio podem ser úteis, mas dependem de regras locais, recursos hídricos, resíduos, capacidade de visitação e viabilidade comercial. Cadastrar uma atividade turística não equivale a obter todas as permissões."
+        ],
+        [
+          "Bioeconomia precisa de viabilidade",
+          "A macaúba tem usos industriais estudados. Produtos derivados exigem formulação, testes, mercado, custo e avaliação ambiental. O Aresta pode facilitar aproximações, sem dizer ao produtor qual negócio deve abrir."
+        ],
+        [
+          "A pesquisa também pode gerar retorno",
+          "Observações ambientais e projetos de pesquisa podem aproximar instituições e moradores, respeitando dados, consentimento, direitos e repartição de benefícios quando aplicável."
+        ],
+        [
+          "Uma mesma terra, diferentes possibilidades",
+          "Turismo, pesquisa, produção e conservação nem sempre são compatíveis. Cada território exige sua própria decisão."
+        ]
+      ]
+    },
+    {
+      "slug": "informacao-territorial-tempo-real",
+      "tag": "PRODUTO · VISÃO",
+      "reading": "6 min",
+      "title": "Informação territorial em tempo real: o que isso deveria significar?",
+      "subtitle": "Clima, acesso, boulder, via, parede, avisos e ambiente — sem confundir previsão com observação.",
+      "sections": [
+        [
+          "Quatro perguntas antes de escalar",
+          "Ao escolher um pico, a pessoa precisa saber qual é o lugar, quais condições estão previstas, o que alguém observou recentemente e o que é permitido ou recomendável ali. Hoje o catálogo e os croquis respondem parte dessas perguntas."
+        ],
+        [
+          "O que significa tempo real?",
+          "Um alerta oficial pode exigir atenção imediata. Uma previsão muda por hora. Uma foto de trilha pode ter semanas. Cada registro deveria trazer origem, data da observação, atualização, natureza da evidência e limitações."
+        ],
+        [
+          "Boulder, via, parede — e próximos",
+          "Uma futura experiência poderia combinar tipo de escalada, proximidade, meteorologia, acesso e relatos locais. Previsão não equivale a medição de campo, e informação digital não substitui avaliação presencial de segurança."
+        ],
+        [
+          "O ambiente também comunica",
+          "Fauna, flora, erosão, resíduos e fogo podem contribuir para alertas e ações. Dados de espécies ameaçadas ou áreas frágeis podem exigir restrição de precisão ou de divulgação."
+        ],
+        [
+          "Informação que convoca",
+          "Um relato sobre resíduos em uma trilha poderia mobilizar uma ação autorizada e documentada. Isso é um exemplo de desenvolvimento futuro, não um fluxo implementado e auditado hoje."
+        ]
+      ]
+    },
+    {
+      "slug": "comunidade-autonomia-confianca",
+      "tag": "COMUNIDADE",
+      "reading": "6 min",
+      "title": "A comunidade já conhece o território. A tecnologia precisa aprender a escutá-la.",
+      "subtitle": "Autonomia, autoria e conhecimento voluntário sem transformar reputação em verdade.",
+      "sections": [
+        [
+          "Não criar o comportamento. Reduzir o atrito",
+          "Antes do Aresta já havia croquis, conversas sobre acesso, manutenção de trilhas e histórias transmitidas entre escaladores. O Editor e uma base organizada procuram diminuir o custo de compartilhar informações."
+        ],
+        [
+          "Reconhecimento e evidência",
+          "Conquistas têm autoria e história. Popularidade não substitui registro verificável. Uma correção deve incluir fonte e contexto sem apagar quem conquistou ou registrou antes."
+        ],
+        [
+          "Uma rede que fortalece autonomia",
+          "O Aresta não pretende substituir clubes, federações ou moradores. Pode apoiar pessoas e instituições que escolham colaborar, respeitando dados sensíveis, direitos e responsabilidade sobre publicações."
+        ],
+        [
+          "O conhecimento melhora quando pode ser revisto",
+          "Observações individuais podem estar incorretas. Decisões técnicas ou de acesso podem exigir diálogo com proprietários, comunidade local e órgãos responsáveis. É a verificabilidade — não a infalibilidade — que fortalece a confiança."
+        ]
+      ]
+    },
+    {
+      "slug": "impacto-e-transparencia",
+      "tag": "IMPACTO",
+      "reading": "7 min",
+      "title": "Transparência não é um selo. É a capacidade de seguir uma ação até o resultado.",
+      "subtitle": "Como conectar observações, mobilização, gastos e resultados com limites claros.",
+      "sections": [
+        [
+          "Um relatório começa antes da ação",
+          "Uma foto de mutirão demonstra atividade, mas não o antes, os recursos ou os efeitos duradouros. O registro deveria começar na observação do problema, sua fonte, localização adequada e prioridade."
+        ],
+        [
+          "Rastrear recursos sem confundir categorias",
+          "Orçamento previsto, verba autorizada, montante captado, valor recebido e despesa paga são coisas diferentes. Transparência exige fontes e distinção entre esses estados."
+        ],
+        [
+          "Resultados verificáveis",
+          "Recolher resíduos é uma entrega concreta. Demonstrar recuperação ecológica pede acompanhamento, indicadores apropriados e método comparável. Ausência de dados não é resultado positivo."
+        ],
+        [
+          "Ciência cidadã exige método",
+          "Imagens, relatos e históricos podem apoiar pesquisa se tiverem metadados, qualidade e autorização. Contribuição voluntária não substitui método científico."
+        ],
+        [
+          "Transparência com cuidado",
+          "Não se deve expor dados pessoais, propriedades sensíveis ou localização de biodiversidade ameaçada em nome da abertura."
+        ],
+        [
+          "Documentar incertezas",
+          "Um relatório precisa informar o que não foi medido e como cada afirmação foi construída. Este é um método proposto, não um conjunto de impactos ambientais já comprovados."
+        ]
+      ]
+    },
+    {
+      "slug": "croqui-e-memoria",
+      "tag": "PRODUTO",
+      "reading": "5 min",
+      "title": "Um croqui não é só o desenho da via. É memória de um território.",
+      "subtitle": "Editor Aresta, histórico de conquista, fontes, revisões e informação técnica acessível.",
+      "sections": [
+        [
+          "Da foto à informação estruturada",
+          "O croqui ajuda a reconhecer a linha de uma via. Para quem a conquistou, também guarda trabalho e história. O Editor Aresta organiza imagens, linhas e dados técnicos para revisão e publicação."
+        ],
+        [
+          "Autoria não é barreira à colaboração",
+          "Respeitar a pessoa responsável significa reconhecer créditos, contexto e direitos. Observações posteriores podem aprimorar informações, sem apagar versões anteriores."
+        ],
+        [
+          "Por que isso importa para o território?",
+          "Informações claras podem apoiar planejamento de visitas e comunicação de cuidados locais. Mas não substituem formação técnica, avaliação presencial da rocha nem regras de acesso."
+        ],
+        [
+          "Preservar a memória",
+          "Preservar uma via também pode significar preservar a história de quem a abriu e de quem continua cuidando do lugar."
+        ]
+      ]
+    }
+  ]
+}
