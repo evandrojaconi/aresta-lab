@@ -115,7 +115,7 @@ for(const [value,label] of [
  ['<h1>Conheça o território.<br/><em>Conecte possibilidades.</em></h1>',"mensagem territorial na abertura"],
  ['class="hero-art"',"composição de duas colunas com telas do aplicativo"],
  ['class="flow-grid"',"fluxo territorial do HTML V4"],
- ['class="stats-grid"',"faixa de recursos sem indicadores inventados"],
+ ['class="feature-links-grid"',"faixa de recursos sem indicadores inventados"],
  ['id="aplicativo"',"app como primeira utilidade"],
  ['id="territorio"',"visão territorial"],
  ['id="comunidade"',"contribuição e comunidade"],
