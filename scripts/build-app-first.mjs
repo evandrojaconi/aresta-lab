@@ -49,7 +49,7 @@ const original=readFileSync(join(src,"index.html"),"utf8");
 const start="<!-- BLOG_FEATURED_START -->",end="<!-- BLOG_FEATURED_END -->";
 if(original.split(start).length!==2||original.split(end).length!==2)throw Error("Espaço editorial dinâmico ausente");
 const enriched=original.replace(new RegExp(start+"[\\s\\S]*?"+end),card);
-if(!enriched.includes('name="robots" content="noindex,nofollow"')||!enriched.includes("Escalada e croquis."))
+if(!enriched.includes('name="robots" content="noindex,nofollow"')||!enriched.includes("<h1>Feito pela comunidade.<br><em>Aberto para o mundo.</em></h1>"))
  throw Error("Home App First não é uma prévia rastreável");
 mkdirSync(target,{recursive:true});
 writeFileSync(join(target,"index.html"),enriched);
