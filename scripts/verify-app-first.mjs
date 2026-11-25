@@ -170,9 +170,9 @@ if(!existsSync(institutionalFile)) {
  if(institutionalLinks.length!==1||institutionalLinks[0].index<home.indexOf('<footer class="footer">'))
   errors.push("A apresentação deve ser acessível por um único link discreto no rodapé");
  if(!institutional.includes('name="robots" content="noindex,nofollow"')||
-    !institutional.includes('id="presentationButton"')||
-    [...institutional.matchAll(/<section class="scene\b/g)].length!==12)
-  errors.push("A apresentação perdeu a proteção contra indexação ou as 12 seções interativas");
+    !institutional.includes("Conversar sobre parceria")||
+    /Atlas estratégico|Aresta Intelligence|mapas de empatia/i.test(institutional))
+  errors.push("A apresentação precisa ser pública e conter apenas informações institucionais");
  verifyRelative(institutional.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g,""),institutionalFile);
 }
 verifyRelative(project,".output/public/v2/projeto/index.html");
