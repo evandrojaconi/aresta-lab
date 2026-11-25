@@ -311,3 +311,5 @@ console.log("Aresta Lab V2 publicada no artefato:", base, "Artigos:", posts.leng
 await import("./unify-v2-pages.mjs");
 // Página experimental voltada ao escalador; V2 atual permanece intacta.
 await import("./build-app-first.mjs");
+// Novas rotas de território, impacto e transparência e propostas editoriais de revisão.
+await import("./build-territorio-v4.mjs");
