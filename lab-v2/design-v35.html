@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="pt-BR"><head>
 <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Aresta Climb — Feito pela comunidade. Aberto para o mundo. | Escalada e croquis offline</title>
-<meta content="Feito pela comunidade. Aberto para o mundo. Aresta Climb é um aplicativo de escalada com croquis interativos, picos, vias e acesso offline, conectado às histórias e pessoas da rocha." name="description"/>
+<title>Aresta Climb | Aplicativo offline e croquis interativos de escalada</title>
+<meta content="Aresta Climb é um aplicativo offline de escalada em rocha, nascido em Belo Horizonte. Explore picos, consulte croquis interativos e baixe guias para usar sem sinal." name="description"/>
 <meta content="#171c19" name="theme-color"/><meta content="light" name="color-scheme"/><meta name="robots" content="noindex,nofollow"/>
 <meta content="website" property="og:type"/><meta content="Aresta Climb" property="og:site_name"/>
-<meta content="Feito pela comunidade. Aberto para o mundo." property="og:title"/><meta content="Feito pela comunidade. Aberto para o mundo. Conheça o app de escalada, os croquis e a visão de conhecimento territorial." property="og:description"/>
+<meta content="Feito pela comunidade. Aberto para o mundo." property="og:title"/><meta content="Aplicativo offline para escalada em rocha. Explore picos e consulte croquis interativos, mesmo sem sinal." property="og:description"/>
 <meta content="pt_BR" property="og:locale"/><meta content="https://evandrojaconi.github.io/aresta-lab/v2/" property="og:url"/>
 <link href="/aresta-lab/v2/assets/logo_app.png" rel="icon"/><style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap');
@@ -90,13 +90,6 @@
 .section h3{ text-wrap:balance }
 .app-demo{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:clamp(18px,5vw,65px);margin:1rem auto 2rem}
 .demo-stage{display:grid;place-items:center;padding:1.5rem;background:#efe2d6;border-radius:18px;perspective:950px}
-.demo-phone{width:min(100%,310px);padding:1rem;border:6px solid #151515;border-radius:25px;background:#201d1c;color:#faf3ee;box-shadow:8px 18px 25px #1b120f44;transform:rotateY(-8deg) rotateX(3deg)}
-.demo-phone-top{padding:.35rem 0 .8rem;color:#ffb59d;font-weight:800}
-.demo-phone details{margin:.45rem 0;border:1px solid #67534c;border-radius:8px}
-.demo-phone summary{padding:.6rem;cursor:pointer;font-weight:700}
-.demo-phone details div,.demo-via p{padding:0 .65rem .6rem}
-.demo-phone p{margin:.3rem 0;color:#f4e9e3}
-.demo-example{border-left:3px solid #ed8968;padding-left:.5rem}
 #visao{background:linear-gradient(#211715e8,#211715ed),url('/aresta-lab/v2/assets/aresta-rocha-fundo-original.webp') center/cover;color:#fff6ee}
 #visao .section-head{margin-inline:auto;text-align:center}
 #visao .section-head p{color:#f6dfd3}
@@ -106,12 +99,11 @@
 #pesquisa .tile{border-color:#dfc7bb;background:#fff8f2;color:#271b18}
 #comunidade .icon{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:9px;background:#f4ded3;color:#873823}
 footer.footer{background:#111;color:#f5ece5}
-@media(max-width:700px){.hero h1{font-size:clamp(1.28rem,7.1vw,2.5rem)}.app-demo{grid-template-columns:1fr}.demo-phone{transform:none}}
-@media(prefers-reduced-motion:reduce){.demo-phone{transform:none}}
+@media(max-width:700px){.hero h1{font-size:clamp(1.28rem,7.1vw,2.5rem)}.app-demo{grid-template-columns:1fr}}
 
 /* Paleta editorial e escala tipográfica da landing. */
-body{font-size:12px;line-height:1.5;background:var(--paper)}
-p,li,summary,.tile p,.flow-item p,.feature-panel p,.section-head p,.prose p,.prose li,.hero .wrap>div:first-child>p,.demo-phone p{font-size:12px;line-height:1.5;letter-spacing:normal}
+body{font-size:14px;line-height:1.5;background:var(--paper)}
+p,li,summary,.tile p,.flow-item p,.feature-panel p,.section-head p,.prose p,.prose li,.hero .wrap>div:first-child>p,.app-features span{font-size:14px;line-height:1.5;letter-spacing:normal}
 small,.hero small,.eyebrow,.hero .wrap>div:first-child>.eyebrow,.tile .num,.footer-bottom{font-size:11px;line-height:1.4;letter-spacing:.015em}
 .hero .wrap>div:first-child>.eyebrow{text-transform:none;font-weight:600;color:#eee9df;margin-bottom:10px}
 .hero h1,.section h1,.section h2,.section h3{letter-spacing:-.015em;line-height:1.14}
@@ -121,7 +113,8 @@ small,.hero small,.eyebrow,.hero .wrap>div:first-child>.eyebrow,.tile .num,.foot
 .section h3,.app-demo-copy h3{font-size:clamp(16px,1.8vw,23px)}
 .hero .wrap>div:first-child>p{max-width:55ch;color:#eee9df}
 .hero::before{background:linear-gradient(90deg,#151612 0%,#151612f5 46%,#151612b8 100%),url("/aresta-lab/v2/assets/aresta-rocha-fundo-original.webp") center/cover}
-.hero h1,.hero h1 em{color:#fff}
+.hero h1{color:#fff}
+.hero h1 em{color:#f78f76}
 .hero h1 em{font-style:normal}
 .hero::after{display:none}
 .hero .wrap{min-height:0}
@@ -138,13 +131,23 @@ small,.hero small,.eyebrow,.hero .wrap>div:first-child>.eyebrow,.tile .num,.foot
 #territorio,#oportunidades,#pesquisa,#aberto,.section-sage,.section-cream{background:var(--cream);color:var(--ink)}
 #pesquisa .tile,.tile,.tile.warm,.feature-panel,.notice{background:var(--paper);border-color:var(--line);color:var(--ink)}
 .demo-stage{background:var(--cream)}
-.demo-phone{background:#151612;border-color:#242521}
-.demo-example{border-left-color:#63a8d6}
-.demo-phone .demo-success{border-left:2px solid #10bf98;padding-left:.55rem}
 #comunidade .icon{background:var(--cream);color:var(--orange)}
 footer.footer{background:#111;color:#eee9df}
 footer.footer a,footer.footer p,footer.footer .footer-bottom{color:#eee9df}
 @media(max-width:700px){.hero h1{font-size:clamp(22px,6.8vw,36px)}.hero::before{background:linear-gradient(#151612f2,#151612e8),url("/aresta-lab/v2/assets/aresta-rocha-fundo-original.webp") center/cover}}
+
+.app-features{list-style:none;padding:0;margin:1rem 0 0}
+.app-features li{padding:.75rem 0;border-top:1px solid var(--line)}
+.app-features strong,.app-features span{display:block}
+.app-features span{color:var(--muted)}
+.official-app{margin:0;gap:12px;background:linear-gradient(145deg,#fff,var(--cream));border:1px solid var(--line)}
+.official-app img{display:block;width:min(100%,240px);height:auto;border-radius:12px;box-shadow:0 16px 28px #1516122c}
+.official-app figcaption{font-size:12px;color:var(--muted)}
+#aplicativo,#comunidade,#impacto{background:linear-gradient(180deg,#fff,var(--paper))}
+#visao{background:#151612;border-block:6px solid var(--line)}
+#visao .flow-item{background:#242521}
+#territorio,#oportunidades,#pesquisa,#aberto{background:linear-gradient(180deg,var(--paper),var(--cream))}
+#pesquisa .tile{background:#fff}
 </style>
 
 <meta content="Aresta Climb V4 - arquivo HTML independente" name="generator"/></head><body><a class="skip" href="#/home?section=conteudo">Pular para o conteúdo</a><header class="site-header"><nav aria-label="Navegação principal" class="wrap nav">
@@ -164,31 +167,34 @@ footer.footer a,footer.footer p,footer.footer .footer-bottom{color:#eee9df}
 <section class="hero" id="inicio"><div class="wrap"><div>
 <p class="eyebrow">Feito pela comunidade. Aberto para o mundo.</p>
 <h1>Conheça o território.<br/><em>Conecte possibilidades.</em></h1>
-<p>O Aresta começa na escalada e cresce com quem conhece cada lugar. Reunimos croquis, observações e experiências para compartilhar conhecimento, colaborar e criar oportunidades de preservação.</p>
-<p>Com pesquisa de campo, escuta da comunidade e consulta a fontes, documentamos a história dos picos e identificamos questões de acesso e preservação que merecem investigação.</p>
+<p>O Aresta nasceu na comunidade da escalada de Belo Horizonte e cresce com quem conhece cada lugar. Reunimos croquis, observações e experiências para compartilhar conhecimento, colaborar e criar oportunidades de preservação.</p>
 <div class="hero-actions"><a class="button light" href="https://www.arestaclimb.com/app">Baixar o app de escalada ↗</a><a class="button ghost" href="/aresta-lab/v2/croquis/">Croquis Web ↗</a><a class="button ghost" href="#/home?section=visao">Entenda a visão ↓</a></div>
-<p><small>Croquis interativos · acesso offline · autoria respeitada · tecnologia aberta</small></p>
+<p><small>Aplicativo offline · croquis interativos</small></p>
 
 </div><div aria-label="Telas reais do aplicativo Aresta" class="hero-art">
-<img alt="Tela real de um pico do aplicativo Aresta" class="rock-image" src="/aresta-lab/v2/assets/app/pedra-grande.png"/>
-<img alt="Tela real de descoberta de locais de escalada no Aresta" class="rock-image" src="/aresta-lab/v2/assets/app/explorar-locais.png"/>
-<img alt="Tela real de croqui interativo de escalada" class="rock-image" src="/aresta-lab/v2/assets/app/croqui-interativo.png"/>
+<img alt="Tela do Setor Família I no Aresta Climb" class="rock-image" src="/aresta-lab/v2/assets/app-source/setor.webp"/>
+<img alt="Tela real de descoberta de locais de escalada no Aresta" class="rock-image" src="/aresta-lab/v2/assets/app-source/explorar.webp"/>
+<img alt="Tela real de croqui interativo de escalada" class="rock-image" src="/aresta-lab/v2/assets/app-source/croqui.webp"/>
 
 </div></div></section>
 <section class="section" id="aplicativo"><div class="wrap">
-<div class="section-head"><p class="eyebrow">O APP NA PRÁTICA</p><h2>Do planejamento ao pé da via.</h2><p>Em três passos, encontre um pico, entenda o croqui e leve a informação com você.</p></div>
+<div class="section-head"><p class="eyebrow">O APP NA PRÁTICA</p><h2>Do planejamento ao pé da via.</h2><p>Encontre um pico, entenda o croqui e leve a informação com você.</p></div>
 <div class="app-demo">
-<div class="app-demo-copy"><p class="eyebrow">Demonstração interativa</p><h3>Experimente a navegação.</h3><p>Escolha um dos passos no celular ao lado. Esta simulação mostra a jornada de uso do Aresta.</p></div>
-<div class="demo-stage"><div class="demo-phone"><div class="demo-phone-top">ARESTA CLIMB</div>
-<details name="app-preview" open><summary>1. Encontrar um pico</summary><div><strong>Explorar locais</strong><p>Abra a Pedra Grande para ver os setores.</p><p class="demo-example">Pedra Grande · Igarapé, MG</p></div></details>
-<details name="app-preview"><summary>2. Consultar uma via</summary><div><strong>Croqui interativo</strong><p>Selecione uma linha para abrir os detalhes.</p><details class="demo-via"><summary>Via de exemplo</summary><p>O app mostra o grau e as informações cadastradas para a via.</p></details></div></details>
-<details name="app-preview"><summary>3. Preparar o acesso offline</summary><div><strong>Pedra Grande</strong><p>Baixe o croqui com internet e abra o conteúdo salvo no pico.</p><details class="demo-via"><summary>Simular download</summary><p class="demo-success">Croqui de exemplo pronto para consulta offline.</p></details></div></details>
-</div></div></div>
+<div class="app-demo-copy"><h3>Planeje antes. Consulte na rocha.</h3>
+<ul class="app-features">
+<li><strong>Encontre picos e setores</strong><span>Explore o catálogo de escalada em rocha.</span></li>
+<li><strong>Consulte o acesso</strong><span>Veja mapas, coordenadas e as orientações disponíveis para cada pico.</span></li>
+<li><strong>Abra um croqui interativo</strong><span>Identifique as linhas na rocha e consulte graus e detalhes cadastrados.</span></li>
+<li><strong>Leia os betas e descrições</strong><span>Veja as informações compartilhadas para a via ou o setor.</span></li>
+<li><strong>Baixe e use offline</strong><span>Prepare o croqui com internet para consultar no pico sem sinal.</span></li>
+</ul></div>
+<figure class="demo-stage official-app"><img src="/aresta-lab/v2/assets/app-source/croqui.webp" loading="lazy" decoding="async" alt="Captura oficial do aplicativo Aresta Climb"/><figcaption><a href="https://github.com/aresta-climb/aresta_app/blob/7ab434c77972f4c18e501e3c67f78401f1f18353/frontend/assets/Screenshot_20260601_074027.jpg.jpeg">Captura do repositório oficial do app</a></figcaption></figure>
+</div>
 <div class="pill-row"><a class="button" href="https://www.arestaclimb.com/app">Baixar o app de escalada ↗</a><a class="button ghost" href="/aresta-lab/v2/croquis/" style="color:var(--forest)">Ver croquis web ↗</a><a class="text-link" href="/aresta-lab/v2/editor/">Conhecer o Editor →</a></div>
 </div></section>
 <section class="section territory-feature" id="visao"><div class="wrap">
-<div class="section-head"><p class="eyebrow">DA ESCALADA AO CUIDADO COM O PICO</p>
-<h2>Da escalada ao cuidado com o lugar.</h2><p>O Aresta nasce da cultura do montanhismo: liberdade, responsabilidade, honestidade, respeito à conquista e compromisso com os ambientes naturais. Organizamos e compartilhamos o conhecimento da escalada para fortalecer comunidades e contribuir para a preservação dos territórios.</p></div>
+<div class="section-head"><p class="eyebrow">COMUNIDADE E TERRITÓRIO</p>
+<h2>O que a escalada deixa no território?</h2><p>O Aresta nasce da cultura do montanhismo: liberdade, responsabilidade, honestidade, respeito à conquista e compromisso com os ambientes naturais. Organizamos e compartilhamos o conhecimento da escalada para fortalecer comunidades e contribuir para a preservação dos territórios.</p></div>
 <div class="flow-grid">
 <div class="flow-item"><h3>Conhecer</h3><p>Consultar o croqui, a história do pico e as orientações locais.</p></div>
 <div class="flow-item"><h3>Observar</h3><p>Perceber mudanças no acesso, na trilha ou na vegetação.</p></div>

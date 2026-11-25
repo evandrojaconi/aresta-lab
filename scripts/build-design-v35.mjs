@@ -1,4 +1,4 @@
-import {existsSync,mkdirSync,readFileSync,writeFileSync} from "node:fs";
+import {cpSync,existsSync,mkdirSync,readFileSync,writeFileSync} from "node:fs";
 import {join} from "node:path";
 
 // Usa a cópia adaptada do HTML V4 original (arquivo editável do design).
@@ -20,6 +20,7 @@ mkdirSync(join(root,"anterior-v34"),{recursive:true});
 writeFileSync(join(root,"anterior-v34","index.html"),
  prev.replace("</head>",'<base href="'+base+'"></head>'));
 writeFileSync(join(root,"index.html"),source);
+cpSync("lab-v2/app-source",join(root,"assets","app-source"),{recursive:true});
 
 const institutionalPath=join(root,"apresentacao-institucional");
 mkdirSync(institutionalPath,{recursive:true});

@@ -46,7 +46,7 @@ for(const [copy,label] of [
 // V3.3 — manifesto é a mensagem principal, produto continua identificável já no primeiro contato.
 if(!html.includes("APP DE ESCALADA · CROQUIS OFFLINE") ||
    !html.includes("um aplicativo para descobrir picos") ||
-   !home.includes("Croquis interativos · acesso offline · autoria respeitada · tecnologia aberta"))
+   !home.includes("Aplicativo offline · croquis interativos"))
  errors.push("Brand hero sem identificação inequívoca do produto");
 if(!html.includes("Feito pela comunidade significa reconhecer") ||
    !html.includes("Aberto para o mundo significa ampliar o acesso"))
