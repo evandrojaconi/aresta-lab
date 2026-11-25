@@ -1,0 +1,97 @@
+/* Aresta V3.4 — linguagem editorial Território V4.
+   NOVOS COMPONENTES, SEM ALTERAR A PALETA CORAL/PAPEL DA V3.1.
+   Reutiliza exclusivamente os tokens --orange, --orange-dark, --ink,
+   --muted, --paper, --line do design existente. */
+.territory-story,.opportunities,.citizen-science,.impact-preview,.open-source-section{padding:94px 0}
+.territory-story{background:var(--paper)}
+.territory-story .intro-lead{margin:15px 0 0;max-width:830px;text-align:left}
+.territory-story h2,.opportunities h2,.citizen-science h2,.impact-preview h2,.open-source-section h2{font-size:clamp(35px,4.5vw,57px);line-height:1.1;margin:20px 0 0;max-width:850px}
+.territory-story h2 em{color:var(--orange-dark);font-style:normal}
+.territory-cycle{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:11px;margin:40px 0 28px}
+.territory-cycle article{background:#fff;border:1px solid var(--line);border-radius:17px;padding:23px 16px;min-width:0}
+.territory-cycle article span,.territory-card-no{display:block;font:800 10px Inter,sans-serif;letter-spacing:.14em;color:var(--orange-dark)}
+.territory-cycle h3{font-size:19px;line-height:1.22;margin:20px 0 10px;overflow-wrap:anywhere}
+.territory-cycle p{font-size:12px;line-height:1.65;color:var(--muted)}
+.territory-quote{padding:24px 30px;border-left:4px solid var(--orange);background:#fff;border-radius:0 15px 15px 0;max-width:860px;font-size:clamp(17px,2.15vw,24px);line-height:1.45;font-family:Epilogue,Inter,sans-serif;font-weight:700;letter-spacing:-.04em}
+.territory-in-development{margin-top:34px;border:1px solid var(--line);padding:26px 29px;border-radius:20px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;background:#fff}
+.territory-in-development h3{font-size:21px;margin:9px 0}
+.territory-in-development p{font-size:13px;color:var(--muted);max-width:710px}
+.territory-in-development .tag{font-size:10px;font-weight:800;letter-spacing:.12em;color:var(--orange-dark)}
+.territory-in-development a{display:inline-flex;color:var(--orange-dark);font-size:13px;font-weight:800;text-decoration:underline;text-underline-offset:4px;white-space:nowrap}
+.opportunities{background:#fff}
+.opportunities-lead,.impact-preview-lead,.citizen-science-lead{font-size:16px;line-height:1.72;color:var(--muted);max-width:800px;margin-top:20px}
+.opportunities-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:37px}
+.opportunities-grid article{padding:29px 25px;border:1px solid var(--line);border-radius:20px;background:var(--paper);display:flex;flex-direction:column;gap:11px}
+.opportunities-grid article:nth-child(2){background:#fff}
+.opportunities-grid h3{font-size:24px;line-height:1.2;margin:13px 0 3px}
+.opportunities-grid p{font-size:14px;line-height:1.69;color:var(--muted)}
+.opportunities-note,.impact-status{display:flex;align-items:flex-start;gap:10px;font-size:12px;line-height:1.65;color:var(--muted);margin-top:22px}
+.opportunities-note:before,.impact-status:before{content:"i";display:grid;place-items:center;width:18px;height:18px;flex:none;border-radius:50%;border:1px solid currentColor;font-size:11px}
+.opportunities-actions{display:flex;gap:15px;flex-wrap:wrap;margin-top:26px}
+.citizen-science{background:var(--paper)}
+.science-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px;margin-top:35px}
+.science-grid article{padding:26px;background:#fff;border:1px solid var(--line);border-radius:19px}
+.science-grid h3{font-size:21px;margin-bottom:12px}
+.science-grid p{font-size:13px;color:var(--muted)}
+.impact-preview{background:#fff}
+.impact-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:39px}
+.impact-steps article{padding:27px;border-radius:20px;background:var(--paper);border:1px solid var(--line)}
+.impact-steps article span{font-size:11px;font-weight:800;letter-spacing:.13em;color:var(--orange-dark)}
+.impact-steps h3{font-size:27px;margin:13px 0 12px}
+.impact-steps p{font-size:14px;color:var(--muted)}
+.impact-link-group{display:flex;gap:14px;flex-wrap:wrap;margin-top:31px}
+.open-source-section{background:var(--paper)}
+.open-source-panel{background:var(--ink);color:#fff;border-radius:26px;padding:42px 45px;display:grid;grid-template-columns:1.25fr .75fr;gap:38px;align-items:center}
+.open-source-panel h2{font-size:clamp(35px,4.2vw,53px);margin:16px 0}
+.open-source-panel p{font-size:14px;color:#fff;opacity:.8;line-height:1.75}
+.open-source-panel .eyebrow{color:#fff}
+.open-source-list{border-left:1px solid #ffffff44;padding-left:29px}
+.open-source-list p{padding:12px 0;border-bottom:1px solid #ffffff30}
+.open-source-panel .button{margin-top:20px}
+.lab-territory-page{padding:130px 0 105px;background:var(--paper);min-height:75vh}
+.lab-territory-page .lab-territory-inner{max-width:1050px}
+.lab-territory-page .lab-territory-head{max-width:850px;padding-bottom:34px}
+.lab-territory-page .lab-territory-head h1{font-size:clamp(39px,5.8vw,73px);line-height:1.08;margin:22px 0;letter-spacing:-.06em}
+.lab-territory-page .lab-territory-head>p:not(.eyebrow){font-size:clamp(16px,1.8vw,19px);line-height:1.72;color:var(--muted)}
+.lab-territory-page .lab-territory-sections{display:grid;gap:18px}
+.lab-territory-page .lab-territory-sections section,.lab-territory-page .lab-territory-sections blockquote{border:1px solid var(--line);border-radius:18px;background:#fff;padding:30px 34px}
+.lab-territory-page .lab-territory-sections section h2{font-size:clamp(25px,3vw,36px);line-height:1.2;margin:0 0 18px}
+.lab-territory-page .lab-territory-sections section p{font-size:15px;line-height:1.78;color:#3c463d;margin:0 0 15px}
+.lab-territory-page .lab-territory-sections section p:last-child{margin-bottom:0}
+.lab-territory-page .lab-territory-sections blockquote{background:var(--ink);color:#fff;font:800 clamp(20px,2.7vw,29px)/1.38 Epilogue;letter-spacing:-.04em}
+.lab-territory-page .lab-territory-steps{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin:18px 0}
+.lab-territory-page .lab-territory-steps article{border:1px solid var(--line);border-radius:13px;background:var(--paper);padding:17px}
+.lab-territory-steps strong{font-size:12px;color:var(--orange-dark);display:block;margin-bottom:10px}
+.lab-territory-steps p{font-size:12px!important;line-height:1.6!important}
+.lab-territory-status{border-left:4px solid var(--orange);background:#fff;padding:23px 26px;margin-top:35px;border-radius:0 13px 13px 0;font-size:13px;line-height:1.7}
+.lab-territory-actions{display:flex;flex-wrap:wrap;gap:15px;margin-top:31px}
+.lab-editorial-index{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:32px}
+.lab-editorial-index article{border:1px solid var(--line);background:#fff;border-radius:18px;padding:25px;display:flex;flex-direction:column}
+.lab-editorial-index article span{font-size:11px;letter-spacing:.12em;font-weight:800;color:var(--orange-dark)}
+.lab-editorial-index article h2{font-size:24px;line-height:1.22;margin:15px 0}
+.lab-editorial-index article p{font-size:13px;color:var(--muted)}
+.lab-editorial-index article a{font-size:13px;font-weight:800;color:var(--orange-dark);margin-top:auto;padding-top:20px}
+.lab-v4-drafts{padding:45px 26px;margin:45px auto 20px;max-width:1060px;border-top:2px solid var(--orange);background:var(--paper);border-radius:14px}
+.lab-v4-drafts h2{font-size:30px;letter-spacing:-.04em;margin:10px 0}
+.lab-v4-drafts p{font-size:14px;line-height:1.7;color:var(--muted)}
+.lab-v4-drafts>a{display:inline-block;margin-top:20px;color:var(--orange-dark);font-size:13px;font-weight:800}
+@media(max-width:920px){
+  .territory-cycle{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .opportunities-grid,.science-grid,.impact-steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .open-source-panel{grid-template-columns:1fr}
+  .open-source-list{border-left:none;border-top:1px solid #ffffff44;padding-left:0;padding-top:15px}
+}
+@media(max-width:720px){
+  .territory-story,.opportunities,.citizen-science,.impact-preview,.open-source-section{padding:72px 0}
+  .territory-cycle,.opportunities-grid,.science-grid,.impact-steps,.lab-editorial-index{grid-template-columns:1fr;gap:12px}
+  .territory-cycle article{padding:21px}
+  .territory-cycle h3{margin:10px 0}
+  .territory-in-development{grid-template-columns:1fr;padding:23px}
+  .territory-in-development a{white-space:normal}
+  .territory-quote{padding:21px;font-size:21px}
+  .open-source-panel{padding:28px 22px}
+  .lab-territory-page{padding:100px 0 70px}
+  .lab-territory-page .lab-territory-sections section,.lab-territory-page .lab-territory-sections blockquote{padding:24px 21px}
+  .lab-territory-page .lab-territory-steps{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){.lab-editorial-index article,.territory-cycle article{transition:none}}
