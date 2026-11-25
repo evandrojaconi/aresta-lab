@@ -17,7 +17,7 @@ if(realRock.length<100000 || realRock.subarray(0,4).toString()!=="RIFF" ||
 writeFileSync(join(root,"assets","aresta-rocha-fundo-original.webp"),realRock);
 
 const target=join(root,"app-first"),src="lab-v2/app-first";
-for(const filename of ["index.html","style.css","legacy-merge.css","rock-backgrounds.css","app.js","projeto.html"])
+for(const filename of ["index.html","style.css","legacy-merge.css","rock-backgrounds.css","territorio-v4.css","app.js","projeto.html"])
  if(!existsSync(join(src,filename)))throw Error("Arquivo App First ausente: "+filename);
 for(const file of ["explorar-locais.png","pedra-grande.png","croqui-interativo.png","comunidade-pico.png","setor-principal.png"])
  if(!existsSync(join(root,"assets/app",file)))throw Error("Captura real do app ausente: "+file);
@@ -53,7 +53,7 @@ if(!enriched.includes('name="robots" content="noindex,nofollow"')||!enriched.inc
  throw Error("Home App First não é uma prévia rastreável");
 mkdirSync(target,{recursive:true});
 writeFileSync(join(target,"index.html"),enriched);
-for(const file of ["style.css","legacy-merge.css","rock-backgrounds.css","app.js"])cpSync(join(src,file),join(target,file));
+for(const file of ["style.css","legacy-merge.css","rock-backgrounds.css","territorio-v4.css","app.js"])cpSync(join(src,file),join(target,file));
 mkdirSync(join(root,"projeto"),{recursive:true});
 cpSync(join(src,"projeto.html"),join(root,"projeto","index.html"));
 // Guardar a versão premium integral como acervo navegável, sem alterar o HTML fonte.
@@ -69,11 +69,12 @@ let home=enriched.replace(/(href|src)="\.\.\//g,'$1="');
 home=home.replace('href="style.css"','href="app-first/style.css"')
          .replace('href="legacy-merge.css"','href="app-first/legacy-merge.css"')
          .replace('href="rock-backgrounds.css"','href="app-first/rock-backgrounds.css"')
+         .replace('href="territorio-v4.css"','href="app-first/territorio-v4.css"')
          .replace('src="app.js"','src="app-first/app.js"');
 writeFileSync(previousHome,home);
 const metaPath=join(root,"source.json");
 const meta=JSON.parse(readFileSync(metaPath,"utf8"));
-meta.variant="V3 · App First + Diário de Rocha + caminhos de aprofundamento";
+meta.variant="V3.4 · App First + Território V4 + Diário, paleta V3.1 preservada";
 meta.primaryEntry=base;meta.preservedPremium=base+"visao/";meta.deepDive=base+"projeto/";
 meta.noIndex=true;meta.officialUnaffected=true;
 writeFileSync(metaPath,JSON.stringify(meta,null,2)+"\n");
