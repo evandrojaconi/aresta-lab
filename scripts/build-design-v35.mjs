@@ -92,7 +92,7 @@ writeFileSync(postIndex,pageShell("Propostas editoriais em revisão",listing));
 // Diário real permanecem presentes, e o Design V4 é o mesmo da nova home.
 for(const name of names){
  const c=readFileSync(join(root,name,"index.html"),"utf8");
- if(!c.includes("--orange:#d95635")||!c.includes("brand-mark"))
+ if(!c.includes("--orange:#b53e29")||!c.includes("brand-mark"))
   throw Error("Página profunda não herdou identidade V3.1: "+name);
 }
 console.log("V3.5: HTML V4 original virou a home com cores Aresta + 3 páginas + 6 textos no mesmo design.");

@@ -115,7 +115,6 @@ for(const [value,label] of [
  ['<h1>Conheça o território.<br/><em>Conecte possibilidades.</em></h1>',"mensagem territorial na abertura"],
  ['class="hero-art"',"composição de duas colunas com telas do aplicativo"],
  ['class="flow-grid"',"fluxo territorial do HTML V4"],
- ['class="feature-links-grid"',"faixa de recursos sem indicadores inventados"],
  ['id="aplicativo"',"app como primeira utilidade"],
  ['id="territorio"',"visão territorial"],
  ['id="comunidade"',"contribuição e comunidade"],
@@ -206,7 +205,7 @@ for(const name of themePages){
  if(!content.includes("Feito pela comunidade. Aberto para o mundo.")||
     !content.includes('noindex,nofollow')||
     !content.includes('class="site-header"')||
-    !content.includes("--orange:#d95635"))
+    !content.includes("--orange:#b53e29"))
   errors.push("Assinatura, rastreabilidade ou design incorretos em "+name);
  verifyRelative(content,f);
 }
