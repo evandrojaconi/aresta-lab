@@ -46,7 +46,7 @@ for(const [copy,label] of [
 // V3.3 — manifesto é a mensagem principal, produto continua identificável já no primeiro contato.
 if(!html.includes("APP DE ESCALADA · CROQUIS OFFLINE") ||
    !html.includes("um aplicativo para descobrir picos") ||
-   !home.includes("APP DE ESCALADA · CROQUIS OFFLINE"))
+   !home.includes("APP DE ESCALADA · CROQUIS INTERATIVOS · OFFLINE"))
  errors.push("Brand hero sem identificação inequívoca do produto");
 if(!html.includes("Feito pela comunidade significa reconhecer") ||
    !html.includes("Aberto para o mundo significa ampliar o acesso"))
@@ -81,7 +81,7 @@ for(const [piece,label] of [
  ["@media(max-width:720px)","tratamento da foto no mobile"]
 ])if(!rockCss.includes(piece))errors.push("CSS fotografia ausente: "+label);
 if(!html.includes('href="rock-backgrounds.css"') ||
-   !home.includes('href="app-first/rock-backgrounds.css"'))
+   !home.includes('aresta-rocha-fundo-original.webp'))
  errors.push("Foto real não está ligada às duas entradas da V3");
 
 if(!css.includes("@media(max-width:720px)")||!css.includes("@media(max-width:430px)"))errors.push("Responsive CSS ausente");
@@ -109,20 +109,26 @@ for(const m of html.matchAll(/(?:href|src)="([^"]+)"/g)){
     if(!existsSync(target))errors.push("Link ou asset não encontrado: "+href);
   }
 }
-// V3: App First é a porta de entrada; premium anterior continua navegável.
+// V3.5: a HOME é composta fielmente a partir do HTML ORIGINAL V4.
+// A V3.4 App First anterior continua navegável em /app-first/.
 for(const [value,label] of [
- ["<h1>Feito pela comunidade.<br><em>Aberto para o mundo.</em></h1>","assinatura principal na raiz"],
- ['href="app-first/style.css"',"estilo correto na raiz"],
- ['href="app-first/legacy-merge.css"',"camada editorial na raiz"],
- ['src="app-first/app.js"',"JS da home na raiz"],
- ['href="visao/"',"referência à versão anterior"],
- ['href="blog/"',"Diário de Rocha na home"],
- ['href="projeto/"',"caminho de aprofundamento"],
- ['href="blog/historia-escalada-gruta-da-lapinha/"',"artigo inaugural na home"],
- ['id="descubra-mais"',"trilhas de aprofundamento"],
- ['id="diario"',"Diário integrado"],
- ['name="robots" content="noindex,nofollow"',"prévia com noindex"]
-])if(!home.includes(value))errors.push("V3 home sem "+label);
+ ['<h1>Feito pela comunidade.<br/><em>Aberto para o mundo.</em></h1>',"assinatura principal na raiz"],
+ ['class="hero-art"',"composição de duas colunas com telas do aplicativo"],
+ ['class="flow-grid"',"fluxo territorial do HTML V4"],
+ ['class="stats-grid"',"faixa de recursos sem indicadores inventados"],
+ ['id="aplicativo"',"app como primeira utilidade"],
+ ['id="territorio"',"visão territorial"],
+ ['id="comunidade"',"contribuição e comunidade"],
+ ['id="oportunidades"',"oportunidades locais"],
+ ['id="impacto"',"método de impacto"],
+ ['id="blog"',"Diário na narrativa"],
+ ['id="route-manifesto"',"template de manifesto integrado"],
+ ['name="robots" content="noindex,nofollow"',"prévia sem indexação"]
+])if(!home.includes(value))errors.push("V3.5 home sem "+label);
+if(home.includes("Usuários em ~2 meses")||home.includes("2.500+"))
+ errors.push("Indicadores sem fonte recente permaneceram na V3.5");
+if(!existsSync(".output/public/v2/anterior-v34/index.html"))
+ errors.push("Versão V3.4 anterior não foi preservada");
 if(!original.includes("Menos caça à informação.")||!original.includes('id="codigo"')||original.length<610000)
  errors.push("V2 premium não foi preservada integralmente em /visao/");
 if(!project.includes("O Aresta começa na escalada.")||
@@ -166,12 +172,12 @@ for(const [id,label] of [
  ['id="pesquisa"',"ciência cidadã"],
  ['id="impacto"',"método de impacto"],
  ['id="codigo"',"código/autoria"]
-])if(!html.includes(id)||!home.includes(id))errors.push("V3.4 sem seção: "+label);
+])if(!html.includes(id)||!(home.includes(id)||(id==='id="codigo"'&&home.includes('id="aberto"'))))errors.push("V3.5 sem seção: "+label);
 if(!html.includes("25+") && !html.includes("1.000Usuários")){} else errors.push("Métricas não verificadas entraram na home");
 for(const label of ["EM DESENVOLVIMENTO / VISÃO","VISÃO FUTURA","MÉTODO PROPOSTO","Não apresentamos indicadores"]){
  if(!html.includes(label))errors.push("Falta aviso de status V4: "+label);
 }
-if(!html.includes('href="territorio-v4.css"')||!home.includes('href="app-first/territorio-v4.css"'))
+if(!html.includes('href="territorio-v4.css"')||!home.includes('class="flow-grid"'))
  errors.push("Estilo de território não está carregado nas duas entradas");
 for(const color of ["#14332D","#07372E","#0A4D3E","#CBDCC7","#D9AD62"]){
  if(territoryCss.includes(color))errors.push("Paleta verde/dourada V4 foi incorporada: "+color);
@@ -185,8 +191,8 @@ for(const name of themePages){
  const content=readFileSync(f,"utf8");
  if(!content.includes("Feito pela comunidade. Aberto para o mundo.")||
     !content.includes('noindex,nofollow')||
-    !content.includes("/app-first/style.css")||
-    !content.includes("/app-first/territorio-v4.css"))
+    !content.includes('class="site-header"')||
+    !content.includes("--orange:#d95635"))
   errors.push("Assinatura, rastreabilidade ou design incorretos em "+name);
  verifyRelative(content,f);
 }
