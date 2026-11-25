@@ -46,7 +46,7 @@ for(const [copy,label] of [
 // V3.3 — manifesto é a mensagem principal, produto continua identificável já no primeiro contato.
 if(!html.includes("APP DE ESCALADA · CROQUIS OFFLINE") ||
    !html.includes("um aplicativo para descobrir picos") ||
-   !home.includes("APP DE ESCALADA · CROQUIS INTERATIVOS · OFFLINE"))
+   !home.includes("Croquis interativos · acesso offline · autoria respeitada · tecnologia aberta"))
  errors.push("Brand hero sem identificação inequívoca do produto");
 if(!html.includes("Feito pela comunidade significa reconhecer") ||
    !html.includes("Aberto para o mundo significa ampliar o acesso"))
@@ -112,7 +112,7 @@ for(const m of html.matchAll(/(?:href|src)="([^"]+)"/g)){
 // V3.5: a HOME é composta fielmente a partir do HTML ORIGINAL V4.
 // A V3.4 App First anterior continua navegável em /app-first/.
 for(const [value,label] of [
- ['<h1>Feito pela comunidade.<br/><em>Aberto para o mundo.</em></h1>',"assinatura principal na raiz"],
+ ['<h1>Conheça o território.<br/><em>Conecte possibilidades.</em></h1>',"mensagem territorial na abertura"],
  ['class="hero-art"',"composição de duas colunas com telas do aplicativo"],
  ['class="flow-grid"',"fluxo territorial do HTML V4"],
  ['class="stats-grid"',"faixa de recursos sem indicadores inventados"],
