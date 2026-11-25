@@ -32,6 +32,22 @@ for(const [key,label] of [
  ["https://play.google.com/store/apps/details?id=app.escalada.croquis","Google Play"],
  ["https://apps.apple.com/us/app/aresta-climb-guia-de-escalada/id6776467893","App Store"]
 ])need(key,label);
+// V3.2 — a copy V4 precisa respeitar a hierarquia App First e não anunciar visão futura como entregue.
+for(const [copy,label] of [
+ ["JÁ EXISTE. JÁ ESTÁ NA ROCHA.","posicionamento do produto disponível"],
+ ["Um app de escalada.","entrada clara para quem escala"],
+ ["Uma porta para o território.","segunda camada narrativa"],
+ ["Offline de verdade","benefício offline"],
+ ["A comunidade","comunidade na jornada"],
+ ["O aplicativo é só o começo.","descoberta progressiva"],
+ ["uma visão de evolução","distinção de futuro na FAQ"],
+ ["O que é o Aresta, afinal?","FAQ atualizado"]
+])if(!html.includes(copy))errors.push("V3.2 copy ausente: "+label);
+if(!project.includes("Conheça o território.") ||
+   !project.includes("Conecte possibilidades.") ||
+   !project.includes("não são serviços já lançados"))
+ errors.push("V3.2: página O Projeto não recebeu a visão V4 com distinção de status");
+
 if(/smartHome|smart home|home automation|client testimonials/i.test(html))errors.push("Texto do template de referência entrou indevidamente");
 // Real rock original used as the background photo in multiple existing sections.
 // The source image must match the immutable premium HTML, not a generated asset.
