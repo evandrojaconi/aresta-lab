@@ -313,3 +313,5 @@ await import("./unify-v2-pages.mjs");
 await import("./build-app-first.mjs");
 // Novas rotas de território, impacto e transparência e propostas editoriais de revisão.
 await import("./build-territorio-v4.mjs");
+// Design V3.5 fiel ao HTML V4 original, usando a marca e as cores aprovadas na V3.1.
+await import("./build-design-v35.mjs");
