@@ -15,7 +15,7 @@ const script=readFileSync(join(dir,"app.js"),"utf8");
 const errors=[];
 const need=(text,label)=>{if(!html.includes(text))errors.push("Falta "+label);};
 for(const [key,label] of [
- ['<h1>Escalada e croquis.',"mensagem app-first"],
+ ['<h1>Feito pela comunidade.<br><em>Aberto para o mundo.</em></h1>',"assinatura de marca no hero"],
  ['Telas reais do aplicativo Aresta Climb',"capturas reais"],
  ['id="recursos"',"recursos"],
  ['id="croquis"',"croquis"],
@@ -43,6 +43,16 @@ for(const [copy,label] of [
  ["uma visão de evolução","distinção de futuro na FAQ"],
  ["O que é o Aresta, afinal?","FAQ atualizado"]
 ])if(!html.includes(copy))errors.push("V3.2 copy ausente: "+label);
+// V3.3 — manifesto é a mensagem principal, produto continua identificável já no primeiro contato.
+if(!html.includes("APP DE ESCALADA · CROQUIS OFFLINE") ||
+   !html.includes("um aplicativo para descobrir picos") ||
+   !home.includes("APP DE ESCALADA · CROQUIS OFFLINE"))
+ errors.push("Brand hero sem identificação inequívoca do produto");
+if(!html.includes("Feito pela comunidade significa reconhecer") ||
+   !html.includes("Aberto para o mundo significa ampliar o acesso"))
+ errors.push("Manifesto sem tradução em autoria e acesso na segunda camada");
+if(!project.includes("FEITO PELA COMUNIDADE. ABERTO PARA O MUNDO."))
+ errors.push("Página Projeto sem reforço da assinatura da marca");
 if(!project.includes("Conheça o território.") ||
    !project.includes("Conecte possibilidades.") ||
    !project.includes("não são serviços já lançados"))
@@ -101,7 +111,7 @@ for(const m of html.matchAll(/(?:href|src)="([^"]+)"/g)){
 }
 // V3: App First é a porta de entrada; premium anterior continua navegável.
 for(const [value,label] of [
- ["Escalada e croquis.","promessa principal na raiz"],
+ ["<h1>Feito pela comunidade.<br><em>Aberto para o mundo.</em></h1>","assinatura principal na raiz"],
  ['href="app-first/style.css"',"estilo correto na raiz"],
  ['href="app-first/legacy-merge.css"',"camada editorial na raiz"],
  ['src="app-first/app.js"',"JS da home na raiz"],
@@ -115,7 +125,7 @@ for(const [value,label] of [
 ])if(!home.includes(value))errors.push("V3 home sem "+label);
 if(!original.includes("Menos caça à informação.")||!original.includes('id="codigo"')||original.length<610000)
  errors.push("V2 premium não foi preservada integralmente em /visao/");
-if(!project.includes("O Aresta Climb ajuda o escalador")||
+if(!project.includes("O Aresta começa na escalada.")||
    !project.includes("aresta-editor-painel-qualidade-real-2026-11-20.webp")||
    !project.includes('href="../visao/"'))errors.push("Página do projeto não integrou os conteúdos existentes");
 if(!mergedCss.includes(".journal-grid")||!mergedCss.includes(".pathway-grid")||
