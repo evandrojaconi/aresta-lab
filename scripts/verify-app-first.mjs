@@ -127,7 +127,9 @@ if(!original.includes("Menos caça à informação.")||!original.includes('id="c
  errors.push("V2 premium não foi preservada integralmente em /visao/");
 if(!project.includes("O Aresta começa na escalada.")||
    !project.includes("aresta-editor-painel-qualidade-real-2026-11-20.webp")||
-   !project.includes('href="../visao/"'))errors.push("Página do projeto não integrou os conteúdos existentes");
+   !project.includes('href="../manifesto/"')||
+   !project.includes('href="../impacto/"')||
+   !project.includes('href="../transparencia/"'))errors.push("Página do projeto perdeu conexões entre as visões e conteúdo existente");
 if(!mergedCss.includes(".journal-grid")||!mergedCss.includes(".pathway-grid")||
    !mergedCss.includes("@media(max-width:720px)"))errors.push("Camadas editoriais não são responsivas");
 for(const [part,label] of [
