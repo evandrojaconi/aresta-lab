@@ -37,7 +37,7 @@ function links(html){
   .replaceAll('href="#/blog"','href="'+base+'blog/"')
   .replace(/href="#\/blog\/([^"]+)"/g,(_,slug)=>'href="'+base+'propostas/'+slug+'/"');
 }
-const nav=links(header),foot=links(footer);
+const nav=links(header),foot=links(footer).replace("© 2026 Aresta Climb · Use. Contribua. Preserve.","© 2026 Aresta Climb · Feito pela comunidade. Aberto para o mundo.");
 const mobile='<script>(function(){const t=document.getElementById("mobile-toggle"),n=document.getElementById("nav-items"),h=document.querySelector(".site-header");if(!t||!n)return;t.addEventListener("click",()=>{const open=n.classList.toggle("open");t.setAttribute("aria-expanded",String(open));t.textContent=open?"×":"☰"});n.addEventListener("click",e=>{if(e.target.closest("a")){n.classList.remove("open");t.setAttribute("aria-expanded","false");t.textContent="☰"}});let last=scrollY;addEventListener("scroll",()=>{const y=scrollY;if(h&&y>180&&Math.abs(y-last)>3)h.classList.toggle("is-hidden",y>last);else if(h&&y<65)h.classList.remove("is-hidden");last=y},{passive:true})})();</script>';
 const titles={
  manifesto:"O território é o centro. O resto se conecta.",
@@ -48,7 +48,7 @@ const titles={
 function pageShell(title,content,label=""){
  return '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
  '<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#d95635">'+
- '<title>'+title+' | Aresta Climb</title><link rel="icon" href="'+base+'assets/logo_app.png">'+style+
+ '<title>'+title+' | Aresta Climb</title><meta name="description" content="Feito pela comunidade. Aberto para o mundo. Informação territorial que começa na escalada."><link rel="icon" href="'+base+'assets/logo_app.png">'+style+
  '</head><body><a class="skip" href="#conteudo">Pular para o conteúdo</a>'+nav+
  '<main id="conteudo">'+label+links(content)+'</main>'+foot+mobile+'</body></html>';
 }
@@ -80,7 +80,7 @@ const cards=topics.map(slug=>
  '<p>Texto conceitual do Aresta Território. Não publicado como reportagem.</p>'+
  '<span class="article-link">Ler texto em revisão ↗</span></div></a>').join("");
 const listing='<section class="section"><div class="wrap"><p class="eyebrow">DIÁRIO DE ROCHA · LABORATÓRIO</p>'+
- '<h1>Ideias em revisão. Não notícias publicadas.</h1><p>Seis textos de posicionamento territorial, separados das matérias já publicadas.</p>'+
+ '<h1>Ideias em revisão, não notícias publicadas.</h1><p>Seis textos de posicionamento territorial, separados das matérias já publicadas.</p>'+
  '<div class="three-grid">'+cards+'</div><a class="button" href="'+base+'blog/">Ir ao Diário publicado ↗</a></div></section>';
 writeFileSync(postIndex,pageShell("Propostas editoriais em revisão",listing));
 // Sem depender de cor ou layout antigos nas páginas profundas: links para o
