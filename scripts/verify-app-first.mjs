@@ -161,6 +161,20 @@ const verifyRelative=(content,sourceFile)=>{
  }
 };
 verifyRelative(home,".output/public/v2/index.html");
+const institutionalFile=".output/public/v2/apresentacao-institucional/index.html";
+if(!existsSync(institutionalFile)) {
+ errors.push("Apresentação institucional ausente");
+} else {
+ const institutional=readFileSync(institutionalFile,"utf8");
+ const institutionalLinks=[...home.matchAll(/<a\b[^>]*href="[^"]*\/apresentacao-institucional\/"[^>]*>/g)];
+ if(institutionalLinks.length!==1||institutionalLinks[0].index<home.indexOf('<footer class="footer">'))
+  errors.push("A apresentação deve ser acessível por um único link discreto no rodapé");
+ if(!institutional.includes('name="robots" content="noindex,nofollow"')||
+    !institutional.includes('id="presentationButton"')||
+    [...institutional.matchAll(/<section class="scene\b/g)].length!==12)
+  errors.push("A apresentação perdeu a proteção contra indexação ou as 12 seções interativas");
+ verifyRelative(institutional.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g,""),institutionalFile);
+}
 verifyRelative(project,".output/public/v2/projeto/index.html");
 verifyRelative(original,".output/public/v2/visao/index.html");
 

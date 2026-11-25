@@ -5,7 +5,7 @@ import {join} from "node:path";
 // Não toca /oficial/, dados, Editor, CRM, blog publicado nem na baseline V3.1.
 const root=".output/public/v2";
 const base="/"+(process.env.GITHUB_REPOSITORY?.split("/").at(-1)||"aresta-lab")+"/v2/";
-const source=readFileSync("lab-v2/design-v35.html","utf8");
+const source=readFileSync("lab-v2/design-v35.html","utf8").replaceAll("/aresta-lab/v2/",base);
 if(source.length<80000||!source.includes('class="hero-art"')||
    !source.includes("Feito pela comunidade.")||
    !source.includes('id="route-manifesto"'))
@@ -20,6 +20,11 @@ mkdirSync(join(root,"anterior-v34"),{recursive:true});
 writeFileSync(join(root,"anterior-v34","index.html"),
  prev.replace("</head>",'<base href="'+base+'"></head>'));
 writeFileSync(join(root,"index.html"),source);
+
+const institutionalPath=join(root,"apresentacao-institucional");
+mkdirSync(institutionalPath,{recursive:true});
+writeFileSync(join(institutionalPath,"index.html"),
+ readFileSync("lab-v2/apresentacao-institucional.html","utf8"));
 
 // Reutilizar a aparência do HTML de referência nos caminhos estáticos. Uma
 // página estática com URL própria é mais navegável que depender só de #/rota.
@@ -40,9 +45,9 @@ function links(html){
 const nav=links(header),foot=links(footer).replace("© 2026 Aresta Climb · Use. Contribua. Preserve.","© 2026 Aresta Climb · Feito pela comunidade. Aberto para o mundo.");
 const mobile='<script>(function(){const t=document.getElementById("mobile-toggle"),n=document.getElementById("nav-items"),h=document.querySelector(".site-header");if(!t||!n)return;t.addEventListener("click",()=>{const open=n.classList.toggle("open");t.setAttribute("aria-expanded",String(open));t.textContent=open?"×":"☰"});n.addEventListener("click",e=>{if(e.target.closest("a")){n.classList.remove("open");t.setAttribute("aria-expanded","false");t.textContent="☰"}});let last=scrollY;addEventListener("scroll",()=>{const y=scrollY;if(h&&y>180&&Math.abs(y-last)>3)h.classList.toggle("is-hidden",y>last);else if(h&&y<65)h.classList.remove("is-hidden");last=y},{passive:true})})();</script>';
 const titles={
- manifesto:"O território é o centro. O resto se conecta.",
- impacto:"Impacto não se declara. Se demonstra.",
- transparencia:"O que existe. O que está aberto. O que falta demonstrar.",
+ manifesto:"Manifesto",
+ impacto:"Impacto e preservação",
+ transparencia:"Transparência",
  blog:"Histórias que começam na rocha. E seguem pelo território."
 };
 function pageShell(title,content,label=""){
