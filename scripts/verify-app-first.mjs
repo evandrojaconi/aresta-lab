@@ -5,7 +5,7 @@ const dir=".output/public/v2/app-first";
 const page=join(dir,"index.html");
 if(!existsSync(page))throw Error("Experimento App First não foi gerado");
 const html=readFileSync(page,"utf8");
-const home=readFileSync(".output/public/v2/index.html","utf8");
+const home=readFileSync(".output/public/v2/anterior-v35/index.html","utf8");
 const original=readFileSync(".output/public/v2/visao/index.html","utf8");
 const project=readFileSync(".output/public/v2/projeto/index.html","utf8");
 const mergedCss=readFileSync(join(dir,"legacy-merge.css"),"utf8");

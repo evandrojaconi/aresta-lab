@@ -315,3 +315,8 @@ await import("./build-app-first.mjs");
 await import("./build-territorio-v4.mjs");
 // Design V3.5 fiel ao HTML V4 original, usando a marca e as cores aprovadas na V3.1.
 await import("./build-design-v35.mjs");
+
+// Publicar a V7 na entrada do Lab e preservar a versão usada pelos testes V3.5.
+mkdirSync(join(to,"anterior-v35"),{recursive:true});
+cpSync(join(to,"index.html"),join(to,"anterior-v35","index.html"));
+writeFileSync(join(to,"index.html"),readFileSync("lab-v2/landing-v7.html","utf8").replaceAll("/aresta-lab/v2/",base));
