@@ -323,17 +323,16 @@ await import("./build-landing-v7.mjs");
 
 
 // LAB Intelligence: copiar o HTML integral sem transformação, após os demais builds.
-// A rota /mobile/ serve a mesma versão para diagnóstico de cache e navegador.
 const intelligenceTestSource = "public/intelligence-test/index.html";
 if (existsSync(intelligenceTestSource)) {
   const intelligenceTestHtml = readFileSync(intelligenceTestSource, "utf8");
   if (!intelligenceTestHtml.includes("LAB DE TESTES") || !intelligenceTestHtml.includes("aresta-intelligence-test-v1") || !intelligenceTestHtml.includes("mobile-toggle")) {
     throw Error("Intelligence LAB: fonte inválida ou navegação mobile ausente");
   }
-  for (const dest of [".output/public/intelligence-test/index.html", ".output/public/intelligence-test/mobile/index.html"]) {
+  for (const dest of [".output/public/intelligence-test/index.html"]) {
     mkdirSync(dest.slice(0, dest.lastIndexOf("/")), { recursive: true });
     cpSync(intelligenceTestSource, dest);
     if (readFileSync(dest, "utf8") !== intelligenceTestHtml) throw Error("Intelligence LAB: cópia divergente " + dest);
   }
-  console.log("Intelligence LAB: HTML integral conferido nas duas rotas.");
+  console.log("Intelligence LAB: HTML integral conferido na rota única.");
 }
