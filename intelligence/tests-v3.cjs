@@ -7,3 +7,15 @@ x("S.territory='lapinha';login('assoc');selectPanel('fememg')");assert.equal(x("
 x("login('fed');selectPanel('cbme')");assert.equal(x("submitInstitutionCase({target:'cbme',type:'diretriz',title:'Orientação nacional',evidence:'ata estadual 1'})"),true);x("login('cbme-review-1')");assert.equal(x("decideInstitution(S.cases[2].id,'case',false,'Revisar texto')"),true);assert.equal(x('S.cases[2].status'),'rejeitado');assert.equal(x('S.cases[2].reason'),'Revisar texto');
 x("login('national');S.okrs.push({id:'okr-test',author:'national',entity:'cbme',text:'Teste OKR',evidence:'Relatório',status:'pendente',date:S.date})");assert.equal(x("decideInstitution('okr-test','okr',true,'eu mesmo')"),false);x("login('cbme-review-2')");assert.equal(x("decideInstitution('okr-test','okr',true,'Revisão independente')"),true);assert.equal(x("calcEntity(entityBy('cbme')).ok"),true);x("login('local-pedra-review-1')");assert.equal(x("canReview('lapinha')"),false);assert.equal(x("canReview('pedra')"),true);assert.equal(x("canReview('pedreira')"),false);x("logout();selectPanel('cbme');setPanelFilter('decididos')");assert(nodes['#app'].innerHTML.includes('Orientação nacional'));assert(!nodes['#app'].innerHTML.includes('decideFromUI('));console.log('PASS: esferas, filas, escopo, bloqueios, justificativa, rejeição, OKR e consulta pública.');
 x("S=fresh();login('solo');selectPanel('fememg')");assert.equal(x("submitInstitutionCase({target:'fememg',type:'projeto',title:'Projeto',evidence:'ata'})"),false);assert.equal(x("submitInstitutionCase({target:'fememg',type:'cooperacao',title:'Apoio opcional',evidence:'pedido'})"),true);assert.equal(x("U().aff"),'solo');x("login('fememg-review-1')");assert.equal(x("decideInstitution(S.cases[0].id,'case',true,'Apoio sem filiação')"),true);console.log('PASS: cooperação facultativa sem alteração de vínculo.');
+
+
+x("S=fresh();navigate('home')");
+assert.equal((nodes['#app'].innerHTML.match(/<nav class="nav"[\s\S]*?<\/nav>/)[0].match(/<button/g)||[]).length,5);
+assert(!nodes['#app'].innerHTML.includes('<select'));
+x("choosePeak('pedreira')");assert.equal(x('S.territory'),'pedreira');
+assert(nodes['#app'].innerHTML.includes('Pedreira Dr. Gravatá'));
+x("navigate('relatorios','painel','transparencia')");assert.equal(x('groupOf(page)'),'transparencia');assert.equal(x('location.hash'),'transparencia/relatorios');
+x("navigate('aprovacoes','painel','colaboracao')");assert.equal(x('groupOf(page)'),'colaboracao');
+x("geo=[-19.967,-44.198]");assert.equal(x("cityKm('pedreira')"),0);assert(x("cityKm('lapinha')")>0);
+assert.equal(x("hubs.colaboracao.map(h=>h[0]).join(',')"),'8,5,3,2,1');
+console.log('PASS V4: cinco menus, picos, prioridade Fibonacci, proximidade municipal e contexto de navegação.');
