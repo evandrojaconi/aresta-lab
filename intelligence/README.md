@@ -1,4 +1,4 @@
-# ARESTA Intelligence V3 — Gestão aberta da escalada
+# ARESTA Intelligence V4 — Gestão aberta da escalada
 
 **Entrega:** interface funcional demonstrativa, tema escuro do aplicativo, Editor integrado, perfis de contribuição e gestão federativa. O Aresta Climb permanece a interface pública. Esta versão está versionada em aresta-lab/intelligence, no ambiente de laboratório, não está conectada ao backend de produção e não efetua pagamentos, autenticação real, filiações ou decisões oficiais.
 
@@ -46,3 +46,14 @@ Testes Node de lógica: 12 telas (11 originais e Central de aprovações), nota 
 ## Publicação no Aresta Lab
 
 A interface V3 substitui a entrada anterior em `intelligence/index.html` na branch `main`. A versão CRM anterior está preservada na branch `baseline/intelligence-antes-v3-2026-11-27`. Os módulos e migrations anteriores não foram removidos. O GitHub Pages depende do workflow existente. Esta interface demonstrativa não usa as tabelas privadas do CRM, não autentica usuários reais nem opera aprovações financeiras reais. Não inserir dados pessoais ou credenciais reais no ambiente de demonstração.
+
+
+## V4 — navegação por finalidade
+
+Cinco menus principais: Visão Geral, Território, Colaboração, Transparência e Impacto. O perfil permanece acessível pelo cabeçalho. Subtelas mantêm o contexto do menu de origem pelo hash da URL. Os módulos e as regras de contribuição V3 foram preservados; não houve migração ou exclusão do armazenamento local.
+
+Prioridade editorial proposta (Fibonacci decrescente): 8 ação principal, 5 próxima ação, 3 apoio, 2 organização, 1 preferências. Essa prioridade não modifica XP ou direitos. Ações primárias usam Brand Color #E25844; fundo Deep Basalt #161616; indicadores Chalk White #F4F3ED; apoio Dry Moss #7B8B6F. Campos de seleção têm interface visível por botões, conservando os valores dos formulários. Blocos secundários são expansíveis.
+
+A seleção de picos usa cartões em Visão Geral e Território. O usuário escolhe manualmente o pico; a localização é opcional, solicitada pelo navegador e usada em memória para ordenar os três picos de demonstração pela distância em linha reta aos centros municipais aproximados. Não são distâncias de acesso nem localização exata de vias. O catálogo ArestaDB real e as coordenadas verificadas permanecem pendentes de integração. O histórico recente é separado por perfil local. A consulta é livre.
+
+Verificação: testes de lógica V3 e novos casos V4 (cinco menus, rotas, contexto, distância aproximada e prioridade) passaram com DOM simulado. Renderização visual e permissão de geolocalização em navegador real ainda precisam de verificação. Deploy via GitHub Actions existente.
