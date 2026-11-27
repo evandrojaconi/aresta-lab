@@ -1,6 +1,6 @@
-# ARESTA Intelligence V4 — Gestão aberta da escalada
+# ARESTA Intelligence V5 — Gestão aberta da escalada
 
-**Entrega:** interface funcional demonstrativa, tema escuro do aplicativo, Editor integrado, perfis de contribuição e gestão federativa. O Aresta Climb permanece a interface pública. Esta versão está versionada em aresta-lab/intelligence, no ambiente de laboratório, não está conectada ao backend de produção e não efetua pagamentos, autenticação real, filiações ou decisões oficiais.
+**Entrega:** interface funcional demonstrativa, temas claro e escuro do aplicativo, Editor integrado, perfis de contribuição e gestão federativa. O Aresta Climb permanece a interface pública. Esta versão está versionada em aresta-lab/intelligence, no ambiente de laboratório, não está conectada ao backend de produção e não efetua pagamentos, autenticação real, filiações ou decisões oficiais.
 
 ## Rodar
 
@@ -14,7 +14,7 @@
 2. No **Editor**, crie um croqui, preencha critérios de qualidade e proponha rascunho ou publicação. As notas de 1.000/100/10 são do croqui; XP pessoal só vem após validação de entrega. O editor web reproduz parte do comportamento, não executa o motor Python oficial.
 3. Entre em **Central de aprovações**. Há cinco filas: associações demonstrativas da Lapinha, Pedra Grande e Dr. Gravatá; FEMEMG; CBME. Os nomes e perfis de teste não indicam adesão ou mandato real.
 4. Como representante local, protocole uma cooperação para a FEMEMG. Na fila estadual, selecione Revisor FEMEMG 1, informe justificativa e aprove. Confira em Decididos. O próprio autor não aprova; outra esfera não tem autorização para decidir na fila alheia.
-5. Como representante FEMEMG, protocole uma diretriz para CBME. Entre como Revisor CBME 1 para analisar. Associações e curadores com escopo local também revisam croquis, contribuições, comunicados e solicitações de responsabilidade territorial. A cooperação federativa é opcional para independentes e não altera automaticamente o vínculo.
+5. Como representante FEMEMG, protocole uma diretriz para CBME. Entre como Revisor CBME 1 para analisar. Associações e curadores com escopo local também revisam croquis, contribuições, comunicados e solicitações de responsabilidade territorial. O apoio federativo é opcional; apenas mantenedores locais validados e representantes de associações do território podem encaminhar propostas diretamente à federação.
 6. Na Rede, submeta OKR próprio com representante institucional; revise em Central de aprovações com outro representante da mesma entidade. Avance data simulada para fechar ciclos. O histórico permanece; saldo pessoal expira. Nenhuma pontuação equivale a dinheiro.
 7. Em Impacto e auditoria, exporte JSON dos registros locais. Em Investimentos, simule lançamentos. O livro financeiro é demonstrativo, não um meio de movimentar recursos.
 
@@ -27,7 +27,7 @@
 
 ## Publicação no GitHub (quando autorizado)
 
-O destino indicado é `https://github.com/aresta-climb/aresta_intelligence`. A leitura de README, commits, branches e a tentativa de criar `feat/intelligence-governanca-v3` retornaram 404 com a conta conectada. Nenhuma alteração remota foi realizada. A conta conectada tem acesso ao repositório pessoal `evandrojaconi/aresta-lab`, não usado como destino alternativo sem autorização.
+O destino indicado é `https://github.com/aresta-climb/aresta_intelligence`. A leitura de README, commits, branches e a tentativa de criar `feat/intelligence-governanca-v3` retornaram 404 com a conta conectada. O repositório oficial não foi alterado. Posteriormente, com autorização explícita do usuário, as versões V3, V4 e V5 foram publicadas no repositório pessoal `evandrojaconi/aresta-lab`, em `intelligence/`.
 
 Em um clone autorizado do repositório oficial, crie uma branch a partir da branch padrão verificada, copie os arquivos desta pasta para `prototypes/intelligence-v3/` (preservando o conteúdo anterior), rode `node prototypes/intelligence-v3/tests.cjs`, revise e abra um pull request. Não substitua arquivos de produção antes de avaliar dependências e integração. Se desejar demonstração estática, publique apenas esta pasta pelo fluxo de Pages/hosting aprovado. O Pages não fornece autenticação, persistência compartilhada ou controle de acesso.
 
@@ -57,3 +57,13 @@ Prioridade editorial proposta (Fibonacci decrescente): 8 ação principal, 5 pr�
 A seleção de picos usa cartões em Visão Geral e Território. O usuário escolhe manualmente o pico; a localização é opcional, solicitada pelo navegador e usada em memória para ordenar os três picos de demonstração pela distância em linha reta aos centros municipais aproximados. Não são distâncias de acesso nem localização exata de vias. O catálogo ArestaDB real e as coordenadas verificadas permanecem pendentes de integração. O histórico recente é separado por perfil local. A consulta é livre.
 
 Verificação: testes de lógica V3 e novos casos V4 (cinco menus, rotas, contexto, distância aproximada e prioridade) passaram com DOM simulado. Renderização visual e permissão de geolocalização em navegador real ainda precisam de verificação. Deploy via GitHub Actions existente.
+
+
+## V5 — participação, temas e impacto
+
+- Temas claro/escuro com preferência local e padrão inicial do sistema operacional. Fundo Deep Basalt #161616 e Chalk White #F4F3ED; Brand Color #E25844 em ações primárias.
+- Visão Geral com pico selecionado, comunicados validados, próximo passo de contribuição, impacto registrado e seleção visual de picos. O mural público não apresenta comunicados ainda não validados; autor e revisores autorizados podem consultar suas pendências.
+- Acervo documental: mapa histórico da Lapinha (Daniel Ferreira Mariano e Eustáquio Macedo Melo Júnior, 2002), capa Igarameca 2024 (Alexsandro) e mapa dos setores da Pedreira Dr. Gravatá, referenciados por URLs fixadas na revisão `d86e4ed87be93f6697af1077908e1c9d444c9d44` do ArestaDB. Carregamento externo com fallback. Não são fotos de visita atual.
+- Escalador: contribuições, observações, sugestões locais e participação em ações; sem protocolo institucional direto. Curador validado: protocolo à associação no seu escopo. Mantenedor/autonomia validada e representante de associação no território: protocolo local ou à federação. Federação: sua esfera ou CBME. Confederação: sua esfera. XP e filiação isolados não concedem representação. Aprovações permanecem independentes. Casos históricos não foram removidos.
+- Painel pessoal e territorial conta entregas validadas por categoria e pendências. Benefícios esperados são distintos de resultados medidos. A prática responsável não gera XP automaticamente.
+- Testes de regressão e V5 passaram com DOM simulado. Renderização dos temas, carregamento de imagens externas e deploy ainda requerem confirmação em navegador. Controle efetivo de autorização depende de backend e autenticação reais.
